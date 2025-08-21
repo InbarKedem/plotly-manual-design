@@ -375,8 +375,13 @@ const HeightTemperaturePlot = () => {
     },
     showlegend: true,
     legend: {
-      x: 0.02,
-      y: 0.98,
+      x: 1.15, // Position legend outside the plot area to the right
+      y: 1.0, // Position at the top
+      xanchor: "left" as const, // Anchor point for x positioning
+      yanchor: "top" as const, // Anchor point for y positioning
+    },
+    margin: {
+      r: 200, // Increase right margin to make room for legend
     },
   };
 

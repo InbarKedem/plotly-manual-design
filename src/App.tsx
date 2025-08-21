@@ -1,13 +1,8 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import TemperatureScatterPlot from "./tempature";
 import HeightTemperaturePlot from "./height-temperature";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <div style={{ marginBottom: "50px" }}>
