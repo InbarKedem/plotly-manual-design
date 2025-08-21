@@ -336,13 +336,7 @@ const FuelConsumptionSimple = () => {
     const baseColor = "rgba(40, 40, 40, 0.9)"; // Dark gray/black - same color for all lines
 
     // Define 5 different line styles for each curve
-    const lineStyles = [
-      "solid",
-      "dash",
-      "dot",
-      "dashdot",
-      "longdash"
-    ] as const;
+    const lineStyles = ["solid", "dash", "dot", "dashdot", "longdash"] as const;
 
     const lineWidths = [4, 4, 4, 4, 4]; // Same thickness for all
 
