@@ -1,6 +1,7 @@
 import "./App.css";
 import TemperatureScatterPlot from "./tempature";
 import HeightTemperaturePlot from "./height-temperature";
+import HeightTemperatureSimplePlot from "./fuel-x";
 
 function App() {
   return (
@@ -10,8 +11,12 @@ function App() {
         <TemperatureScatterPlot />
       </div>
       <div style={{ marginBottom: "50px" }}>
-        <h2>Height vs Temperature Plot</h2>
+        <h2>Height vs Temperature Plot (1000 points per curve)</h2>
         <HeightTemperaturePlot />
+      </div>
+      <div style={{ marginBottom: "50px" }}>
+        <h2>Fuel Consumption vs Height - Simplified (10 points per curve)</h2>
+        <HeightTemperatureSimplePlot />
       </div>
     </>
   );
