@@ -2,6 +2,7 @@ import "./App.css";
 import TemperatureScatterPlot from "./tempature";
 import HeightTemperaturePlot from "./height-temperature";
 import HeightTemperatureSimplePlot from "./fuel-x";
+import FuelConsumptionSimple from "./fuel-simple";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
       <div style={{ marginBottom: "50px" }}>
         <h2>Fuel Consumption Analysis - 3 Variants per Climate (12 curves)</h2>
         <HeightTemperatureSimplePlot />
+      </div>
+      <div style={{ marginBottom: "50px" }}>
+        <h2>Fuel Consumption - 5 Line Styles with Same Pressure Scale</h2>
+        <FuelConsumptionSimple />
       </div>
     </>
   );
