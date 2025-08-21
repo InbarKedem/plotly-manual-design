@@ -348,20 +348,22 @@ const HeightTemperatureSimplePlot = () => {
       data.speeds.push(clamp(baseSpeed + (Math.random() - 0.5) * 25, 40, 200));
     }
 
-    // Return the plot data configuration for fuel consumption analysis with larger markers
+    // Return the plot data configuration with 3 curves per climate type
     return [
+      // Temperate Climate - 3 variations
       {
         x: climateData.temperate.fuelConsumption,
         y: climateData.temperate.heights,
         mode: "lines+markers" as const,
         type: "scatter" as const,
-        name: "Temperate Climate",
+        name: "Temperate - Solid",
         line: {
-          width: 4, // Thicker lines for better visibility with fewer points
+          width: 4,
           color: "rgba(55, 126, 184, 0.8)",
+          dash: "solid" as const,
         },
         marker: {
-          size: 8, // Larger markers for better visibility with fewer points
+          size: 8,
           color: climateData.temperate.pressures,
           colorscale: [
             [0, "rgba(55, 126, 184, 0.3)"],
@@ -371,20 +373,65 @@ const HeightTemperatureSimplePlot = () => {
           colorbar: {
             title: "Pressure (hPa)",
             x: 1.02,
-            y: 0.8,
-            len: 0.2,
+            y: 0.9,
+            len: 0.15,
           },
         },
       },
+      {
+        x: climateData.temperate.fuelConsumption.map((val) => val * 1.1), // Slightly higher consumption
+        y: climateData.temperate.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Temperate - Dashed",
+        line: {
+          width: 4,
+          color: "rgba(55, 126, 184, 0.8)",
+          dash: "dash" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.temperate.pressures,
+          colorscale: [
+            [0, "rgba(55, 126, 184, 0.3)"],
+            [1, "rgba(55, 126, 184, 1.0)"],
+          ],
+          showscale: false, // Hide to avoid duplicate colorbars
+        },
+      },
+      {
+        x: climateData.temperate.fuelConsumption.map((val) => val * 0.9), // Slightly lower consumption
+        y: climateData.temperate.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Temperate - Dotted",
+        line: {
+          width: 4,
+          color: "rgba(55, 126, 184, 0.8)",
+          dash: "dot" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.temperate.pressures,
+          colorscale: [
+            [0, "rgba(55, 126, 184, 0.3)"],
+            [1, "rgba(55, 126, 184, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+
+      // Desert Climate - 3 variations
       {
         x: climateData.desert.fuelConsumption,
         y: climateData.desert.heights,
         mode: "lines+markers" as const,
         type: "scatter" as const,
-        name: "Desert/Tropical",
+        name: "Desert - Solid",
         line: {
           width: 4,
           color: "rgba(228, 26, 28, 0.8)",
+          dash: "solid" as const,
         },
         marker: {
           size: 8,
@@ -397,20 +444,65 @@ const HeightTemperatureSimplePlot = () => {
           colorbar: {
             title: "Humidity (%)",
             x: 1.02,
-            y: 0.6,
-            len: 0.2,
+            y: 0.7,
+            len: 0.15,
           },
         },
       },
+      {
+        x: climateData.desert.fuelConsumption.map((val) => val * 1.15), // Higher consumption variant
+        y: climateData.desert.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Desert - Dashed",
+        line: {
+          width: 4,
+          color: "rgba(228, 26, 28, 0.8)",
+          dash: "dash" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.desert.pressures,
+          colorscale: [
+            [0, "rgba(228, 26, 28, 0.3)"],
+            [1, "rgba(228, 26, 28, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+      {
+        x: climateData.desert.fuelConsumption.map((val) => val * 0.85), // Lower consumption variant
+        y: climateData.desert.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Desert - Dotted",
+        line: {
+          width: 4,
+          color: "rgba(228, 26, 28, 0.8)",
+          dash: "dot" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.desert.pressures,
+          colorscale: [
+            [0, "rgba(228, 26, 28, 0.3)"],
+            [1, "rgba(228, 26, 28, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+
+      // Arctic Climate - 3 variations
       {
         x: climateData.arctic.fuelConsumption,
         y: climateData.arctic.heights,
         mode: "lines+markers" as const,
         type: "scatter" as const,
-        name: "Arctic/Polar",
+        name: "Arctic - Solid",
         line: {
           width: 4,
           color: "rgba(77, 175, 74, 0.8)",
+          dash: "solid" as const,
         },
         marker: {
           size: 8,
@@ -423,20 +515,65 @@ const HeightTemperatureSimplePlot = () => {
           colorbar: {
             title: "Wind Intensity",
             x: 1.02,
-            y: 0.4,
-            len: 0.2,
+            y: 0.5,
+            len: 0.15,
           },
         },
       },
+      {
+        x: climateData.arctic.fuelConsumption.map((val) => val * 1.2), // Higher consumption in harsh conditions
+        y: climateData.arctic.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Arctic - Dashed",
+        line: {
+          width: 4,
+          color: "rgba(77, 175, 74, 0.8)",
+          dash: "dash" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.arctic.pressures,
+          colorscale: [
+            [0, "rgba(77, 175, 74, 0.3)"],
+            [1, "rgba(77, 175, 74, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+      {
+        x: climateData.arctic.fuelConsumption.map((val) => val * 0.8), // Optimized consumption
+        y: climateData.arctic.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Arctic - Dotted",
+        line: {
+          width: 4,
+          color: "rgba(77, 175, 74, 0.8)",
+          dash: "dot" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.arctic.pressures,
+          colorscale: [
+            [0, "rgba(77, 175, 74, 0.3)"],
+            [1, "rgba(77, 175, 74, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+
+      // Storm System - 3 variations
       {
         x: climateData.storm.fuelConsumption,
         y: climateData.storm.heights,
         mode: "lines+markers" as const,
         type: "scatter" as const,
-        name: "Storm System",
+        name: "Storm - Solid",
         line: {
           width: 4,
           color: "rgba(152, 78, 163, 0.8)",
+          dash: "solid" as const,
         },
         marker: {
           size: 8,
@@ -449,9 +586,51 @@ const HeightTemperatureSimplePlot = () => {
           colorbar: {
             title: "Storm Intensity",
             x: 1.02,
-            y: 0.2,
-            len: 0.2,
+            y: 0.3,
+            len: 0.15,
           },
+        },
+      },
+      {
+        x: climateData.storm.fuelConsumption.map((val) => val * 1.25), // Maximum consumption in severe storms
+        y: climateData.storm.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Storm - Dashed",
+        line: {
+          width: 4,
+          color: "rgba(152, 78, 163, 0.8)",
+          dash: "dash" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.storm.pressures,
+          colorscale: [
+            [0, "rgba(152, 78, 163, 0.3)"],
+            [1, "rgba(152, 78, 163, 1.0)"],
+          ],
+          showscale: false,
+        },
+      },
+      {
+        x: climateData.storm.fuelConsumption.map((val) => val * 0.75), // Optimized storm navigation
+        y: climateData.storm.heights,
+        mode: "lines+markers" as const,
+        type: "scatter" as const,
+        name: "Storm - Dotted",
+        line: {
+          width: 4,
+          color: "rgba(152, 78, 163, 0.8)",
+          dash: "dot" as const,
+        },
+        marker: {
+          size: 6,
+          color: climateData.storm.pressures,
+          colorscale: [
+            [0, "rgba(152, 78, 163, 0.3)"],
+            [1, "rgba(152, 78, 163, 1.0)"],
+          ],
+          showscale: false,
         },
       },
     ];
@@ -459,7 +638,7 @@ const HeightTemperatureSimplePlot = () => {
 
   const plotLayout = {
     title: {
-      text: "Fuel Consumption vs. Height - Simplified (10 points per curve)",
+      text: "Fuel Consumption vs. Height - 3 Variants per Climate (12 curves total)",
     },
     xaxis: {
       title: {
@@ -479,14 +658,14 @@ const HeightTemperatureSimplePlot = () => {
       yanchor: "top" as const,
     },
     margin: {
-      r: 200, // Increase right margin to make room for legend
+      r: 250, // Increased margin for larger legend with 12 entries
     },
   };
 
   console.log(
     "HeightTemperatureSimplePlot rendering with",
     plotData.length,
-    "traces and 10 points per curve - Simplified Fuel Consumption Analysis"
+    "traces (12 curves: 3 per climate type) and 10 points per curve"
   );
   return (
     <Plot

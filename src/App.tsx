@@ -15,7 +15,7 @@ function App() {
         <HeightTemperaturePlot />
       </div>
       <div style={{ marginBottom: "50px" }}>
-        <h2>Fuel Consumption vs Height - Simplified (10 points per curve)</h2>
+        <h2>Fuel Consumption Analysis - 3 Variants per Climate (12 curves)</h2>
         <HeightTemperatureSimplePlot />
       </div>
     </>
