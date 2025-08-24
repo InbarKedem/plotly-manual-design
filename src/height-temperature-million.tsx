@@ -68,37 +68,6 @@ const convertDistance = (
   }
 };
 
-const convertSpeed = (
-  value: number,
-  fromUnit: string,
-  toUnit: string
-): number => {
-  // Convert to km/h first
-  let kmh = value;
-  switch (fromUnit) {
-    case "mph":
-      kmh = value * 1.60934;
-      break;
-    case "ms":
-      kmh = value * 3.6;
-      break;
-    case "kmh":
-      break; // already km/h
-  }
-
-  // Convert from km/h to target unit
-  switch (toUnit) {
-    case "mph":
-      return kmh / 1.60934;
-    case "ms":
-      return kmh / 3.6;
-    case "kmh":
-      return kmh;
-    default:
-      return kmh;
-  }
-};
-
 const convertTemperature = (
   value: number,
   fromUnit: string,
@@ -382,7 +351,7 @@ const SmoothHeightTemperaturePlot = () => {
         marker: {
           size: 2,
           color: convertedSpeeds,
-          colorscale: colorScale,
+          colorscale: _colorScale,
           showscale: name.includes("Temperate"),
           colorbar: name.includes("Temperate")
             ? {
@@ -413,6 +382,7 @@ const SmoothHeightTemperaturePlot = () => {
     const createTrace = (
       climateType: string,
       name: string,
+      colorScale: string,
       showColorbar: boolean
     ) => {
       const data = currentData[climateType];
