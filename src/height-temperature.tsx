@@ -391,13 +391,21 @@ const HeightTemperaturePlot = () => {
     "traces"
   );
   return (
-    <Plot
-      data={plotData}
-      layout={plotLayout}
-      config={{
-        responsive: true,
-      }}
-    />
+    <div style={{ width: "100%", height: "100%" }}>
+      <Plot
+        data={plotData}
+        layout={plotLayout}
+        config={{
+          responsive: true,
+        }}
+        style={{
+          width: "100%",
+          height: "100%",
+          minHeight: "450px",
+        }}
+        useResizeHandler={true}
+      />
+    </div>
   );
 };
 
