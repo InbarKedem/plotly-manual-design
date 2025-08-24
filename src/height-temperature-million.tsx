@@ -68,6 +68,37 @@ const convertDistance = (
   }
 };
 
+const convertSpeed = (
+  value: number,
+  fromUnit: string,
+  toUnit: string
+): number => {
+  // Convert to km/h first
+  let kmh = value;
+  switch (fromUnit) {
+    case "mph":
+      kmh = value * 1.60934;
+      break;
+    case "ms":
+      kmh = value * 3.6;
+      break;
+    case "kmh":
+      break; // already km/h
+  }
+
+  // Convert from km/h to target unit
+  switch (toUnit) {
+    case "mph":
+      return kmh / 1.60934;
+    case "ms":
+      return kmh / 3.6;
+    case "kmh":
+      return kmh;
+    default:
+      return kmh;
+  }
+};
+
 const convertTemperature = (
   value: number,
   fromUnit: string,
@@ -273,12 +304,9 @@ const generateClimateDataChunk = (
       Math.sin(t * Math.PI * 2) * 50 + Math.cos(t * Math.PI * 1.5) * 30;
     data.pressures.push(basePressure + pressureVariation);
 
-    // Generate speed data
-    const baseSpeed =
-      45 +
-      Math.sin(globalIndex * 0.18 + 0.7) * 28 +
-      Math.cos(globalIndex * 0.12 + 1.5) * 20;
-    data.speeds.push(clamp(baseSpeed + (Math.random() - 0.5) * 15, 15, 130));
+    // Generate speed data - completely random across the full range
+    const randomSpeed = 15 + Math.random() * (130 - 15); // Random between 15-130 km/h
+    data.speeds.push(randomSpeed);
   }
 
   return data;
@@ -330,13 +358,8 @@ const SmoothHeightTemperaturePlot = () => {
         const t = h / 10000;
         return 20 - h / 200 + Math.sin(t * Math.PI * 2) * 8 + yOffset;
       });
-      const speeds = heights.map((_, i) => {
-        const baseSpeed =
-          45 + Math.sin(i * 0.18) * 28 + Math.cos(i * 0.12) * 20;
-        return Math.max(
-          0,
-          Math.min(100, baseSpeed + (Math.random() - 0.5) * 15)
-        );
+      const speeds = heights.map(() => {
+        return 15 + Math.random() * (130 - 15); // Random between 15-130 km/h
       });
 
       // Apply unit conversions
@@ -357,9 +380,9 @@ const SmoothHeightTemperaturePlot = () => {
         type: "scattergl" as const,
         name: `${name} (Preview)`,
         marker: {
-          size: 3,
+          size: 2,
           color: convertedSpeeds,
-          colorscale: "Viridis",
+          colorscale: colorScale,
           showscale: name.includes("Temperate"),
           colorbar: name.includes("Temperate")
             ? {
@@ -367,20 +390,19 @@ const SmoothHeightTemperaturePlot = () => {
                 x: 1.02,
                 y: 0.5,
                 len: 0.8,
-                thickness: 15,
               }
             : undefined,
-          cmin: 0,
-          cmax: convertSpeed(100, "kmh", speedUnit),
+          cmin: 15,
+          cmax: 130,
         },
       };
     };
 
     return [
-      createQuickTrace("Temperate Climate", null, 0),
-      createQuickTrace("Desert/Tropical", null, 5),
-      createQuickTrace("Arctic/Polar", null, -8),
-      createQuickTrace("Storm System", null, 8),
+      createQuickTrace("Temperate Climate", "Viridis", 0),
+      createQuickTrace("Desert/Tropical", "Hot", 5),
+      createQuickTrace("Arctic/Polar", "Blues", -8),
+      createQuickTrace("Storm System", "Plasma", 8),
     ];
   }, [distanceUnit, temperatureUnit, speedUnit]);
 
@@ -416,7 +438,7 @@ const SmoothHeightTemperaturePlot = () => {
         marker: {
           size: 2,
           color: convertedSpeeds,
-          colorscale: "Viridis",
+          colorscale: colorScale,
           showscale: showColorbar,
           colorbar: showColorbar
             ? {
@@ -425,20 +447,19 @@ const SmoothHeightTemperaturePlot = () => {
                 y: 0.5,
                 len: 0.8,
                 thickness: 15,
-                titlefont: { size: 12 },
               }
             : undefined,
-          cmin: 0,
-          cmax: convertSpeed(100, "kmh", speedUnit),
+          cmin: convertSpeed(15, "kmh", speedUnit),
+          cmax: convertSpeed(130, "kmh", speedUnit),
         },
       };
     };
 
     const traces = [
-      createTrace("temperate", "Temperate Climate", true),
-      createTrace("desert", "Desert/Tropical", false),
-      createTrace("arctic", "Arctic/Polar", false),
-      createTrace("storm", "Storm System", false),
+      createTrace("temperate", "Temperate Climate", "Viridis", true),
+      createTrace("desert", "Desert/Tropical", "Hot", false),
+      createTrace("arctic", "Arctic/Polar", "Blues", false),
+      createTrace("storm", "Storm System", "Plasma", false),
     ].filter((trace) => trace !== null);
 
     setPlotData(traces.length > 0 ? traces : placeholderData);
@@ -557,7 +578,7 @@ const SmoothHeightTemperaturePlot = () => {
   const plotLayout = useMemo(
     () => ({
       title: {
-        text: "Height vs. Temperature - Speed-Based Coloring (100K Points Per Curve)",
+        text: "Height vs. Temperature with Speed Gradient - 100K Points Per Curve",
         font: { size: 16 },
       },
       xaxis: {
@@ -573,7 +594,7 @@ const SmoothHeightTemperaturePlot = () => {
         xanchor: "left" as const,
         yanchor: "top" as const,
       },
-      margin: { r: 250 }, // Increased right margin for color bar and legend
+      margin: { r: 250 }, // Increased margin for colorbar
       hovermode: "closest" as const,
     }),
     [distanceUnit, temperatureUnit]
