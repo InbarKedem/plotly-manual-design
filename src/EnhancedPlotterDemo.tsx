@@ -21,67 +21,107 @@ const enhancedExamples: EnhancedExampleConfig[] = [
   {
     name: "Modern Scatter Plot",
     component: ModernScatterExample,
-    description: "Scientific scatter plot with error bars, modern colorscales, and annotations",
-    features: ["Viridis colorscale", "Error bars", "Annotations", "Debug panel", "Custom hover"],
+    description:
+      "Scientific scatter plot with error bars, modern colorscales, and annotations",
+    features: [
+      "Viridis colorscale",
+      "Error bars",
+      "Annotations",
+      "Debug panel",
+      "Custom hover",
+    ],
     borderColor: "#6366f1",
-    category: "Modern"
+    category: "Modern",
   },
   {
     name: "Multi-Type Series",
     component: MultiTypeSeriesExample,
     description: "Mixed visualization with lines, markers, and filled areas",
-    features: ["Spline smoothing", "Variable marker sizes", "Filled areas", "Unified hover", "Multiple symbols"],
+    features: [
+      "Spline smoothing",
+      "Variable marker sizes",
+      "Filled areas",
+      "Unified hover",
+      "Multiple symbols",
+    ],
     borderColor: "#8b5cf6",
-    category: "Modern"
+    category: "Modern",
   },
   {
     name: "Themed Progressive Loading",
     component: ThemedProgressiveExample,
     description: "Large dataset with dark theme and smooth progressive loading",
-    features: ["1500 points", "Dark theme", "Turbo colorscale", "Data statistics", "Smooth animation"],
+    features: [
+      "1500 points",
+      "Dark theme",
+      "Turbo colorscale",
+      "Data statistics",
+      "Smooth animation",
+    ],
     borderColor: "#06b6d4",
-    category: "Performance"
+    category: "Performance",
   },
   {
     name: "Interactive Features",
     component: InteractiveFeaturesExample,
     description: "Full interactivity showcase with shapes and event handlers",
-    features: ["Event handlers", "Shapes overlay", "Multiple interactions", "Custom annotations", "Selection tools"],
+    features: [
+      "Event handlers",
+      "Shapes overlay",
+      "Multiple interactions",
+      "Custom annotations",
+      "Selection tools",
+    ],
     borderColor: "#ef4444",
-    category: "Interactive"
+    category: "Interactive",
   },
   {
     name: "Advanced Climate Data",
     component: AdvancedClimateExample,
-    description: "Atmospheric data visualization with gradient lines and multi-parameter coloring",
-    features: ["Realistic data model", "Gradient lines", "Multi-parameter", "Advanced tooltips", "Climate simulation"],
+    description:
+      "Atmospheric data visualization with gradient lines and multi-parameter coloring",
+    features: [
+      "Realistic data model",
+      "Gradient lines",
+      "Multi-parameter",
+      "Advanced tooltips",
+      "Climate simulation",
+    ],
     borderColor: "#22c55e",
-    category: "Advanced"
+    category: "Advanced",
   },
   {
     name: "Real-time Style",
     component: RealTimeStyleExample,
-    description: "Signal processing visualization with smooth curves and dark theme",
-    features: ["Spline smoothing", "Rainbow colorscale", "Dark UI", "Monospace font", "Signal processing"],
+    description:
+      "Signal processing visualization with smooth curves and dark theme",
+    features: [
+      "Spline smoothing",
+      "Rainbow colorscale",
+      "Dark UI",
+      "Monospace font",
+      "Signal processing",
+    ],
     borderColor: "#f59e0b",
-    category: "Advanced"
+    category: "Advanced",
   },
 ];
 
 const categoryColors = {
   Modern: "#6366f1",
-  Interactive: "#ef4444", 
+  Interactive: "#ef4444",
   Performance: "#06b6d4",
-  Advanced: "#22c55e"
+  Advanced: "#22c55e",
 };
 
 const EnhancedGenericPlotterDemo: React.FC = () => {
   const [activeExample, setActiveExample] = useState<number | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("All");
 
-  const filteredExamples = filterCategory === "All" 
-    ? enhancedExamples 
-    : enhancedExamples.filter(ex => ex.category === filterCategory);
+  const filteredExamples =
+    filterCategory === "All"
+      ? enhancedExamples
+      : enhancedExamples.filter((ex) => ex.category === filterCategory);
 
   return (
     <div style={{ padding: "20px", maxWidth: "1400px", margin: "0 auto" }}>
@@ -95,7 +135,7 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
           padding: "40px",
           borderRadius: "16px",
           position: "relative",
-          overflow: "hidden"
+          overflow: "hidden",
         }}
       >
         <div
@@ -105,23 +145,34 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1000 1000\"><polygon fill=\"rgba(255,255,255,0.05)\" points=\"0,0 1000,300 1000,1000 0,700\"/></svg>')",
-            backgroundSize: "cover"
+            background:
+              'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,0 1000,300 1000,1000 0,700"/></svg>\')',
+            backgroundSize: "cover",
           }}
         />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <h1 style={{ margin: 0, fontSize: "3em", fontWeight: "bold", marginBottom: "10px" }}>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "3em",
+              fontWeight: "bold",
+              marginBottom: "10px",
+            }}
+          >
             🚀 Enhanced Generic Plotter
           </h1>
           <p style={{ margin: "0 0 20px 0", fontSize: "1.3em", opacity: 0.95 }}>
-            Next-generation data visualization with modern features and best practices
+            Next-generation data visualization with modern features and best
+            practices
           </p>
-          <div style={{
-            display: "inline-flex",
-            gap: "20px",
-            fontSize: "0.9em",
-            opacity: 0.9
-          }}>
+          <div
+            style={{
+              display: "inline-flex",
+              gap: "20px",
+              fontSize: "0.9em",
+              opacity: 0.9,
+            }}
+          >
             <span>✨ Modern UI/UX</span>
             <span>⚡ High Performance</span>
             <span>🎨 Advanced Theming</span>
@@ -132,15 +183,17 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
 
       {/* Category Filter */}
       <div style={{ marginBottom: "30px", textAlign: "center" }}>
-        <div style={{
-          display: "inline-flex",
-          gap: "10px",
-          padding: "8px",
-          background: "#f8fafc",
-          borderRadius: "12px",
-          border: "2px solid #e2e8f0"
-        }}>
-          {["All", ...Object.keys(categoryColors)].map(category => (
+        <div
+          style={{
+            display: "inline-flex",
+            gap: "10px",
+            padding: "8px",
+            background: "#f8fafc",
+            borderRadius: "12px",
+            border: "2px solid #e2e8f0",
+          }}
+        >
+          {["All", ...Object.keys(categoryColors)].map((category) => (
             <button
               key={category}
               onClick={() => setFilterCategory(category)}
@@ -148,17 +201,25 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                 padding: "8px 16px",
                 borderRadius: "8px",
                 border: "none",
-                background: filterCategory === category ? 
-                  (category === "All" ? "#64748b" : categoryColors[category as keyof typeof categoryColors]) : 
-                  "transparent",
+                background:
+                  filterCategory === category
+                    ? category === "All"
+                      ? "#64748b"
+                      : categoryColors[category as keyof typeof categoryColors]
+                    : "transparent",
                 color: filterCategory === category ? "white" : "#64748b",
                 fontWeight: filterCategory === category ? "600" : "normal",
                 cursor: "pointer",
                 transition: "all 0.2s ease",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
-              {category} {category !== "All" && `(${enhancedExamples.filter(ex => ex.category === category).length})`}
+              {category}{" "}
+              {category !== "All" &&
+                `(${
+                  enhancedExamples.filter((ex) => ex.category === category)
+                    .length
+                })`}
             </button>
           ))}
         </div>
@@ -171,10 +232,16 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
           padding: "30px",
           borderRadius: "16px",
           marginBottom: "40px",
-          border: "2px solid #e2e8f0"
+          border: "2px solid #e2e8f0",
         }}
       >
-        <h2 style={{ color: "#1e293b", marginBottom: "25px", textAlign: "center" }}>
+        <h2
+          style={{
+            color: "#1e293b",
+            marginBottom: "25px",
+            textAlign: "center",
+          }}
+        >
           🎯 Enhanced Features & Capabilities
         </h2>
         <div
@@ -188,43 +255,43 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
             {
               icon: "🎨",
               title: "Modern Colorscales",
-              desc: "Viridis, Plasma, Turbo, Cividis, and Rainbow colorscales"
+              desc: "Viridis, Plasma, Turbo, Cividis, and Rainbow colorscales",
             },
             {
               icon: "📊",
-              title: "Error Bars & Annotations", 
-              desc: "Statistical error bars and interactive annotations"
+              title: "Error Bars & Annotations",
+              desc: "Statistical error bars and interactive annotations",
             },
             {
               icon: "🎭",
               title: "Advanced Theming",
-              desc: "Dark mode, custom themes, and typography control"
+              desc: "Dark mode, custom themes, and typography control",
             },
             {
               icon: "⚡",
               title: "Smart Progressive Loading",
-              desc: "Chunked loading with statistics and memory optimization"
+              desc: "Chunked loading with statistics and memory optimization",
             },
             {
               icon: "🖱️",
               title: "Full Interactivity",
-              desc: "Click, hover, zoom, pan, and selection event handlers"
+              desc: "Click, hover, zoom, pan, and selection event handlers",
             },
             {
               icon: "🔧",
               title: "Multiple Chart Types",
-              desc: "Scatter, line, bar, histogram, box, violin plots"
+              desc: "Scatter, line, bar, histogram, box, violin plots",
             },
             {
               icon: "📐",
               title: "Shapes & Overlays",
-              desc: "Rectangles, circles, lines, and custom shapes"
+              desc: "Rectangles, circles, lines, and custom shapes",
             },
             {
               icon: "🎯",
               title: "Debug & Analytics",
-              desc: "Real-time debug panel with performance metrics"
-            }
+              desc: "Real-time debug panel with performance metrics",
+            },
           ].map((feature, index) => (
             <div
               key={index}
@@ -234,7 +301,7 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                 borderRadius: "12px",
                 border: "2px solid #e5e7eb",
                 transition: "all 0.3s ease",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
@@ -245,11 +312,26 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <div style={{ fontSize: "24px", marginBottom: "8px" }}>{feature.icon}</div>
-              <h3 style={{ margin: "0 0 8px 0", color: "#1e293b", fontSize: "16px" }}>
+              <div style={{ fontSize: "24px", marginBottom: "8px" }}>
+                {feature.icon}
+              </div>
+              <h3
+                style={{
+                  margin: "0 0 8px 0",
+                  color: "#1e293b",
+                  fontSize: "16px",
+                }}
+              >
                 {feature.title}
               </h3>
-              <p style={{ margin: 0, color: "#64748b", fontSize: "14px", lineHeight: "1.4" }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: "#64748b",
+                  fontSize: "14px",
+                  lineHeight: "1.4",
+                }}
+              >
                 {feature.desc}
               </p>
             </div>
@@ -258,7 +340,9 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
       </div>
 
       {/* Examples Grid */}
-      <h2 style={{ color: "#1e293b", marginBottom: "25px", textAlign: "center" }}>
+      <h2
+        style={{ color: "#1e293b", marginBottom: "25px", textAlign: "center" }}
+      >
         📈 Interactive Examples ({filteredExamples.length})
       </h2>
       <div
@@ -295,30 +379,51 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                   color: "white",
                   padding: "20px",
                   cursor: "pointer",
-                  position: "relative"
+                  position: "relative",
                 }}
                 onClick={() => setActiveExample(isActive ? null : index)}
               >
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "15px",
-                  background: "rgba(255,255,255,0.2)",
-                  padding: "4px 10px",
-                  borderRadius: "12px",
-                  fontSize: "12px",
-                  fontWeight: "600"
-                }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "15px",
+                    background: "rgba(255,255,255,0.2)",
+                    padding: "4px 10px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                  }}
+                >
                   {example.category}
                 </div>
-                
-                <h3 style={{ margin: "0 0 8px 0", fontSize: "1.4em", fontWeight: "700" }}>
+
+                <h3
+                  style={{
+                    margin: "0 0 8px 0",
+                    fontSize: "1.4em",
+                    fontWeight: "700",
+                  }}
+                >
                   {example.name}
-                  <span style={{ float: "right", fontSize: "0.7em", marginTop: "4px" }}>
+                  <span
+                    style={{
+                      float: "right",
+                      fontSize: "0.7em",
+                      marginTop: "4px",
+                    }}
+                  >
                     {isActive ? "🔽" : "▶️"}
                   </span>
                 </h3>
-                <p style={{ margin: 0, opacity: 0.95, fontSize: "1em", lineHeight: "1.4" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    opacity: 0.95,
+                    fontSize: "1em",
+                    lineHeight: "1.4",
+                  }}
+                >
                   {example.description}
                 </p>
               </div>
@@ -343,7 +448,7 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                         border: `2px solid ${example.borderColor}30`,
                         color: example.borderColor,
                         fontWeight: "600",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                       }}
                     >
                       {feature}
@@ -359,7 +464,7 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
                   padding: "20px",
                   transition: "height 0.3s ease",
                   overflow: "hidden",
-                  background: "#ffffff"
+                  background: "#ffffff",
                 }}
               >
                 <ExampleComponent />
@@ -379,8 +484,10 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
           marginTop: "50px",
         }}
       >
-        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>🛠️ Enhanced Usage Guide</h2>
-        
+        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>
+          🛠️ Enhanced Usage Guide
+        </h2>
+
         <div
           style={{
             background: "rgba(255,255,255,0.08)",
@@ -390,10 +497,12 @@ const EnhancedGenericPlotterDemo: React.FC = () => {
             fontSize: "14px",
             overflow: "auto",
             marginBottom: "30px",
-            border: "1px solid rgba(255,255,255,0.1)"
+            border: "1px solid rgba(255,255,255,0.1)",
           }}
         >
-          <pre style={{ margin: 0, whiteSpace: "pre-wrap", color: "#e2e8f0" }}>{`import EnhancedGenericPlotter from "./EnhancedGenericPlotter";
+          <pre
+            style={{ margin: 0, whiteSpace: "pre-wrap", color: "#e2e8f0" }}
+          >{`import EnhancedGenericPlotter from "./EnhancedGenericPlotter";
 import type { SeriesConfig, PlotConfig, ThemeConfig } from "./EnhancedGenericPlotter";
 
 // Advanced configuration
@@ -475,22 +584,40 @@ const theme: ThemeConfig = {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
             gap: "20px",
-            marginTop: "30px"
+            marginTop: "30px",
           }}
         >
           <div>
-            <h4 style={{ marginBottom: "15px", color: "#06b6d4" }}>📊 Chart Types:</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "#cbd5e1" }}>
+            <h4 style={{ marginBottom: "15px", color: "#06b6d4" }}>
+              📊 Chart Types:
+            </h4>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                color: "#cbd5e1",
+              }}
+            >
               <li>• scatter / scattergl</li>
               <li>• bar / histogram</li>
               <li>• box / violin</li>
               <li>• All Plotly types</li>
             </ul>
           </div>
-          
+
           <div>
-            <h4 style={{ marginBottom: "15px", color: "#8b5cf6" }}>🎨 Modern Colorscales:</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "#cbd5e1" }}>
+            <h4 style={{ marginBottom: "15px", color: "#8b5cf6" }}>
+              🎨 Modern Colorscales:
+            </h4>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                color: "#cbd5e1",
+              }}
+            >
               <li>• viridis / plasma</li>
               <li>• turbo / cividis</li>
               <li>• rainbow / custom</li>
@@ -499,8 +626,17 @@ const theme: ThemeConfig = {
           </div>
 
           <div>
-            <h4 style={{ marginBottom: "15px", color: "#22c55e" }}>⚡ Performance:</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "#cbd5e1" }}>
+            <h4 style={{ marginBottom: "15px", color: "#22c55e" }}>
+              ⚡ Performance:
+            </h4>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                color: "#cbd5e1",
+              }}
+            >
               <li>• Progressive loading</li>
               <li>• Memory optimization</li>
               <li>• Animation frames</li>
@@ -509,8 +645,17 @@ const theme: ThemeConfig = {
           </div>
 
           <div>
-            <h4 style={{ marginBottom: "15px", color: "#f59e0b" }}>🔧 Advanced Features:</h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "#cbd5e1" }}>
+            <h4 style={{ marginBottom: "15px", color: "#f59e0b" }}>
+              🔧 Advanced Features:
+            </h4>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                color: "#cbd5e1",
+              }}
+            >
               <li>• Error bars</li>
               <li>• Annotations & shapes</li>
               <li>• Event handlers</li>
