@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import GenericPlotter from "./GenericPlotter";
+import GenericPlotter from "./components/GenericPlotter";
 import type {
   SeriesConfig,
   PlotConfig,
   DataPoint,
   ProgressConfig,
-} from "./GenericPlotter";
+} from "./components/GenericPlotter";
 
 // =============================================================================
 // UTILITY FUNCTIONS FOR DATA GENERATION
@@ -261,12 +261,12 @@ export const ProgressiveLoadingExample: React.FC = () => {
     chunkSize: 50,
     showProgress: true,
     showPhase: true,
-    onProgress: (progress, phase, pointsLoaded) => {
+    onProgress: (progress: any, phase: any, pointsLoaded: any) => {
       console.log(
         `Progress: ${progress}%, Phase: ${phase}, Points: ${pointsLoaded}`
       );
     },
-    onComplete: (totalPoints) => {
+    onComplete: (totalPoints: any) => {
       console.log(`Loading complete! Total points: ${totalPoints}`);
     },
   };

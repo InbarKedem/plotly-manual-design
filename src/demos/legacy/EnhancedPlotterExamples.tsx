@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
-import EnhancedGenericPlotter from "./EnhancedGenericPlotter";
+import EnhancedGenericPlotter from "./components/EnhancedGenericPlotter";
 import type {
   SeriesConfig,
   PlotConfig,
   InteractionConfig,
   ProgressConfig,
   ThemeConfig,
-} from "./EnhancedGenericPlotter";
+} from "./components/EnhancedGenericPlotter";
 
 // =============================================================================
 // ENHANCED EXAMPLES WITH MODERN FEATURES
@@ -340,10 +340,10 @@ export const InteractiveFeaturesExample: React.FC = () => {
       series={series}
       config={config}
       interactions={interactions}
-      onPlotClick={(data) => console.log("Plot clicked:", data)}
-      onPlotHover={(data) => console.log("Plot hovered:", data)}
-      onPlotSelect={(data) => console.log("Plot selected:", data)}
-      onPlotZoom={(data) => console.log("Plot zoomed:", data)}
+      onPlotClick={(data: any) => console.log("Plot clicked:", data)}
+      onPlotHover={(data: any) => console.log("Plot hovered:", data)}
+      onPlotSelect={(data: any) => console.log("Plot selected:", data)}
+      onPlotZoom={(data: any) => console.log("Plot zoomed:", data)}
     />
   );
 };

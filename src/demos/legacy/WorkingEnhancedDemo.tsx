@@ -1,6 +1,6 @@
 import React from "react";
-import EnhancedGenericPlotter from "./EnhancedGenericPlotter";
-import type { SeriesConfig, PlotConfig } from "./EnhancedGenericPlotter";
+import EnhancedGenericPlotter from "./components/EnhancedGenericPlotter";
+import type { SeriesConfig, PlotConfig } from "./components/EnhancedGenericPlotter";
 
 const WorkingEnhancedDemo: React.FC = () => {
   // Simple test data without progressive loading

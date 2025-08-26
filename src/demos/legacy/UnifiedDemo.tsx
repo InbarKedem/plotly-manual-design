@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import UnifiedPlotter from "./UnifiedPlotter";
-import type { SeriesConfig } from "./types/PlotterTypes";
+import UnifiedPlotter from "../../UnifiedPlotter";
+import type { SeriesConfig } from "../../types/PlotterTypes";
 import {
   generateData,
   generateClimateData,
@@ -18,7 +18,7 @@ import {
   PRESET_PROGRESSIVE,
   combineConfigs,
   getColorPalette,
-} from "./PlotterUtils";
+} from "./utils/PlotterUtils";
 
 // =============================================================================
 // EXAMPLE COMPONENTS
@@ -158,7 +158,7 @@ const MultiSeriesExample: React.FC = () => {
 
   const series: SeriesConfig[] = useMemo(
     () =>
-      seriesData.map((s, index) =>
+      seriesData.map((s: any, index: any) =>
         createSeriesFromData(s.data, {
           name: s.name,
           mode: "lines+markers",
@@ -287,8 +287,8 @@ const ScientificExample: React.FC = () => {
       config={config}
       theme={PRESET_THEMES.scientific}
       interactions={PRESET_INTERACTIONS.scientific}
-      onPlotClick={(data) => console.log("Plot clicked:", data)}
-      onPlotHover={(data) => console.log("Plot hovered:", data)}
+      onPlotClick={(data: any) => console.log("Plot clicked:", data)}
+      onPlotHover={(data: any) => console.log("Plot hovered:", data)}
       debug={true}
     />
   );
@@ -321,24 +321,24 @@ const CustomMultiSeriesExample: React.FC = () => {
       [
         {
           name: "Linear Growth",
-          xFunction: (t) => t,
-          yFunction: (t) => t,
+          xFunction: (t: any) => t,
+          yFunction: (t: any) => t,
           color: "#3b82f6",
           style: "solid",
           noiseLevel: 0.05,
         },
         {
           name: "Exponential",
-          xFunction: (t) => t,
-          yFunction: (t) => Math.pow(t, 2),
+          xFunction: (t: any) => t,
+          yFunction: (t: any) => Math.pow(t, 2),
           color: "#ef4444",
           style: "dash",
           noiseLevel: 0.03,
         },
         {
           name: "Logarithmic",
-          xFunction: (t) => t,
-          yFunction: (t) => Math.log(1 + t * 9) / Math.log(10),
+          xFunction: (t: any) => t,
+          yFunction: (t: any) => Math.log(1 + t * 9) / Math.log(10),
           color: "#10b981",
           style: "dot",
           noiseLevel: 0.04,

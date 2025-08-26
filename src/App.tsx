@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./App.css";
-import TemperatureChart from "./tempature";
-import HeightTemperatureChart from "./height-temperature";
-import HeightTemperatureSimple from "./height-temperature-simple";
-import HeightTemperatureMillionChart from "./height-temperature-million";
-import FuelXChart from "./fuel-x";
-import FuelSimpleChart from "./fuel-simple";
-import UnifiedDemo from "./UnifiedDemo";
+import TemperatureChart from "./demos/legacy/tempature";
+import HeightTemperatureChart from "./demos/legacy/height-temperature";
+import HeightTemperatureSimple from "./demos/legacy/height-temperature-simple";
+import HeightTemperatureMillionChart from "./demos/legacy/height-temperature-million";
+import FuelXChart from "./demos/legacy/fuel-x";
+import FuelSimpleChart from "./demos/legacy/fuel-simple";
+import UnifiedDemo from "./demos/legacy/UnifiedDemo";
 import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
 
 interface TabConfig {

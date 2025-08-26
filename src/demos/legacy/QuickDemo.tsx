@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import GenericPlotter from "./GenericPlotter";
-import type { SeriesConfig, PlotConfig } from "./GenericPlotter";
+import GenericPlotter from "./components/GenericPlotter";
+import type { SeriesConfig, PlotConfig } from "./components/GenericPlotter";
 
 // Quick demonstration showing the generic component can replicate your existing patterns
 const QuickDemo: React.FC = () => {
