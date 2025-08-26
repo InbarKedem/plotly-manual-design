@@ -7,7 +7,7 @@ import HeightTemperatureMillionChart from "./height-temperature-million";
 import FuelXChart from "./fuel-x";
 import FuelSimpleChart from "./fuel-simple";
 import UnifiedDemo from "./UnifiedDemo";
-import TestRefactoredPlotter from "./TestRefactoredPlotter";
+import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
 
 interface TabConfig {
   name: string;
@@ -18,8 +18,8 @@ interface TabConfig {
 
 const tabs: TabConfig[] = [
   {
-    name: "🧪 Refactored Test",
-    component: TestRefactoredPlotter,
+    name: "🧪 Organized Demo",
+    component: OrganizedScientificDemo,
     category: "Unified",
     icon: "🧪",
   },
