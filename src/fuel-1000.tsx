@@ -75,9 +75,9 @@ const FuelConsumption1000 = () => {
   // Configuration
   const config = useMemo(
     () => ({
-      NUM_POINTS: 1000, // 1000 points per curve
+      NUM_POINTS: 100, // 100 points per curve
       MAX_HEIGHT: 10000,
-      CHUNK_SIZE: 100, // Process in chunks for smooth loading
+      CHUNK_SIZE: 25, // Process in chunks for smooth loading
       climateTypes: ["temperate", "desert", "arctic", "storm"] as const,
     }),
     []
@@ -264,9 +264,10 @@ const FuelConsumption1000 = () => {
   const updatePlotData = useCallback(() => {
     const currentData = climateDataRef.current;
 
-    // Define consistent dark colors and line widths
+    // Define consistent line styles and widths
     const baseColor = "rgba(40, 40, 40, 0.9)";
     const lineWidths = [4, 4, 4, 4, 4];
+    const lineStyles = ["solid", "dash", "dot", "dashdot", "longdash"] as const;
 
     const createTrace = (
       climateType: string,
@@ -290,7 +291,7 @@ const FuelConsumption1000 = () => {
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
       };
 
-      // Create line segments with gradient colors based on adjacent points
+      // Create straight line segments with gradient colors based on adjacent points
       const lineSegments = [];
       for (let i = 0; i < data.speeds.length - 1; i++) {
         const currentSpeed = data.speeds[i];
@@ -305,6 +306,8 @@ const FuelConsumption1000 = () => {
           line: {
             width: lineWidths[styleIndex],
             color: speedToColor(avgSpeed, 0.8),
+            dash: lineStyles[styleIndex],
+            shape: "linear" as const, // Ensure straight lines
           },
           showlegend: false,
           hoverinfo: "skip" as const,
@@ -376,7 +379,7 @@ const FuelConsumption1000 = () => {
               return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
             };
 
-            // Create line segments for optimized version
+            // Create straight line segments for optimized version
             const optimizedLineSegments = [];
             for (let i = 0; i < optimizedData.speeds.length - 1; i++) {
               const currentSpeed = optimizedData.speeds[i];
@@ -394,6 +397,8 @@ const FuelConsumption1000 = () => {
                 line: {
                   width: lineWidths[4],
                   color: speedToColorOptimized(avgSpeed, 0.8),
+                  dash: lineStyles[4],
+                  shape: "linear" as const, // Ensure straight lines
                 },
                 showlegend: false,
                 hoverinfo: "skip" as const,
@@ -528,7 +533,7 @@ const FuelConsumption1000 = () => {
     setTimeout(() => {
       setIsGenerating(false);
       setIsComplete(true);
-      setCurrentPhase(`Complete - 5,000 fuel consumption points loaded`);
+      setCurrentPhase(`Complete - 500 fuel consumption points loaded`);
     }, 200);
   }, [config, generateClimateDataChunk, updatePlotData]);
 
@@ -543,7 +548,7 @@ const FuelConsumption1000 = () => {
 
   const plotLayout = {
     title: {
-      text: "Fuel Consumption vs. Height - Speed-Colored Points & Gradient Lines (1000 Points)",
+      text: "Fuel Consumption vs. Height - Speed-Colored Points & Different Line Styles (100 Points)",
     },
     xaxis: {
       title: {
@@ -570,7 +575,7 @@ const FuelConsumption1000 = () => {
   console.log(
     "FuelConsumption1000 rendering with",
     plotData.length,
-    "traces including gradient line segments and speed-colored markers with 1000 points per curve"
+    "traces including gradient line segments and speed-colored markers with 100 points per curve"
   );
   return (
     <div style={{ width: "100%", height: "100%" }}>
