@@ -12,11 +12,12 @@ const FuelSimpleChart: React.FC = () => {
 
     for (let i = 0; i < numPoints; i++) {
       const speed = 30 + (i / numPoints) * 90; // Speed from 30 to 120 km/h
-      
+
       // Fuel efficiency curve (optimal around 60-80 km/h)
       const optimalSpeed = 70;
-      const efficiency = 25 - Math.abs(speed - optimalSpeed) * 0.1 - Math.random() * 2;
-      
+      const efficiency =
+        25 - Math.abs(speed - optimalSpeed) * 0.1 - Math.random() * 2;
+
       data.push({
         x: speed,
         y: Math.max(5, efficiency), // Minimum 5 km/L
@@ -48,7 +49,7 @@ const FuelSimpleChart: React.FC = () => {
           shape: "spline",
           smoothing: 0.9,
         },
-        hovertemplate: 
+        hovertemplate:
           "<b>Speed:</b> %{x:.0f} km/h<br>" +
           "<b>Efficiency:</b> %{y:.2f} km/L<br>" +
           "<extra></extra>",

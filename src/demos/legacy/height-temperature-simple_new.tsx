@@ -4,25 +4,24 @@ import type { SeriesConfig } from "../../types/PlotterTypes";
 import { LIGHT_THEME } from "../../config/themes";
 import { scientificScatterPreset } from "../../presets/scientific";
 
-const FuelSimpleChart: React.FC = () => {
-  // Generate simple fuel efficiency data
-  const fuelData = useMemo(() => {
+const HeightTemperatureSimple: React.FC = () => {
+  // Generate simple height vs temperature data
+  const simpleData = useMemo(() => {
     const data = [];
-    const numPoints = 200;
+    const numPoints = 100;
 
     for (let i = 0; i < numPoints; i++) {
-      const speed = 30 + (i / numPoints) * 90; // Speed from 30 to 120 km/h
-      
-      // Fuel efficiency curve (optimal around 60-80 km/h)
-      const optimalSpeed = 70;
-      const efficiency = 25 - Math.abs(speed - optimalSpeed) * 0.1 - Math.random() * 2;
-      
+      const height = (i / numPoints) * 5000; // Height from 0 to 5000m
+      const baseTemp = 20 - (height / 1000) * 6.5; // Standard atmospheric lapse rate
+      const variation = (Math.random() - 0.5) * 4; // Add some variation
+      const temperature = baseTemp + variation;
+
       data.push({
-        x: speed,
-        y: Math.max(5, efficiency), // Minimum 5 km/L
+        x: height,
+        y: temperature,
         metadata: {
-          speed: speed.toFixed(0),
-          efficiency: efficiency.toFixed(2),
+          height: height.toFixed(0),
+          temperature: temperature.toFixed(1),
         },
       });
     }
@@ -33,44 +32,42 @@ const FuelSimpleChart: React.FC = () => {
   const series: SeriesConfig[] = useMemo(
     () => [
       {
-        name: "Fuel Efficiency",
-        data: fuelData,
+        name: "Temperature vs Altitude",
+        data: simpleData,
         type: "scatter",
         mode: "lines+markers",
         marker: {
-          size: 3,
-          color: "#10b981",
-          opacity: 0.8,
+          size: 4,
+          color: "#3b82f6",
+          opacity: 0.7,
         },
         line: {
-          color: "#10b981",
+          color: "#3b82f6",
           width: 2,
-          shape: "spline",
-          smoothing: 0.9,
         },
-        hovertemplate: 
-          "<b>Speed:</b> %{x:.0f} km/h<br>" +
-          "<b>Efficiency:</b> %{y:.2f} km/L<br>" +
+        hovertemplate:
+          "<b>Height:</b> %{x:.0f}m<br>" +
+          "<b>Temperature:</b> %{y:.1f}°C<br>" +
           "<extra></extra>",
       },
     ],
-    [fuelData]
+    [simpleData]
   );
 
   return (
     <div style={{ width: "100%", height: "600px", padding: "20px" }}>
-      <h3>🚗 Simple Fuel Efficiency (Migrated to UnifiedPlotter)</h3>
+      <h3>📈 Simple Height-Temperature (Migrated to UnifiedPlotter)</h3>
       <UnifiedPlotter
         series={series}
         config={{
           ...scientificScatterPreset.config,
-          title: "Fuel Efficiency vs Speed",
+          title: "Temperature vs Altitude (Simple Model)",
           xAxis: {
-            title: "Speed (km/h)",
+            title: "Height (meters)",
             showgrid: true,
           },
           yAxis: {
-            title: "Fuel Efficiency (km/L)",
+            title: "Temperature (°C)",
             showgrid: true,
           },
         }}
@@ -83,4 +80,4 @@ const FuelSimpleChart: React.FC = () => {
   );
 };
 
-export default FuelSimpleChart;
+export default HeightTemperatureSimple;

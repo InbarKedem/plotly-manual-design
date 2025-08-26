@@ -4,6 +4,14 @@ import type { SeriesConfig } from "../../types/PlotterTypes";
 import { SCIENTIFIC_THEME } from "../../config/themes";
 import { timeSeriesPreset } from "../../presets/scientific";
 
+// Types for better code organization
+interface ClimateData {
+  heights: number[];
+  temperatures: number[];
+  speeds: number[];
+  pressures: number[];
+}
+
 interface BezierControlPoints {
   p0: number;
   p1: number;
@@ -21,6 +29,9 @@ const calculateCubicBezier = (
     u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3
   );
 };
+
+const clamp = (value: number, min: number, max: number): number =>
+  Math.max(min, Math.min(max, value));
 
 const HeightTemperaturePlot: React.FC = () => {
   // Generate climate data using modern architecture

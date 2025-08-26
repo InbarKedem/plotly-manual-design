@@ -13,15 +13,16 @@ const FuelXChart: React.FC = () => {
     for (let i = 0; i < numPoints; i++) {
       const t = (i / numPoints) * 2 * Math.PI; // Full rotation
       const time = i * 0.1; // Time in hours
-      
+
       // Create X pattern with fuel consumption
       const baseConsumption = 15; // Base fuel consumption L/100km
       const xPatternConsumption = Math.abs(Math.sin(t * 2)) * 10; // X-pattern variation
       const randomVariation = (Math.random() - 0.5) * 3;
-      
-      const fuelConsumption = baseConsumption + xPatternConsumption + randomVariation;
+
+      const fuelConsumption =
+        baseConsumption + xPatternConsumption + randomVariation;
       const speed = 60 + Math.sin(t) * 20 + randomVariation;
-      
+
       data.push({
         x: time,
         y: fuelConsumption,
@@ -54,7 +55,7 @@ const FuelXChart: React.FC = () => {
           shape: "spline",
           smoothing: 0.8,
         },
-        hovertemplate: 
+        hovertemplate:
           "<b>Time:</b> %{x:.1f}h<br>" +
           "<b>Fuel:</b> %{y:.2f} L/100km<br>" +
           "<extra></extra>",

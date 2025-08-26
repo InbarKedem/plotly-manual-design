@@ -13,15 +13,16 @@ const HeightTemperatureMillionChart: React.FC = () => {
 
     for (let i = 0; i < numPoints; i++) {
       const height = (i / numPoints) * 15000; // Height from 0 to 15000m
-      
+
       // More complex temperature model
       const baseTemp = 15 - (height / 1000) * 6.5; // Standard lapse rate
       const troposphereEffect = height < 11000 ? 0 : (height - 11000) / 1000; // Stratosphere warming
       const seasonalVariation = Math.sin((i / numPoints) * 4 * Math.PI) * 5;
       const microVariation = (Math.random() - 0.5) * 3;
-      
-      const temperature = baseTemp + troposphereEffect + seasonalVariation + microVariation;
-      
+
+      const temperature =
+        baseTemp + troposphereEffect + seasonalVariation + microVariation;
+
       data.push({
         x: height,
         y: temperature,
@@ -49,12 +50,16 @@ const HeightTemperatureMillionChart: React.FC = () => {
           color: "#8b5cf6",
           opacity: 0.6,
         },
-        hovertemplate: 
+        hovertemplate:
           "<b>Height:</b> %{x:.0f}m<br>" +
           "<b>Temperature:</b> %{y:.1f}°C<br>" +
           "<b>Point:</b> %{customdata[2]}<br>" +
           "<extra></extra>",
-        customdata: largeData.map(d => [d.metadata.height, d.metadata.temperature, d.metadata.index]),
+        customdata: largeData.map((d) => [
+          d.metadata.height,
+          d.metadata.temperature,
+          d.metadata.index,
+        ]),
       },
     ],
     [largeData]
@@ -64,7 +69,8 @@ const HeightTemperatureMillionChart: React.FC = () => {
     <div style={{ width: "100%", height: "600px", padding: "20px" }}>
       <h3>🔥 Large Dataset Performance Test (Migrated to UnifiedPlotter)</h3>
       <p style={{ marginBottom: "20px", color: "#666" }}>
-        Testing with {largeData.length.toLocaleString()} data points - Progressive loading enabled
+        Testing with {largeData.length.toLocaleString()} data points -
+        Progressive loading enabled
       </p>
       <UnifiedPlotter
         series={series}
@@ -87,8 +93,8 @@ const HeightTemperatureMillionChart: React.FC = () => {
         }}
         theme={DARK_THEME}
         debug={true}
-        progressiveLoading={{ 
-          enabled: true, 
+        progressiveLoading={{
+          enabled: true,
           chunkSize: 1000,
           showProgress: true,
         }}
