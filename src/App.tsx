@@ -6,72 +6,62 @@ import HeightTemperatureSimple from "./height-temperature-simple";
 import HeightTemperatureMillionChart from "./height-temperature-million";
 import FuelXChart from "./fuel-x";
 import FuelSimpleChart from "./fuel-simple";
-import GenericPlotterDemo2 from "./GenericPlotterDemo2";
-import QuickDemo from "./QuickDemo";
-import WorkingEnhancedDemo from "./WorkingEnhancedDemo";
+import UnifiedDemo from "./UnifiedDemo";
 
 interface TabConfig {
   name: string;
   component: React.ComponentType;
-  category: "Original" | "Generic" | "Enhanced";
+  category: "Legacy" | "Unified";
   icon: string;
 }
 
 const tabs: TabConfig[] = [
   {
+    name: "🚀 Unified System",
+    component: UnifiedDemo,
+    category: "Unified",
+    icon: "🚀",
+  },
+  {
     name: "Temperature",
     component: TemperatureChart,
-    category: "Original",
+    category: "Legacy",
     icon: "🌡️",
   },
   {
     name: "Height-Temp",
     component: HeightTemperatureChart,
-    category: "Original",
+    category: "Legacy",
     icon: "📊",
   },
   {
     name: "Height-Simple",
     component: HeightTemperatureSimple,
-    category: "Original",
+    category: "Legacy",
     icon: "📈",
   },
   {
     name: "Height-Million",
     component: HeightTemperatureMillionChart,
-    category: "Original",
+    category: "Legacy",
     icon: "🔥",
   },
-  { name: "Fuel-X", component: FuelXChart, category: "Original", icon: "⛽" },
+  { name: "Fuel-X", component: FuelXChart, category: "Legacy", icon: "⛽" },
   {
     name: "Fuel-Simple",
     component: FuelSimpleChart,
-    category: "Original",
-    icon: "🚗",
-  },
-  {
-    name: "Generic Demo",
-    component: GenericPlotterDemo2,
-    category: "Generic",
-    icon: "🎯",
-  },
-  { name: "Quick Demo", component: QuickDemo, category: "Generic", icon: "⚡" },
-  {
-    name: "Enhanced Demo",
-    component: WorkingEnhancedDemo,
-    category: "Enhanced",
-    icon: "🚀",
+    category: "Legacy",
+    icon: "�",
   },
 ];
 
 const categoryColors = {
-  Original: "#64748b",
-  Generic: "#0070f3",
-  Enhanced: "#8b5cf6",
+  Legacy: "#64748b",
+  Unified: "#8b5cf6",
 };
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(8); // Start with Enhanced Demo
+  const [activeTab, setActiveTab] = useState(0); // Start with Unified Demo
   const [filterCategory, setFilterCategory] = useState<string>("All");
 
   const filteredTabs =
@@ -111,12 +101,13 @@ const App: React.FC = () => {
           />
           <div style={{ position: "relative", zIndex: 1 }}>
             <h1 style={{ margin: 0, fontSize: "2.5em", fontWeight: "bold" }}>
-              🚀 React Plotly Demo - Enhanced Edition
+              🚀 React Plotly Demo - Unified Edition
             </h1>
             <p
               style={{ margin: "10px 0 0 0", fontSize: "1.2em", opacity: 0.95 }}
             >
-              From basic charts to modern enhanced visualization components
+              Consolidated plotting system with modern features and best
+              practices
             </p>
           </div>
         </div>
@@ -134,7 +125,7 @@ const App: React.FC = () => {
             border: "2px solid #e2e8f0",
           }}
         >
-          {["All", "Original", "Generic", "Enhanced"].map((category) => (
+          {["All", "Unified", "Legacy"].map((category) => (
             <button
               key={category}
               onClick={() => setFilterCategory(category)}
@@ -157,11 +148,11 @@ const App: React.FC = () => {
             >
               {category === "All"
                 ? "All"
-                : category === "Original"
+                : category === "Unified"
+                ? `� ${category}`
+                : category === "Legacy"
                 ? `📊 ${category}`
-                : category === "Generic"
-                ? `🎯 ${category}`
-                : `🚀 ${category}`}
+                : `🎯 ${category}`}
               {category !== "All" &&
                 ` (${tabs.filter((tab) => tab.category === category).length})`}
             </button>
