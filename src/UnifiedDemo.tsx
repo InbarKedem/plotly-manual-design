@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import UnifiedPlotter from "./UnifiedPlotter";
-import type { SeriesConfig } from "./UnifiedPlotter";
+import type { SeriesConfig } from "./types/PlotterTypes";
 import {
   generateData,
   generateClimateData,

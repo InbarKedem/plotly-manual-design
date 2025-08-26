@@ -7,6 +7,7 @@ import HeightTemperatureMillionChart from "./height-temperature-million";
 import FuelXChart from "./fuel-x";
 import FuelSimpleChart from "./fuel-simple";
 import UnifiedDemo from "./UnifiedDemo";
+import TestRefactoredPlotter from "./TestRefactoredPlotter";
 
 interface TabConfig {
   name: string;
@@ -16,6 +17,12 @@ interface TabConfig {
 }
 
 const tabs: TabConfig[] = [
+  {
+    name: "🧪 Refactored Test",
+    component: TestRefactoredPlotter,
+    category: "Unified",
+    icon: "🧪",
+  },
   {
     name: "🚀 Unified System",
     component: UnifiedDemo,
