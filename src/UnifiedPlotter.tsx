@@ -214,7 +214,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         minHeight: plotConfig.minHeight,
 
         // Visual feedback for completion state
-        border: isComplete ? "3px solid #22c55e" : "3px solid transparent",
+        border: "3px solid transparent",
         borderRadius: "8px",
 
         // Smooth transitions

@@ -927,7 +927,7 @@ const GenericPlotter: React.FC<GenericPlotterProps> = ({
         width: plotConfig.width,
         height: plotConfig.height,
         minHeight: plotConfig.minHeight,
-        border: isComplete ? "3px solid #22c55e" : "3px solid transparent",
+        border: "3px solid transparent",
         borderRadius: "8px",
         transition: "all 0.3s ease-in-out",
         backgroundColor: plotConfig.backgroundColor,
@@ -963,7 +963,7 @@ const GenericPlotter: React.FC<GenericPlotterProps> = ({
               style={{
                 width: "20px",
                 height: "20px",
-                border: "3px solid #22c55e",
+                border: "3px solid #6b7280",
                 borderTop: "3px solid transparent",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite",

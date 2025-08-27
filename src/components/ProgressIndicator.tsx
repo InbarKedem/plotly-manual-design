@@ -78,7 +78,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
         style={{
           width: "20px",
           height: "20px",
-          border: "3px solid #22c55e",
+          border: "3px solid #6b7280",
           borderTop: "3px solid transparent",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
