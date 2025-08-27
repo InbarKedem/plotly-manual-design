@@ -1,325 +1,243 @@
 // =============================================================================
-// INTERACTIVE MULTI-SERIES DEMO
+// TEMPERATURE vs SPEED INTERACTIVE DEMO
 // =============================================================================
-// Advanced demonstration of the UnifiedPlotter with multi-series data,
-// unit conversion capabilities, and color mapping features.
+// Interactive demonstration showing the relationship between temperature and speed
+// with altitude-based color mapping and integrated unit conversion controls.
 
 import React, { useState, useMemo } from "react";
 import UnifiedPlotter from "../UnifiedPlotter";
 import type { SeriesConfig, DataPoint } from "../types/PlotterTypes";
 
-// Unit conversion factors
-const UNIT_CONVERSIONS = {
-  temperature: {
-    celsius: { name: "°C", factor: 1, offset: 0 },
-    fahrenheit: { name: "°F", factor: 9 / 5, offset: 32 },
-    kelvin: { name: "K", factor: 1, offset: 273.15 },
-  },
-  length: {
-    meters: { name: "m", factor: 1, offset: 0 },
-    feet: { name: "ft", factor: 3.28084, offset: 0 },
-    kilometers: { name: "km", factor: 0.001, offset: 0 },
-  },
-  pressure: {
-    kpa: { name: "kPa", factor: 1, offset: 0 },
-    psi: { name: "PSI", factor: 0.145038, offset: 0 },
-    bar: { name: "bar", factor: 0.01, offset: 0 },
-  },
+// Unit conversion factors for temperature (X-axis)
+const TEMPERATURE_UNITS = {
+  celsius: { name: "°C", factor: 1, offset: 0 },
+  fahrenheit: { name: "°F", factor: 9/5, offset: 32 },
+  kelvin: { name: "K", factor: 1, offset: 273.15 },
 };
 
-// Color mapping options
-const COLOR_MAPPINGS = {
-  none: { name: "No Color Mapping", feature: null },
-  altitude: { name: "Altitude", feature: "z" },
-  temperature: { name: "Temperature", feature: "temperature" },
-  pressure: { name: "Pressure", feature: "pressure" },
-  humidity: { name: "Humidity", feature: "humidity" },
+// Unit conversion factors for speed (Y-axis)
+const SPEED_UNITS = {
+  mps: { name: "m/s", factor: 1, offset: 0 },
+  kmh: { name: "km/h", factor: 3.6, offset: 0 },
+  mph: { name: "mph", factor: 2.237, offset: 0 },
+  kts: { name: "knots", factor: 1.944, offset: 0 },
 };
 
-// Generate realistic multi-dimensional data
-const generateMultiSeriesData = (
-  seriesCount: number = 4,
-  pointsPerSeries: number = 80
-) => {
-  const seriesTypes = ["linear", "sine", "cosine", "exponential"];
-  const colors = ["#e91e63", "#9c27b0", "#2196f3", "#009688"];
+// Unit conversion factors for altitude (Z-axis/coloring)
+const ALTITUDE_UNITS = {
+  meters: { name: "m", factor: 1, offset: 0 },
+  feet: { name: "ft", factor: 3.28084, offset: 0 },
+  kilometers: { name: "km", factor: 0.001, offset: 0 },
+  miles: { name: "mi", factor: 0.000621371, offset: 0 },
+};
 
-  return Array.from({ length: seriesCount }, (_, seriesIndex) => {
-    const seriesType = seriesTypes[seriesIndex % seriesTypes.length];
-    const baseColor = colors[seriesIndex % colors.length];
-
-    const data = Array.from({ length: pointsPerSeries }, (_, i) => {
-      const x = i;
-      let y: number;
-
-      // Generate different patterns for each series
-      switch (seriesType) {
-        case "linear":
-          y = x * 0.8 + Math.random() * 10;
-          break;
-        case "sine":
-          y = 50 + 30 * Math.sin(x * 0.2) + Math.random() * 8;
-          break;
-        case "cosine":
-          y = 60 + 40 * Math.cos(x * 0.15) + Math.random() * 12;
-          break;
-        case "exponential":
-          y = 60 + Math.exp(x * 0.05) + Math.random() * 15;
-          break;
-        default:
-          y = Math.random() * 100;
-      }
-
-      // Add additional dimensions for color mapping
-      const altitude = 1000 + i * 50 + Math.random() * 200; // meters
-      const temperature = 20 - (altitude / 1000) * 6.5 + Math.random() * 5; // °C
-      const pressure = 101.325 * Math.pow(1 - altitude / 44330, 5.255); // kPa
-      const humidity = 40 + Math.random() * 40; // %
-
-      return {
-        x,
-        y,
-        z: altitude,
-        temperature,
-        pressure,
-        humidity,
-        text: `Point ${i + 1}<br>Altitude: ${altitude.toFixed(
-          0
-        )}m<br>Temp: ${temperature.toFixed(1)}°C`,
-      } as DataPoint & {
-        temperature: number;
-        pressure: number;
-        humidity: number;
-      };
-    });
-
+// Generate realistic temperature vs speed data with altitude for multiple curves
+const generateTemperatureSpeedData = (pointCount: number = 50, curveType: string = 'low') => {
+  // Define different curve characteristics
+  const curveParams = {
+    low: { 
+      altRange: { min: 0, max: 3000 },
+      tempBase: 20,
+      speedBase: 15,
+      pattern: 'linear'
+    },
+    medium: { 
+      altRange: { min: 2500, max: 7000 },
+      tempBase: 10,
+      speedBase: 25,
+      pattern: 'exponential'
+    },
+    high: { 
+      altRange: { min: 6000, max: 12000 },
+      tempBase: -10,
+      speedBase: 35,
+      pattern: 'logarithmic'
+    }
+  };
+  
+  const params = curveParams[curveType as keyof typeof curveParams] || curveParams.low;
+  
+  return Array.from({ length: pointCount }, (_, i) => {
+    // Generate altitude within the specified range
+    const altitudeProgress = i / (pointCount - 1);
+    const altitude = params.altRange.min + altitudeProgress * (params.altRange.max - params.altRange.min) + (Math.random() - 0.5) * 300;
+    
+    // Different temperature patterns for each curve
+    let temperature: number;
+    switch (params.pattern) {
+      case 'exponential':
+        temperature = params.tempBase - (altitude / 1000) * 5 + Math.sin(altitudeProgress * Math.PI * 2) * 3 + (Math.random() - 0.5) * 4;
+        break;
+      case 'logarithmic':
+        temperature = params.tempBase - Math.log(altitude / 1000 + 1) * 8 + (Math.random() - 0.5) * 6;
+        break;
+      default: // linear
+        temperature = params.tempBase - (altitude / 1000) * 6.5 + (Math.random() - 0.5) * 5;
+    }
+    
+    // Different speed patterns for each curve
+    let speed: number;
+    switch (params.pattern) {
+      case 'exponential':
+        speed = params.speedBase + Math.pow(altitude / 1000, 1.2) * 8 + (Math.random() - 0.5) * 8;
+        break;
+      case 'logarithmic':
+        speed = params.speedBase + Math.log(altitude / 1000 + 1) * 12 + (Math.random() - 0.5) * 10;
+        break;
+      default: // linear
+        speed = params.speedBase + (altitude / 1000) * 12 + (Math.random() - 0.5) * 6;
+    }
+    
     return {
-      name: `Series ${seriesIndex + 1} (${seriesType})`,
-      data,
-      type: "scatter" as const,
-      mode: "lines+markers" as const,
-      line: { color: baseColor, width: 2 },
-      marker: {
-        size: 6,
-        color: baseColor,
-        line: { width: 1, color: "white" },
-      },
-    } as SeriesConfig;
+      x: temperature,
+      y: Math.max(0, speed), // Ensure non-negative speed
+      z: altitude,
+      text: `Temperature: ${temperature.toFixed(1)}°C<br>Speed: ${speed.toFixed(1)} m/s<br>Altitude: ${altitude.toFixed(0)}m`,
+    } as DataPoint;
   });
 };
 
 const InteractiveMultiSeriesDemo: React.FC = () => {
-  const [yAxisUnit, setYAxisUnit] =
-    useState<keyof typeof UNIT_CONVERSIONS>("temperature");
-  const [yAxisSubUnit, setYAxisSubUnit] = useState<string>("celsius");
-  const [colorMapping, setColorMapping] =
-    useState<keyof typeof COLOR_MAPPINGS>("altitude");
-  const [showMarkers, setShowMarkers] = useState(true);
-  const [showLines, setShowLines] = useState(true);
+  const [temperatureUnit, setTemperatureUnit] = useState<keyof typeof TEMPERATURE_UNITS>('celsius');
+  const [speedUnit, setSpeedUnit] = useState<keyof typeof SPEED_UNITS>('mps');
+  const [altitudeUnit, setAltitudeUnit] = useState<keyof typeof ALTITUDE_UNITS>('meters');
 
-  // Generate base data
-  const baseData = useMemo(() => generateMultiSeriesData(), []);
+  // Generate base data for 3 completely different curves
+  const baseData = useMemo(() => {
+    return [
+      generateTemperatureSpeedData(60, 'low'),     // Low altitude curve - linear pattern
+      generateTemperatureSpeedData(50, 'medium'),  // Medium altitude curve - exponential pattern
+      generateTemperatureSpeedData(55, 'high'),    // High altitude curve - logarithmic pattern
+    ];
+  }, []);
 
-  // Convert data based on selected units and color mapping
+  // Convert data based on selected units
   const processedSeries = useMemo(() => {
-    const unitConfig = (UNIT_CONVERSIONS[yAxisUnit] as any)[yAxisSubUnit];
-    const colorConfig = COLOR_MAPPINGS[colorMapping];
-
-    return baseData.map((series) => {
-      const processedData = series.data.map((point) => {
-        const convertedY = point.y * unitConfig.factor + unitConfig.offset;
-
+    const tempConfig = TEMPERATURE_UNITS[temperatureUnit];
+    const speedConfig = SPEED_UNITS[speedUnit];
+    const altConfig = ALTITUDE_UNITS[altitudeUnit];
+    
+    const curveNames = ['Low Altitude (Linear)', 'Medium Altitude (Exponential)', 'High Altitude (Logarithmic)'];
+    
+    return baseData.map((curveData, curveIndex) => {
+      const convertedData = curveData.map(point => {
+        const convertedTemp = point.x * tempConfig.factor + tempConfig.offset;
+        const convertedSpeed = point.y * speedConfig.factor + speedConfig.offset;
+        const convertedAlt = (point.z || 0) * altConfig.factor + altConfig.offset;
+        
         return {
           ...point,
-          y: convertedY,
-          text: `${series.name}<br>X: ${point.x}<br>Y: ${convertedY.toFixed(
-            2
-          )} ${unitConfig.name}<br>Altitude: ${point.z?.toFixed(0)}m`,
+          x: convertedTemp,
+          y: convertedSpeed,
+          z: convertedAlt,
+          text: `Temperature: ${convertedTemp.toFixed(1)} ${tempConfig.name}<br>Speed: ${convertedSpeed.toFixed(1)} ${speedConfig.name}<br>Altitude: ${convertedAlt.toFixed(0)} ${altConfig.name}`,
         };
       });
 
-      // Configure mode based on user preferences
-      let mode: string = "";
-      if (showLines && showMarkers) mode = "lines+markers";
-      else if (showLines) mode = "lines";
-      else if (showMarkers) mode = "markers";
-      else mode = "lines+markers";
+      // Extract altitude values for color mapping
+      const altitudeValues = convertedData.map(point => point.z || 0);
+      const minAlt = Math.min(...altitudeValues);
+      const maxAlt = Math.max(...altitudeValues);
 
-      const updatedSeries: SeriesConfig = {
-        ...series,
-        data: processedData,
-        mode: mode as any,
-        marker: colorConfig.feature
-          ? {
-              ...series.marker,
-              colorFeature: colorConfig.feature,
-              colorScale:
-                colorConfig.feature === "altitude"
-                  ? "Viridis"
-                  : colorConfig.feature === "temperature"
-                  ? "RdBu_r"
-                  : colorConfig.feature === "pressure"
-                  ? "Plasma"
-                  : colorConfig.feature === "humidity"
-                  ? "Blues"
-                  : "Viridis",
-              showColorBar: true,
-              colorBarTitle: colorConfig.name,
-              size: showMarkers ? 8 : 0,
-            }
-          : {
-              ...series.marker,
-              size: showMarkers ? 6 : 0,
-            },
+      const series: SeriesConfig = {
+        name: curveNames[curveIndex],
+        data: convertedData,
+        type: 'scatter',
+        mode: 'markers+lines' as any, // Use both markers and lines to show color mapping
+        marker: {
+          size: 8,
+          colorFeature: 'z', // Use the z property (altitude) for coloring
+          colorScale: 'viridis', // Use lowercase to match MODERN_COLORSCALES
+          showColorBar: true, // Show color bar for all series - the traceGeneration will handle display
+          colorBarTitle: `Altitude (${altConfig.name})`,
+          colorMin: minAlt,
+          colorMax: maxAlt,
+          line: { width: 1, color: 'rgba(255,255,255,0.8)' }
+        },
+        line: {
+          width: 2,
+          color: `rgba(${curveIndex === 0 ? '255,107,107' : curveIndex === 1 ? '78,205,196' : '69,183,209'}, 0.7)` // Semi-transparent line colors
+        },
+        showInLegend: true,
+        visible: true
       };
 
-      return updatedSeries;
+      return series;
     });
-  }, [baseData, yAxisUnit, yAxisSubUnit, colorMapping, showMarkers, showLines]);
+  }, [baseData, temperatureUnit, speedUnit, altitudeUnit]);
 
   const plotConfig = useMemo(() => {
-    const unitConfig = (UNIT_CONVERSIONS[yAxisUnit] as any)[yAxisSubUnit];
-
+    const tempConfig = TEMPERATURE_UNITS[temperatureUnit];
+    const speedConfig = SPEED_UNITS[speedUnit];
+    
     return {
-      title: "Multi-Series Comparison with Interactive Controls",
-      xAxis: {
-        title: "X Axis",
+      title: "Temperature vs Speed Analysis - Three Different Curves with Altitude Coloring",
+      xAxis: { 
+        title: `Temperature (${tempConfig.name})`,
         showgrid: true,
         gridcolor: "#e0e0e0",
       },
-      yAxis: {
-        title: `Y Axis (${unitConfig.name})`,
+      yAxis: { 
+        title: `Speed (${speedConfig.name})`,
         showgrid: true,
         gridcolor: "#e0e0e0",
       },
-      showLegend: true,
-      legendPosition: { x: 1.02, y: 1 },
-      margin: { l: 80, r: 250, t: 80, b: 60 },
+      showLegend: true, // Show legend for multiple curves
+      legendPosition: { x: 1.15, y: 1 },
+      margin: { l: 80, r: 220, t: 100, b: 80 }, // Extra space for color bar and legend
       width: "100%",
-      height: "600px",
+      height: "650px",
     };
-  }, [yAxisUnit, yAxisSubUnit]);
+  }, [temperatureUnit, speedUnit]);
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* Control Panel */}
+      {/* Integrated Control Panel */}
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "20px",
-          marginBottom: "20px",
-          padding: "20px",
-          backgroundColor: "#f8fafc",
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          justifyContent: "center",
+          gap: "25px",
+          marginBottom: "25px",
+          padding: "25px",
+          backgroundColor: "#ffffff",
+          borderRadius: "16px",
+          border: "2px solid #e3f2fd",
+          boxShadow: "0 4px 12px rgba(33, 150, 243, 0.15)",
         }}
       >
         <div>
           <label
             style={{
               display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#374151",
-              fontSize: "14px",
+              marginBottom: "10px",
+              fontWeight: "700",
+              color: "#1565c0",
+              fontSize: "15px",
+              textAlign: "center",
             }}
           >
-            📊 Y-Axis Unit Type:
+            🌡️ Temperature Unit (X-Axis):
           </label>
           <select
-            value={yAxisUnit}
-            onChange={(e) => {
-              setYAxisUnit(e.target.value as keyof typeof UNIT_CONVERSIONS);
-              setYAxisSubUnit(
-                Object.keys(
-                  UNIT_CONVERSIONS[
-                    e.target.value as keyof typeof UNIT_CONVERSIONS
-                  ]
-                )[0]
-              );
-            }}
+            value={temperatureUnit}
+            onChange={(e) => setTemperatureUnit(e.target.value as keyof typeof TEMPERATURE_UNITS)}
             style={{
-              padding: "8px 12px",
-              borderRadius: "6px",
-              border: "1px solid #d1d5db",
-              backgroundColor: "white",
-              minWidth: "120px",
-              fontSize: "14px",
-            }}
-          >
-            <option value="temperature">Temperature</option>
-            <option value="length">Length</option>
-            <option value="pressure">Pressure</option>
-          </select>
-        </div>
-
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#374151",
-              fontSize: "14px",
-            }}
-          >
-            🔄 Unit:
-          </label>
-          <select
-            value={yAxisSubUnit}
-            onChange={(e) => setYAxisSubUnit(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: "6px",
-              border: "1px solid #d1d5db",
-              backgroundColor: "white",
-              minWidth: "100px",
-              fontSize: "14px",
-            }}
-          >
-            {Object.entries(UNIT_CONVERSIONS[yAxisUnit]).map(
-              ([key, config]) => (
-                <option key={key} value={key}>
-                  {config.name}
-                </option>
-              )
-            )}
-          </select>
-        </div>
-
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#374151",
-              fontSize: "14px",
-            }}
-          >
-            🎨 Color Mapping:
-          </label>
-          <select
-            value={colorMapping}
-            onChange={(e) =>
-              setColorMapping(e.target.value as keyof typeof COLOR_MAPPINGS)
-            }
-            style={{
-              padding: "8px 12px",
-              borderRadius: "6px",
-              border: "1px solid #d1d5db",
+              padding: "10px 15px",
+              borderRadius: "8px",
+              border: "2px solid #2196f3",
               backgroundColor: "white",
               minWidth: "140px",
               fontSize: "14px",
+              fontWeight: "600",
+              color: "#1565c0",
+              cursor: "pointer",
             }}
           >
-            {Object.entries(COLOR_MAPPINGS).map(([key, config]) => (
-              <option key={key} value={key}>
-                {config.name}
-              </option>
-            ))}
+            <option value="celsius">Celsius (°C)</option>
+            <option value="fahrenheit">Fahrenheit (°F)</option>
+            <option value="kelvin">Kelvin (K)</option>
           </select>
         </div>
 
@@ -327,81 +245,102 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           <label
             style={{
               display: "block",
-              marginBottom: "8px",
-              fontWeight: "600",
-              color: "#374151",
-              fontSize: "14px",
+              marginBottom: "10px",
+              fontWeight: "700",
+              color: "#2e7d32",
+              fontSize: "15px",
+              textAlign: "center",
             }}
           >
-            👁️ Display Options:
+            🚀 Speed Unit (Y-Axis):
           </label>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: "14px",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={showLines}
-                onChange={(e) => setShowLines(e.target.checked)}
-                style={{ marginRight: "5px" }}
-              />
-              Lines
-            </label>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: "14px",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={showMarkers}
-                onChange={(e) => setShowMarkers(e.target.checked)}
-                style={{ marginRight: "5px" }}
-              />
-              Markers
-            </label>
-          </div>
+          <select
+            value={speedUnit}
+            onChange={(e) => setSpeedUnit(e.target.value as keyof typeof SPEED_UNITS)}
+            style={{
+              padding: "10px 15px",
+              borderRadius: "8px",
+              border: "2px solid #4caf50",
+              backgroundColor: "white",
+              minWidth: "140px",
+              fontSize: "14px",
+              fontWeight: "600",
+              color: "#2e7d32",
+              cursor: "pointer",
+            }}
+          >
+            <option value="mps">Meters/sec (m/s)</option>
+            <option value="kmh">Kilometers/hour (km/h)</option>
+            <option value="mph">Miles/hour (mph)</option>
+            <option value="kts">Knots (kts)</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "10px",
+              fontWeight: "700",
+              color: "#7b1fa2",
+              fontSize: "15px",
+              textAlign: "center",
+            }}
+          >
+            �️ Altitude Unit (Coloring):
+          </label>
+          <select
+            value={altitudeUnit}
+            onChange={(e) => setAltitudeUnit(e.target.value as keyof typeof ALTITUDE_UNITS)}
+            style={{
+              padding: "10px 15px",
+              borderRadius: "8px",
+              border: "2px solid #9c27b0",
+              backgroundColor: "white",
+              minWidth: "140px",
+              fontSize: "14px",
+              fontWeight: "600",
+              color: "#7b1fa2",
+              cursor: "pointer",
+            }}
+          >
+            <option value="meters">Meters (m)</option>
+            <option value="feet">Feet (ft)</option>
+            <option value="kilometers">Kilometers (km)</option>
+            <option value="miles">Miles (mi)</option>
+          </select>
         </div>
       </div>
 
       {/* Info Panel */}
       <div
         style={{
-          marginBottom: "20px",
-          padding: "15px",
-          backgroundColor: "#f0f9ff",
-          borderRadius: "8px",
-          border: "1px solid #0ea5e9",
+          marginBottom: "25px",
+          padding: "20px",
+          backgroundColor: "#f3e5f5",
+          borderRadius: "12px",
+          border: "2px solid #9c27b0",
         }}
       >
-        <h3 style={{ margin: "0 0 10px 0", color: "#0369a1" }}>
-          🔬 Interactive Multi-Series Analysis
+        <h3 style={{ margin: "0 0 12px 0", color: "#7b1fa2", textAlign: "center" }}>
+          🔬 Temperature vs Speed Analysis - Three Curves
         </h3>
-        <p style={{ margin: 0, color: "#0c4a6e", fontSize: "14px" }}>
-          This demo showcases advanced features:{" "}
-          <strong>unit conversion</strong> across different measurement systems,
-          <strong> color mapping</strong> using additional data dimensions, and{" "}
-          <strong>interactive controls</strong> for customizing the
-          visualization. Try changing the units and color mapping to explore the
-          data from different perspectives.
+        <p style={{ margin: 0, color: "#4a148c", fontSize: "15px", textAlign: "center", lineHeight: "1.5" }}>
+          Explore the relationship between <strong>temperature</strong> and <strong>speed</strong> across 
+          <strong> three completely different curves</strong>. Each curve follows a different mathematical pattern 
+          (linear, exponential, logarithmic) with <strong>altitude-based color mapping</strong> on the markers. 
+          Change units in real-time for temperature, speed, and altitude measurements.
         </p>
       </div>
 
-      {/* Plot Component */}
+      {/* Integrated Plot Component */}
       <div
         style={{
-          border: "1px solid #e2e8f0",
-          borderRadius: "12px",
+          border: "2px solid #e1f5fe",
+          borderRadius: "16px",
           overflow: "visible",
           backgroundColor: "white",
-          minWidth: "1000px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          boxShadow: "0 6px 16px rgba(3, 169, 244, 0.2)",
         }}
       >
         <UnifiedPlotter
@@ -414,16 +353,16 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           }}
           theme={{
             darkMode: false,
-            primary: "#3b82f6",
+            primary: "#2196f3",
             secondary: "#64748b",
-            accent: "#06b6d4",
+            accent: "#ff9800",
             background: "#ffffff",
-            surface: "#f8fafc",
+            surface: "#fafafa",
           }}
           progressiveLoading={{
             enabled: false,
             chunkSize: 100,
-            showProgress: true,
+            showProgress: false,
           }}
           debug={false}
         />
@@ -433,72 +372,44 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
       <div
         style={{
           marginTop: "30px",
-          padding: "20px",
-          backgroundColor: "#f9fafb",
-          borderRadius: "8px",
-          border: "1px solid #e5e7eb",
+          padding: "25px",
+          backgroundColor: "#fff3e0",
+          borderRadius: "12px",
+          border: "2px solid #ff9800",
         }}
       >
-        <h3 style={{ margin: "0 0 15px 0", color: "#374151" }}>
-          ✨ Key Features
+        <h3 style={{ margin: "0 0 20px 0", color: "#e65100", textAlign: "center" }}>
+          ✨ Integrated Features
         </h3>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "15px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
           }}
         >
-          <div>
-            <strong style={{ color: "#059669" }}>🔄 Unit Conversion</strong>
-            <p
-              style={{
-                margin: "5px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              Real-time conversion between temperature (°C, °F, K), length (m,
-              ft, km), and pressure (kPa, PSI, bar) units.
+          <div style={{ textAlign: "center" }}>
+            <strong style={{ color: "#1565c0", fontSize: "16px" }}>🌡️ Temperature Units</strong>
+            <p style={{ margin: "8px 0 0 0", fontSize: "14px", color: "#5d4037" }}>
+              X-axis displays temperature in Celsius, Fahrenheit, or Kelvin with automatic conversion and axis labeling.
             </p>
           </div>
-          <div>
-            <strong style={{ color: "#dc2626" }}>🎨 Color Mapping</strong>
-            <p
-              style={{
-                margin: "5px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              Map point colors to additional data dimensions like altitude,
-              temperature, pressure, or humidity.
+          <div style={{ textAlign: "center" }}>
+            <strong style={{ color: "#2e7d32", fontSize: "16px" }}>🚀 Speed Units</strong>
+            <p style={{ margin: "8px 0 0 0", fontSize: "14px", color: "#5d4037" }}>
+              Y-axis shows speed in m/s, km/h, mph, or knots with real-time unit conversion and proper labeling.
             </p>
           </div>
-          <div>
-            <strong style={{ color: "#7c3aed" }}>👁️ Display Control</strong>
-            <p
-              style={{
-                margin: "5px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              Toggle between lines, markers, or both to customize the visual
-              representation of your data.
+          <div style={{ textAlign: "center" }}>
+            <strong style={{ color: "#7b1fa2", fontSize: "16px" }}>🏔️ Altitude Color Mapping</strong>
+            <p style={{ margin: "8px 0 0 0", fontSize: "14px", color: "#5d4037" }}>
+              Each point is colored by altitude using Viridis colorscale with a color bar showing the range in selected units.
             </p>
           </div>
-          <div>
-            <strong style={{ color: "#0891b2" }}>📊 Multi-Series</strong>
-            <p
-              style={{
-                margin: "5px 0 0 0",
-                fontSize: "14px",
-                color: "#6b7280",
-              }}
-            >
-              Compare multiple data series with different mathematical patterns
-              and characteristics.
+          <div style={{ textAlign: "center" }}>
+            <strong style={{ color: "#d32f2f", fontSize: "16px" }}>� Three Different Patterns</strong>
+            <p style={{ margin: "8px 0 0 0", fontSize: "14px", color: "#5d4037" }}>
+              Linear, exponential, and logarithmic relationships between temperature, speed, and altitude for comprehensive analysis.
             </p>
           </div>
         </div>
