@@ -13,15 +13,16 @@ const FuelXChart: React.FC = () => {
     for (let i = 0; i < numPoints; i++) {
       const t = (i / numPoints) * 2 * Math.PI; // Full rotation
       const time = i * 0.1; // Time in hours
-      
+
       // Create X pattern with fuel consumption
       const baseConsumption = 15; // Base fuel consumption L/100km
       const xPatternConsumption = Math.abs(Math.sin(t * 2)) * 10; // X-pattern variation
       const randomVariation = (Math.random() - 0.5) * 3;
-      
-      const fuelConsumption = baseConsumption + xPatternConsumption + randomVariation;
+
+      const fuelConsumption =
+        baseConsumption + xPatternConsumption + randomVariation;
       const speed = 60 + Math.sin(t) * 20 + randomVariation;
-      
+
       data.push({
         x: time,
         y: fuelConsumption,
@@ -54,7 +55,7 @@ const FuelXChart: React.FC = () => {
           shape: "spline",
           smoothing: 0.8,
         },
-        hovertemplate: 
+        hovertemplate:
           "<b>Time:</b> %{x:.1f}h<br>" +
           "<b>Fuel:</b> %{y:.2f} L/100km<br>" +
           "<extra></extra>",
@@ -63,27 +64,37 @@ const FuelXChart: React.FC = () => {
     [fuelData]
   );
 
+  const plotConfig = useMemo(
+    () => ({
+      ...scientificScatterPreset.config,
+      title: "Fuel Consumption Over Time - X Pattern",
+      xAxis: {
+        title: "Time (hours)",
+        showgrid: true,
+      },
+      yAxis: {
+        title: "Fuel Consumption (L/100km)",
+        showgrid: true,
+      },
+    }),
+    []
+  );
+
+  const progressiveConfig = useMemo(
+    () => ({ enabled: true, chunkSize: 50 }),
+    []
+  );
+
   return (
     <div style={{ width: "100%", height: "600px", padding: "20px" }}>
       <h3>⛽ Fuel Consumption Pattern (Migrated to UnifiedPlotter)</h3>
       <UnifiedPlotter
         series={series}
-        config={{
-          ...scientificScatterPreset.config,
-          title: "Fuel Consumption Over Time - X Pattern",
-          xAxis: {
-            title: "Time (hours)",
-            showgrid: true,
-          },
-          yAxis: {
-            title: "Fuel Consumption (L/100km)",
-            showgrid: true,
-          },
-        }}
+        config={plotConfig}
         interactions={scientificScatterPreset.interactions}
         theme={SCIENTIFIC_THEME}
         debug={false}
-        progressiveLoading={{ enabled: true, chunkSize: 50 }}
+        progressiveLoading={progressiveConfig}
       />
     </div>
   );

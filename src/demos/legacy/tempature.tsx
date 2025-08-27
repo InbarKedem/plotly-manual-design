@@ -59,27 +59,37 @@ const TemperatureScatterPlot: React.FC = () => {
     [seriesData]
   );
 
+  const plotConfig = useMemo(
+    () => ({
+      ...scientificScatterPreset.config,
+      title: "Speed vs. Distance, Colored by Temperature",
+      xAxis: {
+        title: "Distance (meters)",
+        showgrid: true,
+      },
+      yAxis: {
+        title: "Speed (km/h)",
+        showgrid: true,
+      },
+    }),
+    []
+  );
+
+  const progressiveConfig = useMemo(
+    () => ({ enabled: true, chunkSize: 100 }),
+    []
+  );
+
   return (
     <div style={{ width: "100%", height: "600px", padding: "20px" }}>
       <h3>🌡️ Temperature Scatter Plot (Migrated to UnifiedPlotter)</h3>
       <UnifiedPlotter
         series={series}
-        config={{
-          ...scientificScatterPreset.config,
-          title: "Speed vs. Distance, Colored by Temperature",
-          xAxis: {
-            title: "Distance (meters)",
-            showgrid: true,
-          },
-          yAxis: {
-            title: "Speed (km/h)",
-            showgrid: true,
-          },
-        }}
+        config={plotConfig}
         interactions={scientificScatterPreset.interactions}
         theme={SCIENTIFIC_THEME}
         debug={false}
-        progressiveLoading={{ enabled: true, chunkSize: 100 }}
+        progressiveLoading={progressiveConfig}
       />
     </div>
   );

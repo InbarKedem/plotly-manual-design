@@ -4,7 +4,7 @@
 // This file contains React hooks that encapsulate complex logic for
 // progressive data loading, plot configuration, and interaction handling.
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type {
   SeriesConfig,
   PlotConfig,
@@ -31,11 +31,19 @@ export const useProgressiveLoading = (
   const [isComplete, setIsComplete] = useState(false);
   const [plotData, setPlotData] = useState<any[]>([]);
   const [dataStats, setDataStats] = useState<DataStats | null>(null);
+  const loadingRef = useRef(false);
 
   /**
    * Load data progressively in chunks
    */
   const loadDataProgressively = useCallback(async () => {
+    // Prevent multiple simultaneous loading attempts
+    if (loadingRef.current) {
+      return;
+    }
+
+    loadingRef.current = true;
+
     // If progressive loading is disabled, load all data at once
     if (!progressConfig?.enabled || !onTraceCreated) {
       if (onTraceCreated) {
@@ -47,6 +55,7 @@ export const useProgressiveLoading = (
       setDataStats(calculateDataStats(series));
       setIsComplete(true);
       setCurrentPhase("Complete");
+      loadingRef.current = false;
       return;
     }
 
@@ -88,7 +97,7 @@ export const useProgressiveLoading = (
           if (progressConfig.onProgress) {
             progressConfig.onProgress(
               progressValue,
-              currentPhase,
+              `Loading ${seriesConfig.name}...`,
               loadedPoints
             );
           }
@@ -115,13 +124,27 @@ export const useProgressiveLoading = (
       console.error("Error during progressive loading:", error);
       setCurrentPhase("Error");
       setIsGenerating(false);
+    } finally {
+      loadingRef.current = false;
     }
-  }, [series, progressConfig, onTraceCreated, currentPhase]);
+  }, [series, progressConfig, onTraceCreated]); // Removed currentPhase from dependencies!
 
-  // Start loading when dependencies change
+  // Start loading when dependencies change, but only once per change
   useEffect(() => {
-    loadDataProgressively();
-  }, [loadDataProgressively]);
+    // Reset states when series or config changes
+    setIsComplete(false);
+    setIsGenerating(false);
+    setProgress(0);
+    setCurrentPhase("Ready");
+    loadingRef.current = false;
+
+    // Start loading with a small delay to ensure state is reset
+    const timeoutId = setTimeout(() => {
+      loadDataProgressively();
+    }, 10);
+
+    return () => clearTimeout(timeoutId);
+  }, [series, progressConfig?.enabled, progressConfig?.chunkSize]); // Only depend on stable properties
 
   return {
     progress,
