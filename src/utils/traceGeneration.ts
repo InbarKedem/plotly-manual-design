@@ -10,6 +10,7 @@ import type {
   PlotConfig,
 } from "../types/PlotterTypes";
 import { MODERN_COLORSCALES } from "./colorscales";
+import { DEFAULT_SERIES_CONFIG } from "../config/defaults";
 
 /**
  * Create Plotly traces for all series
@@ -49,7 +50,7 @@ export const createTracesForSeries = (
     name,
     data,
     type = "scatter",
-    mode = "lines+markers",
+    mode = "lines+markers", // Default to lines with markers for smooth curves
     line = {},
     marker = {},
     errorBars,
@@ -64,7 +65,7 @@ export const createTracesForSeries = (
     textposition,
     textfont,
     opacity,
-  } = seriesConfig;
+  } = { ...DEFAULT_SERIES_CONFIG, ...seriesConfig };
 
   // Return empty array if no data or not visible
   if (!data || data.length === 0 || !visible) {
@@ -181,8 +182,8 @@ const createLineConfig = (line: any, theme?: ThemeConfig) => ({
   width: line.width || 2,
   color: line.color || theme?.primary || "#3b82f6",
   dash: line.dash || "solid",
-  shape: line.shape || "linear",
-  smoothing: line.smoothing,
+  shape: line.shape || "spline", // Use spline for smooth curves by default
+  smoothing: line.smoothing !== undefined ? line.smoothing : 0.8, // Default smoothing
 });
 
 /**

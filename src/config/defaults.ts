@@ -9,6 +9,7 @@ import type {
   InteractionConfig,
   ProgressConfig,
   ThemeConfig,
+  SeriesConfig,
 } from "../types/PlotterTypes";
 
 /**
@@ -50,6 +51,32 @@ export const DEFAULT_PLOT_CONFIG: Required<PlotConfig> = {
   },
   annotations: [],
   shapes: [],
+};
+
+/**
+ * Default series configuration
+ * Provides sensible defaults for all series settings
+ */
+export const DEFAULT_SERIES_CONFIG: Partial<SeriesConfig> = {
+  type: "scatter",
+  mode: "lines+markers", // Default to lines with markers for curve connection
+  line: {
+    width: 2,
+    shape: "spline", // Smooth curves by default
+    smoothing: 0.8,
+  },
+  marker: {
+    size: 6,
+    opacity: 0.7,
+    line: {
+      width: 1,
+      color: "rgba(255,255,255,0.8)",
+    },
+  },
+  visible: true,
+  showInLegend: true,
+  connectDots: true, // Connect points with lines by default
+  hoverinfo: "x+y+name",
 };
 
 /**
