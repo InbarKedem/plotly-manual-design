@@ -1,20 +1,3 @@
-// =============================================================================
-// UNIFIED PLOTTER - MAIN COMPONENT
-// =============================================================================
-// A comprehensive, high-performance plotting component built on Plotly.js
-// Features:
-// - Progressive loading for large datasets (10K+ points)
-// - Modern color scales and theming
-// - Interactive features (zoom, pan, hover, select)
-// - Error bars and gradient lines
-// - Responsive design with glass-morphism UI
-// - Comprehensive TypeScript support
-// - Debug mode for development
-//
-// Author: AI Assistant
-// Last Updated: 2025
-// =============================================================================
-
 import Plot from "react-plotly.js";
 import { useMemo, useRef } from "react";
 
@@ -83,10 +66,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   // Development props
   debug = false,
 }) => {
-  // ==========================================================================
-  // REFS & MEMOIZED VALUES
-  // ==========================================================================
-
   /** Reference to the Plotly component for direct access */
   const plotRef = useRef<any>(null);
 
@@ -127,10 +106,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     plotData,
     dataStats,
   } = useProgressiveLoading(series, progressiveLoading, createTraces);
-
-  // ==========================================================================
-  // PLOTLY CONFIGURATION OBJECTS
-  // ==========================================================================
 
   /**
    * Plotly layout configuration
@@ -214,10 +189,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     [plotConfig, interactionConfig]
   );
 
-  // ==========================================================================
-  // MAIN COMPONENT RENDER
-  // ==========================================================================
-
   return (
     <div
       className={className}
@@ -242,10 +213,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         ...style,
       }}
     >
-      {/* =================================================================== */}
-      {/* PROGRESS INDICATOR OVERLAY */}
-      {/* Shows loading progress during data processing */}
-      {/* =================================================================== */}
       <ProgressIndicator
         progress={progress}
         currentPhase={currentPhase}
@@ -255,16 +222,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         dataStats={dataStats}
       />
 
-      {/* =================================================================== */}
-      {/* COMPLETION INDICATOR */}
-      {/* Shows success state when loading is finished */}
-      {/* =================================================================== */}
       <CompletionIndicator isComplete={isComplete} message="Complete" />
 
-      {/* =================================================================== */}
-      {/* DEBUG INFORMATION PANEL */}
-      {/* Development tool for monitoring plot statistics */}
-      {/* =================================================================== */}
       <DebugPanel
         debug={debug}
         dataStats={dataStats}
@@ -278,10 +237,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         }}
       />
 
-      {/* =================================================================== */}
-      {/* MAIN PLOTLY COMPONENT */}
-      {/* The core plotting component with all data and interactions */}
-      {/* =================================================================== */}
       <Plot
         ref={plotRef}
         // Data and layout
