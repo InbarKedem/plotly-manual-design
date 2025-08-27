@@ -2,15 +2,17 @@
 // COMPLETION INDICATOR COMPONENT
 // =============================================================================
 // This component displays a success indicator when data loading is complete.
-// Shows a green checkmark with completion message.
+// Shows a green checkmark with completion message, then auto-hides after delay.
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 interface CompletionIndicatorProps {
   /** Whether data loading is complete */
   isComplete: boolean;
   /** Custom completion message */
   message?: string;
+  /** Duration to show the indicator in milliseconds (default: 3000) */
+  duration?: number;
 }
 
 /**
@@ -19,14 +21,45 @@ interface CompletionIndicatorProps {
  * - Smooth fade-in animation
  * - Green gradient background
  * - Checkmark icon
- * - Auto-fade after delay (optional)
+ * - Auto-fade and hide after specified duration
  */
 export const CompletionIndicator: React.FC<CompletionIndicatorProps> = ({
   isComplete,
   message = "Complete",
+  duration = 3000,
 }) => {
-  // Don't render if not complete
-  if (!isComplete) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+
+  useEffect(() => {
+    if (isComplete) {
+      // Show the indicator
+      setIsVisible(true);
+      setIsAnimatingOut(false);
+
+      // Set timer to start fade-out animation
+      const fadeOutTimer = setTimeout(() => {
+        setIsAnimatingOut(true);
+      }, duration);
+
+      // Set timer to completely hide the component
+      const hideTimer = setTimeout(() => {
+        setIsVisible(false);
+        setIsAnimatingOut(false);
+      }, duration + 500); // Add 500ms for fade-out animation
+
+      return () => {
+        clearTimeout(fadeOutTimer);
+        clearTimeout(hideTimer);
+      };
+    } else {
+      setIsVisible(false);
+      setIsAnimatingOut(false);
+    }
+  }, [isComplete, duration]);
+
+  // Don't render if not visible
+  if (!isVisible) {
     return null;
   }
 
@@ -47,11 +80,22 @@ export const CompletionIndicator: React.FC<CompletionIndicatorProps> = ({
         display: "flex",
         alignItems: "center",
         gap: "6px",
-        animation: "fadeInSuccess 0.5s ease-out",
+        animation: isAnimatingOut
+          ? "fadeOutSuccess 0.5s ease-in forwards"
+          : "fadeInSuccess 0.5s ease-out",
       }}
     >
-      {/* Checkmark Icon */}
-      <span style={{ fontSize: "14px" }}>✓</span>
+      {/* Checkmark Icon with additional scaling animation */}
+      <span
+        style={{
+          fontSize: "14px",
+          animation: isAnimatingOut
+            ? "none"
+            : "scaleIn 0.3s ease-out 0.2s both",
+        }}
+      >
+        ✓
+      </span>
 
       {/* Message */}
       <span>{message}</span>

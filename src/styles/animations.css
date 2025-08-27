@@ -27,6 +27,33 @@
   }
 }
 
+/* Fade out animation for hiding indicators */
+@keyframes fadeOutSuccess {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+}
+
+/* Scale in animation for checkmark icon */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Pulse animation for loading states */
 @keyframes pulse {
   0%,
