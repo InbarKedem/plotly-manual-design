@@ -236,6 +236,12 @@ export interface InteractionConfig {
   enableSelect?: boolean;
   /** Enable hover interaction */
   enableHover?: boolean;
+  /** Enable hover opacity highlighting - dims other curves when one is hovered */
+  enableHoverOpacity?: boolean;
+  /** Opacity for non-hovered curves when hover opacity is enabled */
+  dimmedOpacity?: number;
+  /** Opacity for hovered curve when hover opacity is enabled */
+  highlightOpacity?: number;
   /** Default drag mode */
   dragmode?: "zoom" | "pan" | "select" | "lasso" | "orbit" | "turntable";
   /** Hover mode behavior */

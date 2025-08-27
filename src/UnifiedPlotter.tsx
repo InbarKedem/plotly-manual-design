@@ -1,5 +1,5 @@
 import Plot from "react-plotly.js";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState, useCallback } from "react";
 
 // Type imports
 import type { UnifiedPlotterProps } from "./types/PlotterTypes";
@@ -69,16 +69,96 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** Reference to the Plotly component for direct access */
   const plotRef = useRef<any>(null);
 
+  /** State for hover opacity feature */
+  const [hoveredTrace, setHoveredTrace] = useState<number | null>(null);
+
   /** Enhanced plot configuration with theme integration */
   const plotConfig = usePlotConfig(config, theme);
 
   /** User interaction configuration */
   const interactionConfig = useInteractionConfig(interactions);
 
+  /** Custom hover handler for opacity feature */
+  const handleCustomHover = useCallback(
+    (data: any) => {
+      // Handle hover opacity if enabled
+      if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
+        const traceIndex = data.points[0].curveNumber;
+        if (traceIndex !== hoveredTrace) {
+          setHoveredTrace(traceIndex);
+
+          // Update trace opacities for entire lines/traces
+          if (plotRef.current) {
+            const update: any = {};
+            const plotlyData = plotRef.current.data;
+
+            plotlyData.forEach((_: any, index: number) => {
+              const opacity =
+                index === traceIndex
+                  ? interactionConfig.highlightOpacity ?? 1.0
+                  : interactionConfig.dimmedOpacity ?? 0.3;
+
+              // Set opacity for the entire trace (affects both markers and lines)
+              update[`opacity[${index}]`] = opacity;
+
+              // For lines, also update line opacity specifically
+              if (plotlyData[index].line) {
+                update[`line.opacity[${index}]`] = opacity;
+              }
+
+              // For markers, also update marker opacity specifically
+              if (plotlyData[index].marker) {
+                update[`marker.opacity[${index}]`] = opacity;
+              }
+            });
+
+            plotRef.current.restyle(update);
+          }
+        }
+      }
+
+      // Call original hover handler
+      if (onPlotHover) {
+        onPlotHover(data);
+      }
+    },
+    [interactionConfig, hoveredTrace, onPlotHover]
+  );
+
+  /** Custom unhover handler to reset opacities */
+  const handleCustomUnhover = useCallback(() => {
+    if (interactionConfig.enableHoverOpacity && hoveredTrace !== null) {
+      setHoveredTrace(null);
+
+      // Reset all trace opacities to their original values
+      if (plotRef.current) {
+        const update: any = {};
+        const plotlyData = plotRef.current.data;
+
+        plotlyData.forEach((_: any, index: number) => {
+          // Reset opacity for the entire trace
+          update[`opacity[${index}]`] = 1.0;
+
+          // Reset line opacity if it exists
+          if (plotlyData[index].line) {
+            update[`line.opacity[${index}]`] = 1.0;
+          }
+
+          // Reset marker opacity if it exists
+          if (plotlyData[index].marker) {
+            update[`marker.opacity[${index}]`] = 1.0;
+          }
+        });
+
+        plotRef.current.restyle(update);
+      }
+    }
+  }, [interactionConfig, hoveredTrace]);
+
   /** Event handlers with proper memoization */
-  const { handleClick, handleHover, handleSelect, handleZoom } = usePlotEvents(
+  const { handleClick, handleSelect, handleZoom } = usePlotEvents(
     onPlotClick,
-    onPlotHover,
+    undefined, // We'll handle hover ourselves
     onPlotSelect,
     onPlotZoom
   );
@@ -261,7 +341,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         style={{ width: "100%", height: "100%" }}
         // Event handlers
         onClick={handleClick}
-        onHover={handleHover}
+        onHover={handleCustomHover}
+        onUnhover={handleCustomUnhover}
         onSelected={handleSelect}
         onRelayout={handleZoom}
       />
