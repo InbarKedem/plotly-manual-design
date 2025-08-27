@@ -121,14 +121,34 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         xanchor: "center" as const,
       },
 
-      // Axis configurations with theme integration
+      // Interaction modes - configured for single point hover
+      dragmode: interactionConfig.dragmode,
+      hovermode: "closest" as const, // Force closest point only, override any other settings
+      hoverdistance: 20, // Increase hover sensitivity radius
+      spikedistance: 20, // Increase spike sensitivity radius
+      clickmode: interactionConfig.clickmode,
+      selectdirection: interactionConfig.selectdirection,
+
+      // Crosshair configuration - adds dashed lines on both axes
       xaxis: {
         ...plotConfig.xAxis,
         title: { text: plotConfig.xAxis.title, font: plotConfig.font },
+        showspikes: true, // Enable spike lines (crosshairs)
+        spikemode: "across" as const, // Draw spike across the plot
+        spikesnap: "cursor" as const, // Snap to cursor position
+        spikecolor: "#666666", // Dark gray color
+        spikethickness: 1,
+        spikedash: "dash" as const, // Dashed line style
       },
       yaxis: {
         ...plotConfig.yAxis,
         title: { text: plotConfig.yAxis.title, font: plotConfig.font },
+        showspikes: true, // Enable spike lines (crosshairs)
+        spikemode: "across" as const, // Draw spike across the plot
+        spikesnap: "cursor" as const, // Snap to cursor position
+        spikecolor: "#666666", // Dark gray color
+        spikethickness: 1,
+        spikedash: "dash" as const, // Dashed line style
       },
 
       // Legend configuration
@@ -150,12 +170,6 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       // Additional elements
       annotations: plotConfig.annotations,
       shapes: plotConfig.shapes,
-
-      // Interaction modes
-      dragmode: interactionConfig.dragmode,
-      hovermode: interactionConfig.hovermode,
-      clickmode: interactionConfig.clickmode,
-      selectdirection: interactionConfig.selectdirection,
     }),
     [plotConfig, interactionConfig]
   );

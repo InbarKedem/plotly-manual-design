@@ -89,7 +89,7 @@ export const DEFAULT_INTERACTION_CONFIG: Required<InteractionConfig> = {
   enableSelect: true,
   enableHover: true,
   dragmode: "zoom",
-  hovermode: "closest",
+  hovermode: "closest", // Show only the closest point, not all points on x-axis
   clickmode: "event+select",
   selectdirection: "any",
 };
