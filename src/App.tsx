@@ -8,6 +8,14 @@ import FuelXChart from "./demos/legacy/fuel-x";
 import FuelSimpleChart from "./demos/legacy/fuel-simple";
 import UnifiedDemo from "./demos/legacy/UnifiedDemo";
 import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
+import InteractiveMultiSeriesDemo from "./demos/InteractiveMultiSeriesDemo";
+
+// Additional Legacy Demos
+import EnhancedPlotterDemo from "./demos/legacy/EnhancedPlotterDemo";
+import GenericPlotterDemo2 from "./demos/legacy/GenericPlotterDemo2";
+import QuickDemo from "./demos/legacy/QuickDemo";
+import SimpleEnhancedDemo from "./demos/legacy/SimpleEnhancedDemo";
+import WorkingEnhancedDemo from "./demos/legacy/WorkingEnhancedDemo";
 
 interface TabConfig {
   name: string;
@@ -17,6 +25,7 @@ interface TabConfig {
 }
 
 const tabs: TabConfig[] = [
+  // Unified System Demos
   {
     name: "🧪 Organized Demo",
     component: OrganizedScientificDemo,
@@ -30,39 +39,81 @@ const tabs: TabConfig[] = [
     icon: "🚀",
   },
   {
+    name: "📊 Interactive Multi-Series",
+    component: InteractiveMultiSeriesDemo,
+    category: "Unified",
+    icon: "📊",
+  },
+
+  // Legacy Demos - Enhanced Plotters
+  {
+    name: "⚡ Enhanced Demo",
+    component: EnhancedPlotterDemo,
+    category: "Legacy",
+    icon: "⚡",
+  },
+  {
+    name: "🎯 Simple Enhanced",
+    component: SimpleEnhancedDemo,
+    category: "Legacy",
+    icon: "🎯",
+  },
+  {
+    name: "💼 Working Enhanced",
+    component: WorkingEnhancedDemo,
+    category: "Legacy",
+    icon: "💼",
+  },
+
+  // Legacy Demos - Generic Plotters
+  {
+    name: "🔧 Generic Demo 2",
+    component: GenericPlotterDemo2,
+    category: "Legacy",
+    icon: "🔧",
+  },
+  {
+    name: "⚡ Quick Demo",
+    component: QuickDemo,
+    category: "Legacy",
+    icon: "⚡",
+  },
+
+  // Legacy Demos - Data Visualization
+  {
     name: "🌡️ Temperature",
     component: TemperatureChart,
-    category: "Unified",
+    category: "Legacy",
     icon: "🌡️",
   },
   {
     name: "🏔️ Height-Temp",
     component: HeightTemperatureChart,
-    category: "Unified",
-    icon: "📊",
+    category: "Legacy",
+    icon: "🏔️",
   },
   {
-    name: "📈 Height-Simple",
+    name: "� Height-Simple",
     component: HeightTemperatureSimple,
-    category: "Unified",
-    icon: "📈",
+    category: "Legacy",
+    icon: "�",
   },
   {
     name: "🔥 Height-Million",
     component: HeightTemperatureMillionChart,
-    category: "Unified",
+    category: "Legacy",
     icon: "🔥",
   },
   {
     name: "⛽ Fuel-X",
     component: FuelXChart,
-    category: "Unified",
+    category: "Legacy",
     icon: "⛽",
   },
   {
     name: "🚗 Fuel-Simple",
     component: FuelSimpleChart,
-    category: "Unified",
+    category: "Legacy",
     icon: "🚗",
   },
 ];
