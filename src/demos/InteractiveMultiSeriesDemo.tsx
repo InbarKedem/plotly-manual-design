@@ -418,6 +418,9 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
             dragmode: "zoom",
             hovermode: "closest",
             clickmode: "event",
+            enableHoverOpacity: true,
+            dimmedOpacity: 0.02,
+            highlightOpacity: 5.0,
           }}
           theme={{
             darkMode: false,

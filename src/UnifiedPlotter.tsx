@@ -90,29 +90,45 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
           // Update trace opacities for entire lines/traces
           if (plotRef.current) {
             const update: any = {};
-            const plotlyData = plotRef.current.data;
+            const traceIndices: number[] = [];
 
-            plotlyData.forEach((_: any, index: number) => {
-              const opacity =
-                index === traceIndex
-                  ? interactionConfig.highlightOpacity ?? 1.0
-                  : interactionConfig.dimmedOpacity ?? 0.3;
+            // Get all trace indices
+            for (let i = 0; i < plotRef.current.data.length; i++) {
+              traceIndices.push(i);
+            }
 
-              // Set opacity for the entire trace (affects both markers and lines)
-              update[`opacity[${index}]`] = opacity;
+            // Update each trace with VERY dramatic visual changes
+            traceIndices.forEach((index) => {
+              const isHovered = index === traceIndex;
 
-              // For lines, also update line opacity specifically
-              if (plotlyData[index].line) {
-                update[`line.opacity[${index}]`] = opacity;
-              }
-
-              // For markers, also update marker opacity specifically
-              if (plotlyData[index].marker) {
-                update[`marker.opacity[${index}]`] = opacity;
+              if (isHovered) {
+                // HOVERED LINE: Make it super prominent
+                update[`opacity[${index}]`] = 1.0; // Full opacity
+                update[`line.width[${index}]`] = 8; // Very thick line
+                update[`line.color[${index}]`] = "#FF0000"; // Bright red color
+                update[`line.dash[${index}]`] = "solid"; // Solid style
+                update[`marker.size[${index}]`] = 12; // Large markers
+                update[`marker.opacity[${index}]`] = 1.0;
+                update[`marker.line.width[${index}]`] = 3; // Thick marker border
+                update[`marker.line.color[${index}]`] = "#FFFFFF"; // White border
+              } else {
+                // NON-HOVERED LINES: Make them very faded and thin
+                update[`opacity[${index}]`] = 0.05; // Almost invisible
+                update[`line.width[${index}]`] = 0.5; // Very thin line
+                update[`line.color[${index}]`] = "#CCCCCC"; // Light gray color
+                update[`line.dash[${index}]`] = "dot"; // Dotted style
+                update[`marker.size[${index}]`] = 2; // Tiny markers
+                update[`marker.opacity[${index}]`] = 0.1; // Nearly invisible markers
               }
             });
 
-            plotRef.current.restyle(update);
+            console.log(
+              "DRAMATIC Hover effect applied to trace:",
+              traceIndex,
+              "with update:",
+              update
+            );
+            plotRef.current.restyle(update, traceIndices);
           }
         }
       }
@@ -130,27 +146,46 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     if (interactionConfig.enableHoverOpacity && hoveredTrace !== null) {
       setHoveredTrace(null);
 
-      // Reset all trace opacities to their original values
+      // Reset all trace opacities and styles to their original values
       if (plotRef.current) {
         const update: any = {};
-        const plotlyData = plotRef.current.data;
+        const traceIndices: number[] = [];
 
-        plotlyData.forEach((_: any, index: number) => {
-          // Reset opacity for the entire trace
+        // Get all trace indices
+        for (let i = 0; i < plotRef.current.data.length; i++) {
+          traceIndices.push(i);
+        }
+
+        // Reset each trace to original state
+        traceIndices.forEach((index) => {
+          // Get original data to restore colors
+          const originalData = plotRef.current.data[index];
+
+          // Reset to original appearance
           update[`opacity[${index}]`] = 1.0;
+          update[`line.width[${index}]`] = 3; // Reset to original width
+          update[`line.dash[${index}]`] = "solid"; // Reset to solid lines
+          update[`marker.size[${index}]`] = 6; // Reset to original size
+          update[`marker.opacity[${index}]`] = 1.0;
+          update[`marker.line.width[${index}]`] = 1; // Reset marker border
 
-          // Reset line opacity if it exists
-          if (plotlyData[index].line) {
-            update[`line.opacity[${index}]`] = 1.0;
+          // Reset colors to original (remove the red/gray override)
+          // This will restore the color mapping based on altitude
+          if (
+            originalData.line &&
+            originalData.line.color &&
+            Array.isArray(originalData.line.color)
+          ) {
+            // Don't override if it's already a color array (from color mapping)
+            delete update[`line.color[${index}]`];
           }
-
-          // Reset marker opacity if it exists
-          if (plotlyData[index].marker) {
-            update[`marker.opacity[${index}]`] = 1.0;
+          if (originalData.marker && originalData.marker.line) {
+            delete update[`marker.line.color[${index}]`];
           }
         });
 
-        plotRef.current.restyle(update);
+        console.log("DRAMATIC Hover effect reset with update:", update);
+        plotRef.current.restyle(update, traceIndices);
       }
     }
   }, [interactionConfig, hoveredTrace]);
