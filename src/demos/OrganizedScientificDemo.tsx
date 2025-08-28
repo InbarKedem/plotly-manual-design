@@ -237,60 +237,6 @@ const OrganizedScientificDemo: React.FC = () => {
           }}
         />
       </div>
-
-      {/* Architecture Info */}
-      <div
-        style={{
-          marginTop: "30px",
-          padding: "20px",
-          backgroundColor: "#f0f9ff",
-          borderRadius: "8px",
-          border: "1px solid #0ea5e9",
-        }}
-      >
-        <h3 style={{ margin: "0 0 15px 0", color: "#0c4a6e" }}>
-          🏗️ New Organized Architecture
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "15px",
-          }}
-        >
-          <div>
-            <h4 style={{ margin: "0 0 8px 0", color: "#0369a1" }}>
-              📁 Data Generators
-            </h4>
-            <p style={{ margin: 0, fontSize: "14px", color: "#0284c7" }}>
-              Realistic test data for various domains (scientific, climate,
-              financial, etc.)
-            </p>
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 8px 0", color: "#0369a1" }}>
-              ⚙️ Presets
-            </h4>
-            <p style={{ margin: 0, fontSize: "14px", color: "#0284c7" }}>
-              Pre-configured chart settings for common use cases
-            </p>
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 8px 0", color: "#0369a1" }}>🎨 Themes</h4>
-            <p style={{ margin: 0, fontSize: "14px", color: "#0284c7" }}>
-              Professional themes including accessibility-focused options
-            </p>
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 8px 0", color: "#0369a1" }}>
-              🔧 Utilities
-            </h4>
-            <p style={{ margin: 0, fontSize: "14px", color: "#0284c7" }}>
-              Modular functions for data processing and analysis
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

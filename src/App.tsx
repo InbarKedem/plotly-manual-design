@@ -104,21 +104,6 @@ const App: React.FC = () => {
       <div style={{ minHeight: "calc(100vh - 140px)" }}>
         <ActiveComponent />
       </div>
-
-      {/* Footer */}
-      <div
-        style={{
-          background: "#f9fafb",
-          padding: "15px 20px",
-          borderTop: "1px solid #e5e7eb",
-          textAlign: "center",
-          color: "#6b7280",
-          fontSize: "12px",
-        }}
-      >
-        Enhanced UnifiedPlotter v2.0 | Performance Monitoring | Validation
-        System | Accessibility Features
-      </div>
     </div>
   );
 };
