@@ -243,9 +243,7 @@ const createMarkerConfig = (
     markerObj.colorFeature &&
     data.some((d) => (d as DataPoint)[markerObj.colorFeature as string] != null)
   ) {
-    const colorValues = data.map(
-      (d) => d[markerObj.colorFeature as string]
-    );
+    const colorValues = data.map((d) => d[markerObj.colorFeature as string]);
     const colorMin =
       (markerObj.colorMin as number) ??
       Math.min(...(colorValues.filter((v) => v != null) as number[]));

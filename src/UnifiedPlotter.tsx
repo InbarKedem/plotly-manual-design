@@ -97,12 +97,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Debounced interactions for performance */
   const { debouncedHover, debouncedZoom } = useDebouncedInteractions(
-    onPlotHover
-      ? (data: PlotlyHoverEvent) => onPlotHover(data)
-      : undefined,
-    onPlotZoom
-      ? (data: PlotlyZoomEvent) => onPlotZoom(data)
-      : undefined
+    onPlotHover ? (data: PlotlyHoverEvent) => onPlotHover(data) : undefined,
+    onPlotZoom ? (data: PlotlyZoomEvent) => onPlotZoom(data) : undefined
   );
 
   /** Validation check on mount and data changes */
@@ -184,13 +180,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Event handlers with proper memoization */
   const { handleClick, handleSelect, handleZoom } = usePlotEvents(
-    onPlotClick
-      ? (data: PlotlyClickEvent) => onPlotClick(data)
-      : undefined,
+    onPlotClick ? (data: PlotlyClickEvent) => onPlotClick(data) : undefined,
     undefined, // We'll handle hover ourselves
-    onPlotSelect
-      ? (data: PlotlySelectEvent) => onPlotSelect(data)
-      : undefined,
+    onPlotSelect ? (data: PlotlySelectEvent) => onPlotSelect(data) : undefined,
     (data: PlotlyZoomEvent) => {
       debouncedZoom(data); // Use debounced zoom for performance
       onPlotZoom?.(data);
