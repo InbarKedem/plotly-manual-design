@@ -197,7 +197,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
               ? "255,107,107"
               : curveIndex === 1
               ? "78,205,196"
-              : "69,183,209"
+              : "156,39,176"
           }, 0.7)`, // Semi-transparent line colors
         },
         showInLegend: true,
