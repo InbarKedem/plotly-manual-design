@@ -55,7 +55,7 @@ const EnhancedCurveStylingDemo: React.FC = () => {
       curves.push({
         name: `Curve ${i + 1}`,
         data: data,
-        mode: "lines+markers",
+        mode: activeFeature === "points" ? "lines+markers" : "lines", // Show markers only for points demo
         // Add color mapping config for points demo
         marker:
           activeFeature === "points"
