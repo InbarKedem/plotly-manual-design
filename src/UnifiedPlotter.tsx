@@ -116,7 +116,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       }
 
       if (validation?.showWarnings && validationResult.warnings.length > 0) {
-        console.warn("Plotter validation warnings:", validationResult.warnings);
+        // Validation warnings available in validationResult.warnings
       }
     }
   }, [series, config, interactions, validation, onError]);
@@ -124,7 +124,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** Check Plotly availability on mount */
   useEffect(() => {
     // Simple check that will work with our new approach
-    console.log("UnifiedPlotter mounted - hover effects will use React state");
+    // UnifiedPlotter mounted - hover effects will use React state
   }, []);
 
   /** Enhanced plot configuration with theme integration */
@@ -143,11 +143,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         // Handle hover opacity if enabled
         if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
           const traceIndex = data.points[0].curveNumber;
-          console.log("Hover event triggered for trace:", traceIndex);
 
           if (traceIndex !== hoveredTrace) {
             setHoveredTrace(traceIndex);
-            console.log("Setting hovered trace to:", traceIndex);
           }
         }
 
@@ -164,13 +162,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Custom unhover handler to reset opacities */
   const handleCustomUnhover = useCallback(() => {
-    console.log("UNHOVER triggered - Resetting to original state");
     try {
       if (interactionConfig.enableHoverOpacity && hoveredTrace !== null) {
         setHoveredTrace(null);
-        console.log(
-          "Hover trace reset to null - plot will re-render with original data"
-        );
       }
     } catch (error) {
       console.error("Error in unhover handler:", error);

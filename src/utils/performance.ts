@@ -50,11 +50,7 @@ export const useMemoizedDataProcessing = <TInput, TOutput>(
   deps: React.DependencyList = []
 ) => {
   return useMemo(() => {
-    const startTime = performance.now();
     const result = processor(data);
-    const endTime = performance.now();
-
-    console.debug(`Data processing took ${endTime - startTime}ms`);
     return result;
   }, [data, ...deps]);
 };

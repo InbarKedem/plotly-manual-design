@@ -138,8 +138,6 @@ export const usePerformanceMonitoring = (
         ...prev,
         [operation]: duration,
       }));
-
-      console.debug(`${operation} took ${duration.toFixed(2)}ms`);
     },
     [enabled]
   );
@@ -184,8 +182,6 @@ export const useOptimizedDataProcessing = <TInput, TOutput>(
     setIsProcessing(true);
 
     try {
-      const startTime = performance.now();
-
       // Use web worker for large datasets if enabled
       if (
         performanceConfig?.useWebWorkers &&
@@ -201,9 +197,6 @@ export const useOptimizedDataProcessing = <TInput, TOutput>(
         const processed = processor(data);
         setResult(processed);
       }
-
-      const endTime = performance.now();
-      console.debug(`Data processing took ${endTime - startTime}ms`);
     } catch (error) {
       console.error("Data processing error:", error);
       setResult(null);
