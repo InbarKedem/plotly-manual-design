@@ -12,25 +12,55 @@ import type {
   DataPoint,
   MarkerOptions,
   LineOptions,
+  CurveColoringConfig,
+  CurveLineStyleConfig,
 } from "../types/PlotterTypes";
 import type { Data } from "plotly.js";
-import { MODERN_COLORSCALES } from "./colorscales";
+import {
+  MODERN_COLORSCALES,
+  generateCurveColors,
+  generateCurveLineStyles,
+} from "./colorscales";
 import { DEFAULT_SERIES_CONFIG } from "../config/defaults";
 
 /**
- * Create Plotly traces for all series
+ * Create Plotly traces for all series with enhanced curve styling
  * @param series - Array of series configurations
  * @param theme - Theme configuration
  * @param plotConfig - Plot configuration
+ * @param curveColoring - Curve-by-curve coloring configuration
+ * @param curveLineStyles - Curve-by-curve line styling configuration
  * @returns Array of Plotly trace objects
  */
 export const createAllTraces = (
   series: SeriesConfig[],
   theme?: ThemeConfig,
-  plotConfig?: PlotConfig
+  plotConfig?: PlotConfig,
+  curveColoring?: CurveColoringConfig,
+  curveLineStyles?: CurveLineStyleConfig
 ): Data[] => {
+  // Generate colors and line styles for all curves if enabled
+  const curveColors = curveColoring?.enabled
+    ? generateCurveColors(
+        series.length,
+        curveColoring.colorScale,
+        curveColoring.colorPalette
+      )
+    : [];
+
+  const lineStyles = curveLineStyles?.enabled
+    ? generateCurveLineStyles(series.length, curveLineStyles.stylePattern)
+    : [];
+
   return series.flatMap((seriesConfig, index) =>
-    createTracesForSeries(seriesConfig, index, theme, plotConfig)
+    createTracesForSeries(
+      seriesConfig,
+      index,
+      theme,
+      plotConfig,
+      curveColoring?.enabled ? curveColors[index] : undefined,
+      curveLineStyles?.enabled ? lineStyles[index] : undefined
+    )
   );
 };
 
@@ -43,13 +73,17 @@ export const createAllTraces = (
  * @param seriesIndex - Index of the series (for color cycling)
  * @param theme - Theme configuration
  * @param plotConfig - Plot configuration
+ * @param curveColor - Override color for this curve (curve-by-curve coloring)
+ * @param curveLineStyle - Override line style for this curve
  * @returns Array of Plotly trace objects
  */
 export const createTracesForSeries = (
   seriesConfig: SeriesConfig,
   seriesIndex: number,
   theme?: ThemeConfig,
-  plotConfig?: PlotConfig
+  plotConfig?: PlotConfig,
+  curveColor?: string,
+  curveLineStyle?: "solid" | "dash" | "dot" | "dashdot" | "longdash"
 ): Data[] => {
   const {
     name,
@@ -137,7 +171,12 @@ export const createTracesForSeries = (
   // LINE CONFIGURATION
   // ==========================================================================
   if (mode.includes("lines") && !(gradientLines && connectDots)) {
-    (mainTrace as Record<string, unknown>).line = createLineConfig(line, theme);
+    (mainTrace as Record<string, unknown>).line = createLineConfig(
+      line,
+      theme,
+      curveColor,
+      curveLineStyle
+    );
   }
 
   // ==========================================================================
@@ -150,7 +189,8 @@ export const createTracesForSeries = (
       line,
       theme,
       plotConfig,
-      seriesIndex
+      seriesIndex,
+      curveColor
     );
   }
 
@@ -191,12 +231,17 @@ const determineSegmentColor = (
 /**
  * Create line configuration object
  */
-const createLineConfig = (line: LineOptions, theme?: ThemeConfig) => {
+const createLineConfig = (
+  line: LineOptions,
+  theme?: ThemeConfig,
+  curveColor?: string,
+  curveLineStyle?: "solid" | "dash" | "dot" | "dashdot" | "longdash"
+) => {
   const lineObj = line;
   return {
     width: lineObj.width || 2,
-    color: lineObj.color || theme?.primary || "#3b82f6",
-    dash: lineObj.dash || "solid",
+    color: curveColor || lineObj.color || theme?.primary || "#3b82f6",
+    dash: curveLineStyle || lineObj.dash || "solid",
     shape: lineObj.shape || "spline", // Use spline for smooth curves by default
     smoothing: lineObj.smoothing !== undefined ? lineObj.smoothing : 0.8, // Default smoothing
   };
@@ -211,7 +256,8 @@ const createMarkerConfig = (
   line: LineOptions,
   theme?: ThemeConfig,
   plotConfig?: PlotConfig,
-  seriesIndex: number = 0
+  seriesIndex: number = 0,
+  curveColor?: string
 ) => {
   const markerObj = marker;
   const lineObj = line;
@@ -277,8 +323,9 @@ const createMarkerConfig = (
     markerConfig.cmin = colorMin;
     markerConfig.cmax = colorMax;
   } else {
-    // Use solid color
+    // Use solid color - prioritize curve color, then marker color, then line color, then theme
     markerConfig.color =
+      curveColor ||
       (markerObj.color as string) ||
       (lineObj.color as string) ||
       theme?.primary ||

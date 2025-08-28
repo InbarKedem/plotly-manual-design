@@ -9,12 +9,10 @@ import type {
   PlotlyZoomEvent,
   PlotlyClickEvent,
   PlotlySelectEvent,
-  SeriesConfig,
 } from "./types/PlotterTypes";
 
 // Custom hooks
 import {
-  useProgressiveLoading,
   usePlotConfig,
   useInteractionConfig,
   usePlotEvents,
@@ -26,7 +24,7 @@ import DebugPanel from "./components/DebugPanel";
 import CompletionIndicator from "./components/CompletionIndicator";
 
 // Utilities
-import { createTracesForSeries } from "./utils/traceGeneration";
+import { createAllTraces } from "./utils/traceGeneration";
 import { validatePlotterInputs } from "./utils/validation";
 
 // Performance hooks
@@ -67,6 +65,10 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   interactions = {},
   progressiveLoading,
   theme,
+
+  // Curve styling props
+  curveColoring,
+  curveLineStyles,
 
   // Performance and accessibility props
   validation,
@@ -190,94 +192,136 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   );
 
   /**
-   * Trace creation function - converts series data to Plotly traces
+   * All plot data traces with enhanced styling
    * Memoized to prevent recreation on every render
    */
-  const createTraces = useMemo(
-    () => (seriesConfig: SeriesConfig, seriesIndex: number) =>
-      createTracesForSeries(seriesConfig, seriesIndex, theme, plotConfig),
-    [theme, plotConfig]
-  );
+  const plotData = useMemo(() => {
+    startMeasurement();
+
+    // Create all traces with enhanced curve styling
+    const allTraces = createAllTraces(
+      series,
+      theme,
+      plotConfig,
+      curveColoring,
+      curveLineStyles
+    );
+
+    endMeasurement("traceGeneration");
+    return allTraces;
+  }, [
+    series,
+    theme,
+    plotConfig,
+    curveColoring,
+    curveLineStyles,
+    startMeasurement,
+    endMeasurement,
+  ]);
 
   /**
    * Progressive loading state and data management
-   * Handles chunked loading for performance with large datasets
+   * Note: For now, using direct trace creation. Progressive loading can be enhanced later.
    */
-  const {
-    progress,
-    currentPhase,
-    isGenerating,
-    totalPointsLoaded,
-    isComplete,
-    plotData: originalPlotData,
-    dataStats,
-  } = useProgressiveLoading(series, progressiveLoading, createTraces);
+  const progress = 100; // Always complete since we're creating all traces at once
+  const currentPhase = "Complete";
+  const isGenerating = false;
+  const totalPointsLoaded = series.reduce(
+    (total, s) => total + (s.data?.length || 0),
+    0
+  );
+  const isComplete = true;
+
+  // Calculate comprehensive data stats
+  const dataStats = useMemo(() => {
+    const allDataPoints = series.flatMap((s) => s.data || []);
+    const xValues = allDataPoints.map((d) => d.x);
+    const yValues = allDataPoints.map((d) => d.y);
+    const zValues = allDataPoints
+      .map((d) => d.z)
+      .filter((z) => z !== undefined) as number[];
+
+    return {
+      totalPoints: allDataPoints.length,
+      processedPoints: allDataPoints.length,
+      seriesCount: series.length,
+      xRange:
+        allDataPoints.length > 0
+          ? ([Math.min(...xValues), Math.max(...xValues)] as [number, number])
+          : ([0, 1] as [number, number]),
+      yRange:
+        allDataPoints.length > 0
+          ? ([Math.min(...yValues), Math.max(...yValues)] as [number, number])
+          : ([0, 1] as [number, number]),
+      zRange:
+        zValues.length > 0
+          ? ([Math.min(...zValues), Math.max(...zValues)] as [number, number])
+          : null,
+      memoryUsageMB: `${(allDataPoints.length * 0.1).toFixed(2)}`,
+    };
+  }, [series]);
 
   /**
    * Modified plot data for hover effects
    * Either returns original data or data with hover modifications
    */
-  const plotData = useMemo(() => {
-    startMeasurement();
-
+  const finalPlotData = useMemo(() => {
     if (
       !interactionConfig.enableHoverOpacity ||
       hoveredTrace === null ||
-      !originalPlotData
+      !plotData
     ) {
-      return originalPlotData;
+      return plotData;
     }
 
     // Create modified data for hover effect
-    const modifiedData = (originalPlotData as Data[]).map(
-      (trace, index: number) => {
-        const isHovered = index === hoveredTrace;
-        const traceRecord = trace as Record<string, any>;
+    const modifiedData = (plotData as Data[]).map((trace, index: number) => {
+      const isHovered = index === hoveredTrace;
+      const traceRecord = trace as Record<string, any>;
 
-        if (isHovered) {
-          // Make hovered trace prominent
-          return {
-            ...trace,
+      if (isHovered) {
+        // Make hovered trace prominent
+        return {
+          ...trace,
+          opacity: 1.0,
+          line: {
+            ...(traceRecord.line || {}),
+            width: 8,
+            color: "#FF0000",
+            dash: "solid",
+          },
+          marker: {
+            ...(traceRecord.marker || {}),
+            size: 12,
+            color: "#FF0000",
             opacity: 1.0,
-            line: {
-              ...(traceRecord.line || {}),
-              width: 8,
-              color: "#FF0000",
-              dash: "solid",
-            },
-            marker: {
-              ...(traceRecord.marker || {}),
-              size: 12,
-              color: "#FF0000",
-              opacity: 1.0,
-            },
-          };
-        } else {
-          // Make other traces faded
-          return {
-            ...trace,
-            opacity: 0.05,
-            line: {
-              ...(traceRecord.line || {}),
-              width: 0.5,
-              color: "#CCCCCC",
-              dash: "dot",
-            },
-            marker: {
-              ...(traceRecord.marker || {}),
-              size: 2,
-              color: "#CCCCCC",
-              opacity: 0.1,
-            },
-          };
-        }
+          },
+        };
+      } else {
+        // Make other traces faded
+        return {
+          ...trace,
+          opacity: 0.05,
+          line: {
+            ...(traceRecord.line || {}),
+            width: 0.5,
+            color: "#CCCCCC",
+            dash: "dot",
+          },
+          marker: {
+            ...(traceRecord.marker || {}),
+            size: 2,
+            color: "#CCCCCC",
+            opacity: 0.1,
+          },
+        };
       }
-    );
+    });
 
     endMeasurement("renderTime");
     return modifiedData;
   }, [
-    originalPlotData,
+    plotData,
     hoveredTrace,
     interactionConfig.enableHoverOpacity,
     startMeasurement,
@@ -433,7 +477,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       <Plot
         ref={plotRef}
         // Data and layout
-        data={plotData as Data[]}
+        data={finalPlotData as Data[]}
         layout={plotLayout as Partial<Layout>}
         config={plotlyConfig}
         // Styling

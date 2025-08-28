@@ -3,6 +3,7 @@ import "./App.css";
 import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
 import InteractiveMultiSeriesDemo from "./demos/InteractiveMultiSeriesDemo";
 import PerformanceTestDemo from "./demos/PerformanceTestDemo";
+import EnhancedCurveStylingDemo from "./demos/EnhancedCurveStylingDemo";
 
 interface TabConfig {
   name: string;
@@ -12,6 +13,12 @@ interface TabConfig {
 }
 
 const tabs: TabConfig[] = [
+  {
+    name: "🎨 Enhanced Curve Styling",
+    component: EnhancedCurveStylingDemo,
+    category: "Unified",
+    icon: "🎨",
+  },
   {
     name: "⚡ Performance Test",
     component: PerformanceTestDemo,
@@ -37,7 +44,7 @@ const categoryColors = {
 };
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(0); // Start with Performance Test
+  const [activeTab, setActiveTab] = useState(0); // Start with Enhanced Curve Styling
 
   const ActiveComponent = tabs[activeTab].component;
 

@@ -184,6 +184,32 @@ export interface LineOptions {
 }
 
 /**
+ * Configuration for curve-by-curve coloring
+ */
+export interface CurveColoringConfig {
+  /** Enable curve-by-curve coloring */
+  enabled?: boolean;
+  /** Array of colors to use for curves (will cycle through them) */
+  colorPalette?: string[];
+  /** Custom color scale for gradient distribution */
+  colorScale?: string | Array<[number, string]>;
+  /** How to distribute colors: 'sequential' or 'gradient' */
+  distribution?: "sequential" | "gradient";
+}
+
+/**
+ * Configuration for curve-by-curve line styles
+ */
+export interface CurveLineStyleConfig {
+  /** Enable different line styles per curve */
+  enabled?: boolean;
+  /** Array of line styles to cycle through */
+  stylePattern?: Array<"solid" | "dash" | "dot" | "dashdot" | "longdash">;
+  /** Whether to combine with curve coloring */
+  combineWithColors?: boolean;
+}
+
+/**
  * Configuration options for marker appearance and color mapping
  */
 export interface MarkerOptions {
@@ -460,6 +486,10 @@ export interface UnifiedPlotterProps {
   accessibility?: AccessibilityConfig;
   /** Validation configuration */
   validation?: ValidationConfig;
+  /** Curve-by-curve coloring configuration */
+  curveColoring?: CurveColoringConfig;
+  /** Curve-by-curve line styling configuration */
+  curveLineStyles?: CurveLineStyleConfig;
   /** Additional CSS class name */
   className?: string;
   /** Inline styles */

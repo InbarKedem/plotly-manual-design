@@ -145,3 +145,128 @@ export const createCustomColorScale = (colors: string[]): ColorScale => {
     (color, index) => [index * step, color] as [number, string]
   );
 };
+
+// =============================================================================
+// CURVE COLORING UTILITIES
+// =============================================================================
+
+/**
+ * Generate colors for curves using a gradient distribution
+ * @param curveCount - Number of curves to generate colors for
+ * @param colorScale - Color scale to use for generation
+ * @returns Array of colors for each curve
+ */
+export const generateCurveColors = (
+  curveCount: number,
+  colorScale?: string | ColorScale,
+  colorPalette?: string[]
+): string[] => {
+  if (colorPalette && colorPalette.length > 0) {
+    // Use provided palette, cycling through if needed
+    return Array.from(
+      { length: curveCount },
+      (_, index) => colorPalette[index % colorPalette.length]
+    );
+  }
+
+  if (curveCount === 1) {
+    return ["#3b82f6"]; // Default blue for single curve
+  }
+
+  // Use color scale for gradient distribution
+  const scale =
+    typeof colorScale === "string"
+      ? MODERN_COLORSCALES[colorScale] || MODERN_COLORSCALES.viridis
+      : colorScale || MODERN_COLORSCALES.viridis;
+
+  return Array.from({ length: curveCount }, (_, index) => {
+    const position = curveCount === 1 ? 0 : index / (curveCount - 1);
+    return interpolateColorScale(scale, position);
+  });
+};
+
+/**
+ * Interpolate a color from a color scale at a given position
+ * @param colorScale - Array of [position, color] tuples
+ * @param position - Position to interpolate (0-1)
+ * @returns Interpolated color
+ */
+export const interpolateColorScale = (
+  colorScale: ColorScale,
+  position: number
+): string => {
+  // Clamp position to 0-1
+  position = Math.max(0, Math.min(1, position));
+
+  // Find the two colors to interpolate between
+  for (let i = 0; i < colorScale.length - 1; i++) {
+    const [pos1, color1] = colorScale[i];
+    const [pos2, color2] = colorScale[i + 1];
+
+    if (position <= pos2) {
+      if (position <= pos1) return color1;
+
+      // Interpolate between the two colors
+      const t = (position - pos1) / (pos2 - pos1);
+      return interpolateColors(color1, color2, t);
+    }
+  }
+
+  // Return last color if position is beyond range
+  return colorScale[colorScale.length - 1][1];
+};
+
+/**
+ * Interpolate between two hex colors
+ * @param color1 - First color (hex)
+ * @param color2 - Second color (hex)
+ * @param t - Interpolation factor (0-1)
+ * @returns Interpolated color
+ */
+const interpolateColors = (
+  color1: string,
+  color2: string,
+  t: number
+): string => {
+  // Simple hex color interpolation
+  const hex1 = color1.replace("#", "");
+  const hex2 = color2.replace("#", "");
+
+  const r1 = parseInt(hex1.substr(0, 2), 16);
+  const g1 = parseInt(hex1.substr(2, 2), 16);
+  const b1 = parseInt(hex1.substr(4, 2), 16);
+
+  const r2 = parseInt(hex2.substr(0, 2), 16);
+  const g2 = parseInt(hex2.substr(2, 2), 16);
+  const b2 = parseInt(hex2.substr(4, 2), 16);
+
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+
+  return `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+};
+
+/**
+ * Generate line style patterns for curves
+ * @param curveCount - Number of curves
+ * @param stylePattern - Pattern of line styles to cycle through
+ * @returns Array of line styles for each curve
+ */
+export const generateCurveLineStyles = (
+  curveCount: number,
+  stylePattern?: Array<"solid" | "dash" | "dot" | "dashdot" | "longdash">
+): Array<"solid" | "dash" | "dot" | "dashdot" | "longdash"> => {
+  const defaultPattern: Array<
+    "solid" | "dash" | "dot" | "dashdot" | "longdash"
+  > = ["solid", "dash", "dot", "dashdot", "longdash"];
+
+  const pattern = stylePattern || defaultPattern;
+
+  return Array.from(
+    { length: curveCount },
+    (_, index) => pattern[index % pattern.length]
+  );
+};
