@@ -1,119 +1,126 @@
+import React, { useState } from "react";
 import "./App.css";
-import TemperatureScatterPlot from "./tempature";
-import HeightTemperaturePlot from "./height-temperature";
-import SmoothHeightTemperaturePlot from "./height-temperature-million";
-import HeightTemperatureSimplePlot from "./fuel-x";
-import FuelConsumptionSimple from "./fuel-simple";
+import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
+import InteractiveMultiSeriesDemo from "./demos/InteractiveMultiSeriesDemo";
+import PerformanceTestDemo from "./demos/PerformanceTestDemo";
 
-function App() {
+interface TabConfig {
+  name: string;
+  component: React.ComponentType;
+  category: "Unified";
+  icon: string;
+}
+
+const tabs: TabConfig[] = [
+  {
+    name: "⚡ Performance Test",
+    component: PerformanceTestDemo,
+    category: "Unified",
+    icon: "⚡",
+  },
+  {
+    name: "🧪 Organized Demo",
+    component: OrganizedScientificDemo,
+    category: "Unified",
+    icon: "🧪",
+  },
+  {
+    name: "📊 Interactive Multi-Series",
+    component: InteractiveMultiSeriesDemo,
+    category: "Unified",
+    icon: "📊",
+  },
+];
+
+const categoryColors = {
+  Unified: "#8b5cf6",
+};
+
+const App: React.FC = () => {
+  const [activeTab, setActiveTab] = useState(0); // Start with Performance Test
+
+  const ActiveComponent = tabs[activeTab].component;
+
   return (
-    <div
-      style={{
-        padding: "20px",
-        maxWidth: "100%",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        gap: "60px",
-      }}
-    >
+    <div style={{ fontFamily: "Arial, sans-serif", minHeight: "100vh" }}>
+      {/* Header */}
       <div
         style={{
-          minHeight: "600px",
-          width: "100%",
-          marginBottom: "40px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "white",
           padding: "20px",
-          backgroundColor: "#fafafa",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         }}
       >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>
-          Temperature Scatter Plot
-        </h2>
-        <div style={{ width: "100%", height: "500px" }}>
-          <TemperatureScatterPlot />
-        </div>
+        <h1
+          style={{ margin: "0 0 10px 0", fontSize: "28px", fontWeight: "bold" }}
+        >
+          🚀 Enhanced UnifiedPlotter Demo
+        </h1>
+        <p style={{ margin: 0, opacity: 0.9, fontSize: "16px" }}>
+          Showcasing performance monitoring, validation, and enhanced features
+        </p>
       </div>
 
+      {/* Tab Navigation */}
       <div
         style={{
-          minHeight: "600px",
-          width: "100%",
-          marginBottom: "40px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          padding: "20px",
-          backgroundColor: "#fafafa",
+          background: "white",
+          borderBottom: "1px solid #e5e7eb",
+          padding: "0 20px",
+          display: "flex",
+          gap: "5px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         }}
       >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>
-          Height vs Temperature Plot (1000 points per curve)
-        </h2>
-        <div style={{ width: "100%", height: "500px" }}>
-          <HeightTemperaturePlot />
-        </div>
+        {tabs.map((tab, index) => (
+          <button
+            key={index}
+            onClick={() => setActiveTab(index)}
+            style={{
+              background:
+                activeTab === index
+                  ? categoryColors[tab.category]
+                  : "transparent",
+              color: activeTab === index ? "white" : "#374151",
+              border: "none",
+              padding: "15px 20px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: activeTab === index ? "600" : "500",
+              borderRadius: activeTab === index ? "8px 8px 0 0" : "0",
+              transition: "all 0.3s ease",
+              transform: activeTab === index ? "translateY(-2px)" : "none",
+              boxShadow:
+                activeTab === index ? "0 -2px 8px rgba(0,0,0,0.1)" : "none",
+            }}
+          >
+            {tab.icon} {tab.name}
+          </button>
+        ))}
       </div>
 
-      <div
-        style={{
-          minHeight: "600px",
-          width: "100%",
-          marginBottom: "40px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          padding: "20px",
-          backgroundColor: "#fafafa",
-        }}
-      >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>
-          Smooth Loading High-Density Plot (100K points per curve - No Browser
-          Freeze)
-        </h2>
-        <div style={{ width: "100%", height: "500px" }}>
-          <SmoothHeightTemperaturePlot />
-        </div>
+      {/* Demo Content - Full Width */}
+      <div style={{ minHeight: "calc(100vh - 140px)" }}>
+        <ActiveComponent />
       </div>
 
+      {/* Footer */}
       <div
         style={{
-          minHeight: "600px",
-          width: "100%",
-          marginBottom: "40px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          padding: "20px",
-          backgroundColor: "#fafafa",
+          background: "#f9fafb",
+          padding: "15px 20px",
+          borderTop: "1px solid #e5e7eb",
+          textAlign: "center",
+          color: "#6b7280",
+          fontSize: "12px",
         }}
       >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>
-          Fuel Consumption Analysis - 3 Variants per Climate (12 curves)
-        </h2>
-        <div style={{ width: "100%", height: "500px" }}>
-          <HeightTemperatureSimplePlot />
-        </div>
-      </div>
-
-      <div
-        style={{
-          minHeight: "600px",
-          width: "100%",
-          marginBottom: "40px",
-          border: "1px solid #e0e0e0",
-          borderRadius: "8px",
-          padding: "20px",
-          backgroundColor: "#fafafa",
-        }}
-      >
-        <h2 style={{ marginBottom: "20px", color: "#333" }}>
-          Fuel Consumption - 5 Line Styles with Same Pressure Scale
-        </h2>
-        <div style={{ width: "100%", height: "500px" }}>
-          <FuelConsumptionSimple />
-        </div>
+        Enhanced UnifiedPlotter v2.0 | Performance Monitoring | Validation
+        System | Accessibility Features
       </div>
     </div>
   );
-}
+};
 
 export default App;
