@@ -92,6 +92,9 @@ export const DEFAULT_INTERACTION_CONFIG: Required<InteractionConfig> = {
   hovermode: "closest", // Show only the closest point, not all points on x-axis
   clickmode: "event+select",
   selectdirection: "any",
+  enableHoverOpacity: false, // Default disabled to avoid unexpected behavior
+  dimmedOpacity: 0.3,
+  highlightOpacity: 1.0,
 };
 
 /**

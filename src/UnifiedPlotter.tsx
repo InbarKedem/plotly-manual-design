@@ -1,5 +1,8 @@
 import Plot from "react-plotly.js";
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback, useEffect } from "react";
+
+// Declare Plotly global type
+declare const Plotly: any;
 
 // Type imports
 import type { UnifiedPlotterProps } from "./types/PlotterTypes";
@@ -72,6 +75,12 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** State for hover opacity feature */
   const [hoveredTrace, setHoveredTrace] = useState<number | null>(null);
 
+  /** Check Plotly availability on mount */
+  useEffect(() => {
+    // Simple check that will work with our new approach
+    console.log("UnifiedPlotter mounted - hover effects will use React state");
+  }, []);
+
   /** Enhanced plot configuration with theme integration */
   const plotConfig = usePlotConfig(config, theme);
 
@@ -81,61 +90,24 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** Custom hover handler for opacity feature */
   const handleCustomHover = useCallback(
     (data: any) => {
-      // Handle hover opacity if enabled
-      if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
-        const traceIndex = data.points[0].curveNumber;
-        if (traceIndex !== hoveredTrace) {
-          setHoveredTrace(traceIndex);
+      try {
+        // Handle hover opacity if enabled
+        if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
+          const traceIndex = data.points[0].curveNumber;
+          console.log("Hover event triggered for trace:", traceIndex);
 
-          // Update trace opacities for entire lines/traces
-          if (plotRef.current) {
-            const update: any = {};
-            const traceIndices: number[] = [];
-
-            // Get all trace indices
-            for (let i = 0; i < plotRef.current.data.length; i++) {
-              traceIndices.push(i);
-            }
-
-            // Update each trace with VERY dramatic visual changes
-            traceIndices.forEach((index) => {
-              const isHovered = index === traceIndex;
-
-              if (isHovered) {
-                // HOVERED LINE: Make it super prominent
-                update[`opacity[${index}]`] = 1.0; // Full opacity
-                update[`line.width[${index}]`] = 8; // Very thick line
-                update[`line.color[${index}]`] = "#FF0000"; // Bright red color
-                update[`line.dash[${index}]`] = "solid"; // Solid style
-                update[`marker.size[${index}]`] = 12; // Large markers
-                update[`marker.opacity[${index}]`] = 1.0;
-                update[`marker.line.width[${index}]`] = 3; // Thick marker border
-                update[`marker.line.color[${index}]`] = "#FFFFFF"; // White border
-              } else {
-                // NON-HOVERED LINES: Make them very faded and thin
-                update[`opacity[${index}]`] = 0.05; // Almost invisible
-                update[`line.width[${index}]`] = 0.5; // Very thin line
-                update[`line.color[${index}]`] = "#CCCCCC"; // Light gray color
-                update[`line.dash[${index}]`] = "dot"; // Dotted style
-                update[`marker.size[${index}]`] = 2; // Tiny markers
-                update[`marker.opacity[${index}]`] = 0.1; // Nearly invisible markers
-              }
-            });
-
-            console.log(
-              "DRAMATIC Hover effect applied to trace:",
-              traceIndex,
-              "with update:",
-              update
-            );
-            plotRef.current.restyle(update, traceIndices);
+          if (traceIndex !== hoveredTrace) {
+            setHoveredTrace(traceIndex);
+            console.log("Setting hovered trace to:", traceIndex);
           }
         }
-      }
 
-      // Call original hover handler
-      if (onPlotHover) {
-        onPlotHover(data);
+        // Call original hover handler
+        if (onPlotHover) {
+          onPlotHover(data);
+        }
+      } catch (error) {
+        console.error("Error in hover handler:", error);
       }
     },
     [interactionConfig, hoveredTrace, onPlotHover]
@@ -143,50 +115,16 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Custom unhover handler to reset opacities */
   const handleCustomUnhover = useCallback(() => {
-    if (interactionConfig.enableHoverOpacity && hoveredTrace !== null) {
-      setHoveredTrace(null);
-
-      // Reset all trace opacities and styles to their original values
-      if (plotRef.current) {
-        const update: any = {};
-        const traceIndices: number[] = [];
-
-        // Get all trace indices
-        for (let i = 0; i < plotRef.current.data.length; i++) {
-          traceIndices.push(i);
-        }
-
-        // Reset each trace to original state
-        traceIndices.forEach((index) => {
-          // Get original data to restore colors
-          const originalData = plotRef.current.data[index];
-
-          // Reset to original appearance
-          update[`opacity[${index}]`] = 1.0;
-          update[`line.width[${index}]`] = 3; // Reset to original width
-          update[`line.dash[${index}]`] = "solid"; // Reset to solid lines
-          update[`marker.size[${index}]`] = 6; // Reset to original size
-          update[`marker.opacity[${index}]`] = 1.0;
-          update[`marker.line.width[${index}]`] = 1; // Reset marker border
-
-          // Reset colors to original (remove the red/gray override)
-          // This will restore the color mapping based on altitude
-          if (
-            originalData.line &&
-            originalData.line.color &&
-            Array.isArray(originalData.line.color)
-          ) {
-            // Don't override if it's already a color array (from color mapping)
-            delete update[`line.color[${index}]`];
-          }
-          if (originalData.marker && originalData.marker.line) {
-            delete update[`marker.line.color[${index}]`];
-          }
-        });
-
-        console.log("DRAMATIC Hover effect reset with update:", update);
-        plotRef.current.restyle(update, traceIndices);
+    console.log("UNHOVER triggered - Resetting to original state");
+    try {
+      if (interactionConfig.enableHoverOpacity && hoveredTrace !== null) {
+        setHoveredTrace(null);
+        console.log(
+          "Hover trace reset to null - plot will re-render with original data"
+        );
       }
+    } catch (error) {
+      console.error("Error in unhover handler:", error);
     }
   }, [interactionConfig, hoveredTrace]);
 
@@ -218,9 +156,66 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     isGenerating,
     totalPointsLoaded,
     isComplete,
-    plotData,
+    plotData: originalPlotData,
     dataStats,
   } = useProgressiveLoading(series, progressiveLoading, createTraces);
+
+  /**
+   * Modified plot data for hover effects
+   * Either returns original data or data with hover modifications
+   */
+  const plotData = useMemo(() => {
+    if (
+      !interactionConfig.enableHoverOpacity ||
+      hoveredTrace === null ||
+      !originalPlotData
+    ) {
+      return originalPlotData;
+    }
+
+    // Create modified data for hover effect
+    return originalPlotData.map((trace: any, index: number) => {
+      const isHovered = index === hoveredTrace;
+
+      if (isHovered) {
+        // Make hovered trace prominent
+        return {
+          ...trace,
+          opacity: 1.0,
+          line: {
+            ...trace.line,
+            width: 8,
+            color: "#FF0000",
+            dash: "solid",
+          },
+          marker: {
+            ...trace.marker,
+            size: 12,
+            color: "#FF0000",
+            opacity: 1.0,
+          },
+        };
+      } else {
+        // Make other traces faded
+        return {
+          ...trace,
+          opacity: 0.05,
+          line: {
+            ...trace.line,
+            width: 0.5,
+            color: "#CCCCCC",
+            dash: "dot",
+          },
+          marker: {
+            ...trace.marker,
+            size: 2,
+            color: "#CCCCCC",
+            opacity: 0.1,
+          },
+        };
+      }
+    });
+  }, [originalPlotData, hoveredTrace, interactionConfig.enableHoverOpacity]);
 
   /**
    * Plotly layout configuration
