@@ -6,6 +6,70 @@
 // and configuration options for creating interactive plots.
 
 /**
+ * Performance configuration for large datasets
+ */
+export interface PerformanceConfig {
+  /** Enable performance optimizations */
+  enabled: boolean;
+  /** Threshold for enabling virtualization */
+  virtualizationThreshold: number;
+  /** Maximum points to render at once */
+  maxRenderPoints: number;
+  /** Enable web workers for data processing */
+  useWebWorkers: boolean;
+  /** Debounce delay for interactions (ms) */
+  debounceMs: number;
+}
+
+/**
+ * Performance metrics tracking
+ */
+export interface PerformanceMetrics {
+  /** Render time in milliseconds */
+  renderTime?: number;
+  /** Data processing time in milliseconds */
+  dataProcessingTime?: number;
+  /** Memory usage estimation in MB */
+  memoryUsage?: number;
+  /** Number of rendered points */
+  renderedPoints?: number;
+  /** Frame rate during interactions */
+  frameRate?: number;
+  /** Last updated timestamp */
+  lastUpdated?: number;
+}
+
+/**
+ * Accessibility configuration
+ */
+export interface AccessibilityConfig {
+  /** Enable screen reader support */
+  screenReader: boolean;
+  /** High contrast mode */
+  highContrast: boolean;
+  /** Keyboard navigation */
+  keyboardNavigation: boolean;
+  /** Alternative text for plot */
+  altText?: string;
+  /** Detailed description for screen readers */
+  description?: string;
+}
+
+/**
+ * Validation configuration
+ */
+export interface ValidationConfig {
+  /** Enable runtime validation */
+  enabled: boolean;
+  /** Validation level: 'strict' | 'normal' | 'permissive' */
+  level: "strict" | "normal" | "permissive";
+  /** Show validation warnings in console */
+  showWarnings: boolean;
+  /** Throw on validation errors */
+  throwOnError: boolean;
+}
+
+/**
  * Represents a single data point in a series
  * Supports 2D and 3D coordinates with optional error bars and hover text
  */
@@ -313,6 +377,12 @@ export interface UnifiedPlotterProps {
   progressiveLoading?: ProgressConfig;
   /** Theme configuration */
   theme?: ThemeConfig;
+  /** Performance optimization settings */
+  performance?: PerformanceConfig;
+  /** Accessibility settings */
+  accessibility?: AccessibilityConfig;
+  /** Validation configuration */
+  validation?: ValidationConfig;
   /** Additional CSS class name */
   className?: string;
   /** Inline styles */
@@ -325,6 +395,10 @@ export interface UnifiedPlotterProps {
   onPlotSelect?: (data: any) => void;
   /** Plot zoom event handler */
   onPlotZoom?: (data: any) => void;
+  /** Plot ready event handler */
+  onPlotReady?: (plotElement: any) => void;
+  /** Error event handler */
+  onError?: (error: Error) => void;
   /** Enable debug information display */
   debug?: boolean;
 }

@@ -5,13 +5,15 @@
 // performance metrics. Useful for development and troubleshooting.
 
 import React from "react";
-import type { DataStats } from "../types/PlotterTypes";
+import type { DataStats, PerformanceMetrics } from "../types/PlotterTypes";
 
 interface DebugPanelProps {
   /** Whether debug mode is enabled */
   debug: boolean;
   /** Data statistics to display */
   dataStats: DataStats | null;
+  /** Performance metrics to display */
+  performanceMetrics?: PerformanceMetrics;
   /** Additional debug information */
   additionalInfo?: Record<string, any>;
 }
@@ -27,6 +29,7 @@ interface DebugPanelProps {
 export const DebugPanel: React.FC<DebugPanelProps> = ({
   debug,
   dataStats,
+  performanceMetrics,
   additionalInfo,
 }) => {
   // Don't render if debug mode is disabled or no data stats
@@ -96,6 +99,32 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
           )}
         </div>
       </div>
+
+      {/* Performance Metrics */}
+      {performanceMetrics && (
+        <div style={{ marginBottom: "6px" }}>
+          <div style={{ color: "#10b981" }}>⚡ Performance</div>
+          <div style={{ marginLeft: "8px", color: "#e5e7eb" }}>
+            {performanceMetrics.renderTime && (
+              <div>Render: {performanceMetrics.renderTime.toFixed(2)}ms</div>
+            )}
+            {performanceMetrics.dataProcessingTime && (
+              <div>
+                Processing: {performanceMetrics.dataProcessingTime.toFixed(2)}ms
+              </div>
+            )}
+            {performanceMetrics.frameRate && (
+              <div>FPS: {performanceMetrics.frameRate.toFixed(1)}</div>
+            )}
+            {performanceMetrics.renderedPoints && (
+              <div>
+                Rendered: {performanceMetrics.renderedPoints.toLocaleString()}{" "}
+                pts
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Additional Debug Information */}
       {additionalInfo && Object.keys(additionalInfo).length > 0 && (

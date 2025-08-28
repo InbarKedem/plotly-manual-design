@@ -198,8 +198,8 @@ export const usePlotConfig = (config: PlotConfig = {}, theme?: ThemeConfig) => {
       showLegend: config.showLegend ?? true,
       legendPosition: config.legendPosition || { x: 1.02, y: 1 },
 
-      // Layout spacing
-      margin: config.margin || { l: 60, r: 180, t: 60, b: 60 },
+      // Layout spacing - optimized for full width
+      margin: config.margin || { l: 80, r: 100, t: 80, b: 80 },
 
       // Responsive behavior
       responsive: config.responsive ?? true,

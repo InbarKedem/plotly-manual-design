@@ -106,9 +106,9 @@ const OrganizedScientificDemo: React.FC = () => {
   const currentTheme = getTheme(selectedTheme);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "system-ui, sans-serif" }}>
+    <div style={{ fontFamily: "system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ marginBottom: "30px" }}>
+      <div style={{ marginBottom: "30px", padding: "20px" }}>
         <h1 style={{ margin: "0 0 10px 0", color: "#1f2937" }}>
           🧪 Organized Scientific Demo
         </h1>

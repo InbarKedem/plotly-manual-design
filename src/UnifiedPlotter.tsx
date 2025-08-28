@@ -22,6 +22,13 @@ import CompletionIndicator from "./components/CompletionIndicator";
 
 // Utilities
 import { createTracesForSeries } from "./utils/traceGeneration";
+import { validatePlotterInputs } from "./utils/validation";
+
+// Performance hooks
+import {
+  usePerformanceMonitoring,
+  useDebouncedInteractions,
+} from "./hooks/usePerformanceHooks";
 
 // Styles
 import "./styles/animations.css";
@@ -56,6 +63,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   progressiveLoading,
   theme,
 
+  // Performance and accessibility props
+  validation,
+
   // Styling props
   className,
   style,
@@ -65,6 +75,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   onPlotHover,
   onPlotSelect,
   onPlotZoom,
+  onError,
 
   // Development props
   debug = false,
@@ -74,6 +85,41 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** State for hover opacity feature */
   const [hoveredTrace, setHoveredTrace] = useState<number | null>(null);
+
+  /** Performance monitoring */
+  const { metrics, startMeasurement, endMeasurement } =
+    usePerformanceMonitoring(series, debug);
+
+  /** Debounced interactions for performance */
+  const { debouncedHover, debouncedZoom } = useDebouncedInteractions(
+    onPlotHover,
+    onPlotZoom
+  );
+
+  /** Validation check on mount and data changes */
+  useEffect(() => {
+    if (validation?.enabled !== false) {
+      const validationResult = validatePlotterInputs(
+        series,
+        config,
+        interactions
+      );
+
+      if (!validationResult.isValid && validation?.throwOnError) {
+        const error = new Error(
+          `Validation failed: ${validationResult.errors
+            .map((e) => e.message)
+            .join(", ")}`
+        );
+        onError?.(error);
+        if (validation.throwOnError) throw error;
+      }
+
+      if (validation?.showWarnings && validationResult.warnings.length > 0) {
+        console.warn("Plotter validation warnings:", validationResult.warnings);
+      }
+    }
+  }, [series, config, interactions, validation, onError]);
 
   /** Check Plotly availability on mount */
   useEffect(() => {
@@ -91,6 +137,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   const handleCustomHover = useCallback(
     (data: any) => {
       try {
+        // Use debounced hover for performance
+        debouncedHover(data);
+
         // Handle hover opacity if enabled
         if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
           const traceIndex = data.points[0].curveNumber;
@@ -133,7 +182,10 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     onPlotClick,
     undefined, // We'll handle hover ourselves
     onPlotSelect,
-    onPlotZoom
+    (data: any) => {
+      debouncedZoom(data); // Use debounced zoom for performance
+      onPlotZoom?.(data);
+    }
   );
 
   /**
@@ -165,6 +217,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
    * Either returns original data or data with hover modifications
    */
   const plotData = useMemo(() => {
+    startMeasurement();
+
     if (
       !interactionConfig.enableHoverOpacity ||
       hoveredTrace === null ||
@@ -174,7 +228,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     }
 
     // Create modified data for hover effect
-    return originalPlotData.map((trace: any, index: number) => {
+    const modifiedData = originalPlotData.map((trace: any, index: number) => {
       const isHovered = index === hoveredTrace;
 
       if (isHovered) {
@@ -215,7 +269,16 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         };
       }
     });
-  }, [originalPlotData, hoveredTrace, interactionConfig.enableHoverOpacity]);
+
+    endMeasurement("renderTime");
+    return modifiedData;
+  }, [
+    originalPlotData,
+    hoveredTrace,
+    interactionConfig.enableHoverOpacity,
+    startMeasurement,
+    endMeasurement,
+  ]);
 
   /**
    * Plotly layout configuration
@@ -351,6 +414,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       <DebugPanel
         debug={debug}
         dataStats={dataStats}
+        performanceMetrics={metrics}
         additionalInfo={{
           "Plot Type": "UnifiedPlotter",
           "Plotly Version": "Latest",
@@ -358,6 +422,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
           "Progressive Loading": progressiveLoading?.enabled
             ? "Enabled"
             : "Disabled",
+          "Performance Monitoring": debug ? "Enabled" : "Disabled",
         }}
       />
 

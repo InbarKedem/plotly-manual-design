@@ -227,14 +227,14 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
       },
       showLegend: true, // Show legend for multiple curves
       legendPosition: { x: 1.15, y: 1 },
-      margin: { l: 80, r: 220, t: 100, b: 80 }, // Extra space for color bar and legend
+      margin: { l: 100, r: 220, t: 100, b: 100 }, // Extra space for color bar and legend, optimized for full width
       width: "100%",
       height: "650px",
     };
   }, [temperatureUnit, speedUnit]);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       {/* Integrated Control Panel */}
       <div
         style={{
@@ -243,11 +243,10 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           justifyContent: "center",
           gap: "25px",
           marginBottom: "25px",
-          padding: "25px",
+          padding: "25px 20px",
           backgroundColor: "#ffffff",
-          borderRadius: "16px",
-          border: "2px solid #e3f2fd",
-          boxShadow: "0 4px 12px rgba(33, 150, 243, 0.15)",
+          borderBottom: "2px solid #e3f2fd",
+          boxShadow: "0 2px 8px rgba(33, 150, 243, 0.1)",
         }}
       >
         <div>
@@ -369,8 +368,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           marginBottom: "25px",
           padding: "20px",
           backgroundColor: "#f3e5f5",
-          borderRadius: "12px",
-          border: "2px solid #9c27b0",
+          borderBottom: "2px solid #9c27b0",
         }}
       >
         <h3
@@ -401,14 +399,12 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
         </p>
       </div>
 
-      {/* Integrated Plot Component */}
+      {/* Full Width Plot Component */}
       <div
         style={{
-          border: "2px solid #e1f5fe",
-          borderRadius: "16px",
-          overflow: "visible",
           backgroundColor: "white",
-          boxShadow: "0 6px 16px rgba(3, 169, 244, 0.2)",
+          overflow: "visible",
+          boxShadow: "0 2px 8px rgba(3, 169, 244, 0.15)",
         }}
       >
         <UnifiedPlotter

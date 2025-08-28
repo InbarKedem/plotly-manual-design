@@ -18,9 +18,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/convert-units": "^2.3.12",
+    "@types/node": "^24.3.0",
     "@types/react": "^17.0.76",
     "@types/react-dom": "^17.0.25",
-    "@types/convert-units": "^2.3.12",
     "@types/react-plotly.js": "^2.6.3",
     "@vitejs/plugin-react": "^5.0.0",
     "eslint": "^9.33.0",
