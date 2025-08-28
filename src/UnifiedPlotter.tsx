@@ -1,11 +1,16 @@
 import Plot from "react-plotly.js";
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
-
-// Declare Plotly global type
-declare const Plotly: any;
+import type { Data, Layout } from "plotly.js";
 
 // Type imports
-import type { UnifiedPlotterProps } from "./types/PlotterTypes";
+import type {
+  UnifiedPlotterProps,
+  PlotlyHoverEvent,
+  PlotlyZoomEvent,
+  PlotlyClickEvent,
+  PlotlySelectEvent,
+  SeriesConfig,
+} from "./types/PlotterTypes";
 
 // Custom hooks
 import {
@@ -81,7 +86,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   debug = false,
 }) => {
   /** Reference to the Plotly component for direct access */
-  const plotRef = useRef<any>(null);
+  const plotRef = useRef<Plot>(null);
 
   /** State for hover opacity feature */
   const [hoveredTrace, setHoveredTrace] = useState<number | null>(null);
@@ -92,8 +97,12 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Debounced interactions for performance */
   const { debouncedHover, debouncedZoom } = useDebouncedInteractions(
-    onPlotHover,
+    onPlotHover
+      ? (data: PlotlyHoverEvent) => onPlotHover(data)
+      : undefined,
     onPlotZoom
+      ? (data: PlotlyZoomEvent) => onPlotZoom(data)
+      : undefined
   );
 
   /** Validation check on mount and data changes */
@@ -135,14 +144,16 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Custom hover handler for opacity feature */
   const handleCustomHover = useCallback(
-    (data: any) => {
+    (data: unknown) => {
       try {
+        const hoverData = data as { points?: Array<{ curveNumber: number }> };
+
         // Use debounced hover for performance
-        debouncedHover(data);
+        debouncedHover(data as PlotlyHoverEvent);
 
         // Handle hover opacity if enabled
-        if (interactionConfig.enableHoverOpacity && data?.points?.[0]) {
-          const traceIndex = data.points[0].curveNumber;
+        if (interactionConfig.enableHoverOpacity && hoverData?.points?.[0]) {
+          const traceIndex = hoverData.points[0].curveNumber;
 
           if (traceIndex !== hoveredTrace) {
             setHoveredTrace(traceIndex);
@@ -151,7 +162,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
         // Call original hover handler
         if (onPlotHover) {
-          onPlotHover(data);
+          onPlotHover(data as PlotlyHoverEvent);
         }
       } catch (error) {
         console.error("Error in hover handler:", error);
@@ -173,10 +184,14 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Event handlers with proper memoization */
   const { handleClick, handleSelect, handleZoom } = usePlotEvents(
-    onPlotClick,
+    onPlotClick
+      ? (data: PlotlyClickEvent) => onPlotClick(data)
+      : undefined,
     undefined, // We'll handle hover ourselves
-    onPlotSelect,
-    (data: any) => {
+    onPlotSelect
+      ? (data: PlotlySelectEvent) => onPlotSelect(data)
+      : undefined,
+    (data: PlotlyZoomEvent) => {
       debouncedZoom(data); // Use debounced zoom for performance
       onPlotZoom?.(data);
     }
@@ -187,7 +202,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
    * Memoized to prevent recreation on every render
    */
   const createTraces = useMemo(
-    () => (seriesConfig: any, seriesIndex: number) =>
+    () => (seriesConfig: SeriesConfig, seriesIndex: number) =>
       createTracesForSeries(seriesConfig, seriesIndex, theme, plotConfig),
     [theme, plotConfig]
   );
@@ -222,47 +237,50 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     }
 
     // Create modified data for hover effect
-    const modifiedData = originalPlotData.map((trace: any, index: number) => {
-      const isHovered = index === hoveredTrace;
+    const modifiedData = (originalPlotData as Data[]).map(
+      (trace, index: number) => {
+        const isHovered = index === hoveredTrace;
+        const traceRecord = trace as Record<string, any>;
 
-      if (isHovered) {
-        // Make hovered trace prominent
-        return {
-          ...trace,
-          opacity: 1.0,
-          line: {
-            ...trace.line,
-            width: 8,
-            color: "#FF0000",
-            dash: "solid",
-          },
-          marker: {
-            ...trace.marker,
-            size: 12,
-            color: "#FF0000",
+        if (isHovered) {
+          // Make hovered trace prominent
+          return {
+            ...trace,
             opacity: 1.0,
-          },
-        };
-      } else {
-        // Make other traces faded
-        return {
-          ...trace,
-          opacity: 0.05,
-          line: {
-            ...trace.line,
-            width: 0.5,
-            color: "#CCCCCC",
-            dash: "dot",
-          },
-          marker: {
-            ...trace.marker,
-            size: 2,
-            color: "#CCCCCC",
-            opacity: 0.1,
-          },
-        };
+            line: {
+              ...(traceRecord.line || {}),
+              width: 8,
+              color: "#FF0000",
+              dash: "solid",
+            },
+            marker: {
+              ...(traceRecord.marker || {}),
+              size: 12,
+              color: "#FF0000",
+              opacity: 1.0,
+            },
+          };
+        } else {
+          // Make other traces faded
+          return {
+            ...trace,
+            opacity: 0.05,
+            line: {
+              ...(traceRecord.line || {}),
+              width: 0.5,
+              color: "#CCCCCC",
+              dash: "dot",
+            },
+            marker: {
+              ...(traceRecord.marker || {}),
+              size: 2,
+              color: "#CCCCCC",
+              opacity: 0.1,
+            },
+          };
+        }
       }
-    });
+    );
 
     endMeasurement("renderTime");
     return modifiedData;
@@ -423,8 +441,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       <Plot
         ref={plotRef}
         // Data and layout
-        data={plotData}
-        layout={plotLayout}
+        data={plotData as Data[]}
+        layout={plotLayout as Partial<Layout>}
         config={plotlyConfig}
         // Styling
         style={{ width: "100%", height: "100%" }}

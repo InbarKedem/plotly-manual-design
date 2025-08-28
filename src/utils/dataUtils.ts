@@ -36,15 +36,18 @@ export const calculateDataStats = (series: SeriesConfig[]): DataStats => {
   // Estimate memory usage (rough calculation for visualization purposes)
   // Each data point roughly takes ~100 bytes considering object overhead
   const estimatedBytes = totalPoints * 100;
-  const memoryUsage = formatBytes(estimatedBytes);
+  const memoryUsage = estimatedBytes / (1024 * 1024); // Convert to MB
 
   return {
     totalPoints,
+    processedPoints: totalPoints,
     seriesCount,
+    memoryUsage,
+    processingTime: 0, // Will be set by caller if needed
     xRange,
     yRange,
     zRange,
-    memoryUsage,
+    memoryUsageMB: formatBytes(estimatedBytes),
   };
 };
 
@@ -128,7 +131,7 @@ export const calculateStatistics = (values: number[]) => {
  * @param wait - Wait time in milliseconds
  * @returns Debounced function
  */
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
@@ -146,7 +149,7 @@ export const debounce = <T extends (...args: any[]) => any>(
  * @param limit - Time limit in milliseconds
  * @returns Throttled function
  */
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
@@ -174,7 +177,9 @@ export const deepClone = <T>(obj: T): T => {
   if (typeof obj === "object") {
     const cloned = {} as T;
     Object.keys(obj).forEach((key) => {
-      (cloned as any)[key] = deepClone((obj as any)[key]);
+      (cloned as Record<string, unknown>)[key] = deepClone(
+        (obj as Record<string, unknown>)[key]
+      );
     });
     return cloned;
   }
@@ -205,7 +210,7 @@ export const linspace = (
  * @param value - Value to check
  * @returns True if value is a valid finite number
  */
-export const isValidNumber = (value: any): value is number => {
+export const isValidNumber = (value: unknown): value is number => {
   return typeof value === "number" && isFinite(value) && !isNaN(value);
 };
 

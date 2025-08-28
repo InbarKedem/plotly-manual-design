@@ -33,7 +33,7 @@ export interface PerformanceMetrics {
 /**
  * Hook for debounced callbacks
  */
-export const useDebouncedCallback = <T extends (...args: any[]) => any>(
+export const useDebouncedCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number,
   deps: React.DependencyList
@@ -58,7 +58,7 @@ export const useMemoizedDataProcessing = <TInput, TOutput>(
 /**
  * Simple debounce implementation
  */
-function debounce<T extends (...args: any[]) => void>(
+function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -66,7 +66,7 @@ function debounce<T extends (...args: any[]) => void>(
 
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait) as any;
+    timeout = setTimeout(() => func(...args), wait) as unknown as number;
   };
 }
 

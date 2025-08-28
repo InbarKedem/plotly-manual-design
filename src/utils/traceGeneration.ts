@@ -8,7 +8,12 @@ import type {
   SeriesConfig,
   ThemeConfig,
   PlotConfig,
+  ErrorBarOptions,
+  DataPoint,
+  MarkerOptions,
+  LineOptions,
 } from "../types/PlotterTypes";
+import type { Data } from "plotly.js";
 import { MODERN_COLORSCALES } from "./colorscales";
 import { DEFAULT_SERIES_CONFIG } from "../config/defaults";
 
@@ -23,7 +28,7 @@ export const createAllTraces = (
   series: SeriesConfig[],
   theme?: ThemeConfig,
   plotConfig?: PlotConfig
-): any[] => {
+): Data[] => {
   return series.flatMap((seriesConfig, index) =>
     createTracesForSeries(seriesConfig, index, theme, plotConfig)
   );
@@ -45,7 +50,7 @@ export const createTracesForSeries = (
   seriesIndex: number,
   theme?: ThemeConfig,
   plotConfig?: PlotConfig
-): any[] => {
+): Data[] => {
   const {
     name,
     data,
@@ -78,7 +83,7 @@ export const createTracesForSeries = (
   const zValues = data.map((d) => d.z);
   const textValues = data.map((d) => d.text);
 
-  const traces: any[] = [];
+  const traces: Data[] = [];
 
   // ==========================================================================
   // GRADIENT LINES IMPLEMENTATION
@@ -93,7 +98,7 @@ export const createTracesForSeries = (
         x: [xValues[i], xValues[i + 1]],
         y: [yValues[i], yValues[i + 1]],
         mode: "lines",
-        type: type,
+        type: type as Data["type"],
         name: i === 0 ? `${name} (gradient)` : "", // Only show legend for first segment
         line: {
           width: line.width || 2,
@@ -103,19 +108,19 @@ export const createTracesForSeries = (
         },
         showlegend: i === 0 && showInLegend,
         hoverinfo: "skip", // Skip hover for gradient segments
-      });
+      } as Data);
     }
   }
 
   // ==========================================================================
   // MAIN TRACE CONFIGURATION
   // ==========================================================================
-  const mainTrace: any = {
+  const mainTrace = {
     x: xValues,
     y: yValues,
     // Remove 'lines' from mode if using gradient lines to avoid duplication
     mode: gradientLines && connectDots ? mode.replace("lines+", "") : mode,
-    type: type,
+    type: type as Data["type"],
     name: `${name} (${data.length.toLocaleString()} pts)`,
     showlegend: showInLegend,
     text: textValues,
@@ -132,14 +137,14 @@ export const createTracesForSeries = (
   // LINE CONFIGURATION
   // ==========================================================================
   if (mode.includes("lines") && !(gradientLines && connectDots)) {
-    mainTrace.line = createLineConfig(line, theme);
+    (mainTrace as Record<string, unknown>).line = createLineConfig(line, theme);
   }
 
   // ==========================================================================
   // MARKER CONFIGURATION
   // ==========================================================================
   if (mode.includes("markers")) {
-    mainTrace.marker = createMarkerConfig(
+    (mainTrace as Record<string, unknown>).marker = createMarkerConfig(
       marker,
       data,
       line,
@@ -153,10 +158,15 @@ export const createTracesForSeries = (
   // ERROR BARS CONFIGURATION
   // ==========================================================================
   if (errorBars) {
-    addErrorBars(mainTrace, errorBars, data, plotConfig);
+    addErrorBars(
+      mainTrace as Record<string, unknown>,
+      errorBars,
+      data,
+      plotConfig
+    );
   }
 
-  traces.push(mainTrace);
+  traces.push(mainTrace as Data);
   return traces;
 };
 
@@ -164,80 +174,106 @@ export const createTracesForSeries = (
  * Determine color for gradient line segments
  */
 const determineSegmentColor = (
-  marker: any,
-  zValues: any[],
-  line: any,
+  marker: MarkerOptions,
+  zValues: (number | string | undefined)[],
+  line: LineOptions,
   theme?: ThemeConfig
-): string | any[] => {
-  if (marker.colorFeature && zValues.some((z) => z != null)) {
-    return zValues;
+): string | (number | string)[] => {
+  const markerObj = marker;
+  const lineObj = line;
+
+  if (markerObj.colorFeature && zValues.some((z) => z != null)) {
+    return zValues as (number | string)[];
   }
-  return line.color || theme?.primary || "#3b82f6";
+  return (lineObj.color as string) || theme?.primary || "#3b82f6";
 };
 
 /**
  * Create line configuration object
  */
-const createLineConfig = (line: any, theme?: ThemeConfig) => ({
-  width: line.width || 2,
-  color: line.color || theme?.primary || "#3b82f6",
-  dash: line.dash || "solid",
-  shape: line.shape || "spline", // Use spline for smooth curves by default
-  smoothing: line.smoothing !== undefined ? line.smoothing : 0.8, // Default smoothing
-});
+const createLineConfig = (line: LineOptions, theme?: ThemeConfig) => {
+  const lineObj = line;
+  return {
+    width: lineObj.width || 2,
+    color: lineObj.color || theme?.primary || "#3b82f6",
+    dash: lineObj.dash || "solid",
+    shape: lineObj.shape || "spline", // Use spline for smooth curves by default
+    smoothing: lineObj.smoothing !== undefined ? lineObj.smoothing : 0.8, // Default smoothing
+  };
+};
 
 /**
  * Create marker configuration object with color mapping support
  */
 const createMarkerConfig = (
-  marker: any,
-  data: any[],
-  line: any,
+  marker: MarkerOptions,
+  data: DataPoint[],
+  line: LineOptions,
   theme?: ThemeConfig,
   plotConfig?: PlotConfig,
   seriesIndex: number = 0
 ) => {
-  const markerConfig: any = {
-    size: marker.size || 6,
-    symbol: marker.symbol || "circle",
-    opacity: marker.opacity || 0.8,
-    line: marker.line,
+  const markerObj = marker;
+  const lineObj = line;
+
+  interface MarkerConfig {
+    size?: number | number[];
+    symbol?: string | string[];
+    opacity?: number;
+    line?: any;
+    color?: any; // Allow flexible color types for Plotly compatibility
+    colorscale?: string | any[][];
+    showscale?: boolean;
+    colorbar?: any;
+    cmin?: number;
+    cmax?: number;
+  }
+
+  const markerConfig: MarkerConfig = {
+    size: markerObj.size || 6,
+    symbol: markerObj.symbol || "circle",
+    opacity: markerObj.opacity || 0.8,
+    line: markerObj.line,
   };
 
   // ==========================================================================
   // COLOR MAPPING CONFIGURATION
   // ==========================================================================
   if (
-    marker.colorFeature &&
-    data.some((d) => d[marker.colorFeature!] != null)
+    markerObj.colorFeature &&
+    data.some((d) => (d as DataPoint)[markerObj.colorFeature as string] != null)
   ) {
-    const colorValues = data.map((d) => d[marker.colorFeature!]);
+    const colorValues = data.map(
+      (d) => d[markerObj.colorFeature as string]
+    );
     const colorMin =
-      marker.colorMin ?? Math.min(...colorValues.filter((v) => v != null));
+      (markerObj.colorMin as number) ??
+      Math.min(...(colorValues.filter((v) => v != null) as number[]));
     const colorMax =
-      marker.colorMax ?? Math.max(...colorValues.filter((v) => v != null));
+      (markerObj.colorMax as number) ??
+      Math.max(...(colorValues.filter((v) => v != null) as number[]));
 
     markerConfig.color = colorValues;
 
     // Apply colorscale
     if (
-      marker.colorScale &&
-      typeof marker.colorScale === "string" &&
-      marker.colorScale in MODERN_COLORSCALES
+      markerObj.colorScale &&
+      typeof markerObj.colorScale === "string" &&
+      markerObj.colorScale in MODERN_COLORSCALES
     ) {
       markerConfig.colorscale =
         MODERN_COLORSCALES[
-          marker.colorScale as keyof typeof MODERN_COLORSCALES
+          markerObj.colorScale as keyof typeof MODERN_COLORSCALES
         ];
     } else {
-      markerConfig.colorscale = marker.colorScale || "viridis";
+      markerConfig.colorscale = (markerObj.colorScale as string) || "viridis";
     }
 
     // Show colorbar only for first series to avoid clutter
-    markerConfig.showscale = marker.showColorBar && seriesIndex === 0;
+    markerConfig.showscale = markerObj.showColorBar && seriesIndex === 0;
 
     if (markerConfig.showscale) {
-      markerConfig.colorbar = createColorBarConfig(marker, plotConfig);
+      markerConfig.colorbar = createColorBarConfig(markerObj, plotConfig);
     }
 
     markerConfig.cmin = colorMin;
@@ -245,7 +281,10 @@ const createMarkerConfig = (
   } else {
     // Use solid color
     markerConfig.color =
-      marker.color || line.color || theme?.primary || "#3b82f6";
+      (markerObj.color as string) ||
+      (lineObj.color as string) ||
+      theme?.primary ||
+      "#3b82f6";
   }
 
   return markerConfig;
@@ -254,7 +293,10 @@ const createMarkerConfig = (
 /**
  * Create colorbar configuration
  */
-const createColorBarConfig = (marker: any, plotConfig?: PlotConfig) => ({
+const createColorBarConfig = (
+  marker: MarkerOptions,
+  plotConfig?: PlotConfig
+) => ({
   title: {
     text: marker.colorBarTitle || marker.colorFeature,
     font: {
@@ -279,9 +321,9 @@ const createColorBarConfig = (marker: any, plotConfig?: PlotConfig) => ({
  * Add error bars to trace configuration
  */
 const addErrorBars = (
-  trace: any,
-  errorBars: any,
-  data: any[],
+  trace: Record<string, unknown>,
+  errorBars: ErrorBarOptions,
+  data: DataPoint[],
   plotConfig?: PlotConfig
 ) => {
   if (errorBars.x?.visible) {

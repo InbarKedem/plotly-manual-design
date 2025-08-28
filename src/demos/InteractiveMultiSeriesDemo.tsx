@@ -179,7 +179,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
         name: curveNames[curveIndex],
         data: convertedData,
         type: "scatter",
-        mode: "markers+lines" as any, // Use both markers and lines to show color mapping
+        mode: "lines+markers" as const, // Use both markers and lines to show color mapping
         marker: {
           size: 8,
           colorFeature: "z", // Use the z property (altitude) for coloring

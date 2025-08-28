@@ -15,7 +15,7 @@ interface DebugPanelProps {
   /** Performance metrics to display */
   performanceMetrics?: PerformanceMetrics;
   /** Additional debug information */
-  additionalInfo?: Record<string, any>;
+  additionalInfo?: Record<string, string | number | boolean>;
 }
 
 /**

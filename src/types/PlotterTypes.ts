@@ -5,6 +5,79 @@
 // UnifiedPlotter component system. These types define the data structures
 // and configuration options for creating interactive plots.
 
+import type {
+  Data,
+  Layout,
+  Config,
+  PlotDatum,
+  Annotations,
+  Shape,
+} from "plotly.js";
+
+/**
+ * Plotly event types - properly typed versions of Plotly's event data
+ */
+export interface PlotlyClickEvent {
+  points: PlotDatum[];
+  event: MouseEvent;
+}
+
+export interface PlotlyHoverEvent {
+  points: PlotDatum[];
+  event: MouseEvent;
+  xvals: Array<number | string>;
+  yvals: Array<number | string>;
+}
+
+export interface PlotlySelectEvent {
+  points: PlotDatum[];
+  range?: {
+    x: number[];
+    y: number[];
+  };
+}
+
+export interface PlotlyZoomEvent {
+  "xaxis.range[0]"?: number;
+  "xaxis.range[1]"?: number;
+  "yaxis.range[0]"?: number;
+  "yaxis.range[1]"?: number;
+}
+
+/**
+ * Statistics for data loading/processing operations
+ */
+export interface DataStats {
+  totalPoints: number;
+  processedPoints: number;
+  seriesCount: number;
+  memoryUsage?: number;
+  processingTime?: number;
+  /** X-axis data range */
+  xRange: [number, number];
+  /** Y-axis data range */
+  yRange: [number, number];
+  /** Z-axis data range (if applicable) */
+  zRange: [number, number] | null;
+  /** Estimated memory usage in MB */
+  memoryUsageMB: string;
+}
+
+/**
+ * Plotly trace configuration - properly typed
+ */
+export type PlotlyTrace = Data;
+
+/**
+ * Plotly layout configuration - properly typed
+ */
+export type PlotlyLayout = Partial<Layout>;
+
+/**
+ * Plotly configuration - properly typed
+ */
+export type PlotlyConfig = Partial<Config>;
+
 /**
  * Performance configuration for large datasets
  */
@@ -89,7 +162,7 @@ export interface DataPoint {
   /** Custom hover template for this specific point */
   hovertemplate?: string;
   /** Additional custom properties */
-  [key: string]: any;
+  [key: string]: string | number | boolean | undefined;
 }
 
 /**
@@ -211,7 +284,11 @@ export interface SeriesConfig {
   /** Text position relative to markers */
   textposition?: string;
   /** Text font configuration */
-  textfont?: any;
+  textfont?: {
+    family?: string;
+    size?: number;
+    color?: string;
+  };
   /** Overall series opacity */
   opacity?: number;
 }
@@ -283,9 +360,9 @@ export interface PlotConfig {
     color?: string;
   };
   /** Plot annotations */
-  annotations?: any[];
+  annotations?: Annotations[];
   /** Plot shapes */
-  shapes?: any[];
+  shapes?: Shape[];
 }
 
 /**
@@ -337,10 +414,10 @@ export interface ProgressConfig {
     progress: number,
     phase: string,
     pointsLoaded: number,
-    stats?: any
+    stats?: DataStats
   ) => void;
   /** Completion callback function */
-  onComplete?: (totalPoints: number, stats?: any) => void;
+  onComplete?: (totalPoints: number, stats?: DataStats) => void;
 }
 
 /**
@@ -388,35 +465,17 @@ export interface UnifiedPlotterProps {
   /** Inline styles */
   style?: React.CSSProperties;
   /** Plot click event handler */
-  onPlotClick?: (data: any) => void;
+  onPlotClick?: (data: PlotlyClickEvent) => void;
   /** Plot hover event handler */
-  onPlotHover?: (data: any) => void;
+  onPlotHover?: (data: PlotlyHoverEvent) => void;
   /** Plot selection event handler */
-  onPlotSelect?: (data: any) => void;
+  onPlotSelect?: (data: PlotlySelectEvent) => void;
   /** Plot zoom event handler */
-  onPlotZoom?: (data: any) => void;
+  onPlotZoom?: (data: PlotlyZoomEvent) => void;
   /** Plot ready event handler */
-  onPlotReady?: (plotElement: any) => void;
+  onPlotReady?: (plotElement: HTMLDivElement) => void;
   /** Error event handler */
   onError?: (error: Error) => void;
   /** Enable debug information display */
   debug?: boolean;
-}
-
-/**
- * Data statistics interface for debugging and monitoring
- */
-export interface DataStats {
-  /** Total number of data points across all series */
-  totalPoints: number;
-  /** Number of data series */
-  seriesCount: number;
-  /** X-axis data range */
-  xRange: [number, number];
-  /** Y-axis data range */
-  yRange: [number, number];
-  /** Z-axis data range (if applicable) */
-  zRange: [number, number] | null;
-  /** Estimated memory usage */
-  memoryUsage: string;
 }

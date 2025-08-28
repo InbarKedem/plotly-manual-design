@@ -8,6 +8,8 @@ import type {
   SeriesConfig,
   DataPoint,
   PerformanceConfig,
+  PlotlyHoverEvent,
+  PlotlyZoomEvent,
 } from "../types/PlotterTypes";
 import {
   PERFORMANCE_THRESHOLDS,
@@ -59,35 +61,35 @@ export const useVirtualization = (
  * Hook for debounced interactions
  */
 export const useDebouncedInteractions = (
-  onHover?: (data: any) => void,
-  onZoom?: (data: any) => void,
+  onHover?: (data: PlotlyHoverEvent) => void,
+  onZoom?: (data: PlotlyZoomEvent) => void,
   debounceMs: number = PERFORMANCE_THRESHOLDS.HOVER_DEBOUNCE_MS
 ) => {
   const hoverTimeoutRef = useRef<number>();
   const zoomTimeoutRef = useRef<number>();
 
   const debouncedHover = useCallback(
-    (data: any) => {
+    (data: PlotlyHoverEvent) => {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
       }
 
-      hoverTimeoutRef.current = setTimeout(() => {
+      hoverTimeoutRef.current = window.setTimeout(() => {
         onHover?.(data);
-      }, debounceMs) as any;
+      }, debounceMs);
     },
     [onHover, debounceMs]
   );
 
   const debouncedZoom = useCallback(
-    (data: any) => {
+    (data: PlotlyZoomEvent) => {
       if (zoomTimeoutRef.current) {
         clearTimeout(zoomTimeoutRef.current);
       }
 
-      zoomTimeoutRef.current = setTimeout(() => {
+      zoomTimeoutRef.current = window.setTimeout(() => {
         onZoom?.(data);
-      }, PERFORMANCE_THRESHOLDS.RESIZE_DEBOUNCE_MS) as any;
+      }, PERFORMANCE_THRESHOLDS.RESIZE_DEBOUNCE_MS);
     },
     [onZoom]
   );

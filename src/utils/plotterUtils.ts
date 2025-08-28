@@ -138,14 +138,14 @@ export const calculateOptimalChunkSize = (totalPoints: number): number => {
 /**
  * Debounce function for performance optimization
  */
-export const debounce = <T extends (...args: any[]) => void>(
+export const debounce = <T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout | number | undefined;
 
   return (...args: Parameters<T>) => {
-    clearTimeout(timeout as any);
+    clearTimeout(timeout as number);
     timeout = setTimeout(() => func(...args), wait);
   };
 };

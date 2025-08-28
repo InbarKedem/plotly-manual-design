@@ -12,7 +12,12 @@ import type {
   ProgressConfig,
   ThemeConfig,
   DataStats,
+  PlotlyClickEvent,
+  PlotlyHoverEvent,
+  PlotlySelectEvent,
+  PlotlyZoomEvent,
 } from "../types/PlotterTypes";
+import type { Data } from "plotly.js";
 import { calculateDataStats } from "../utils/dataUtils";
 
 /**
@@ -22,14 +27,14 @@ import { calculateDataStats } from "../utils/dataUtils";
 export const useProgressiveLoading = (
   series: SeriesConfig[],
   progressConfig?: ProgressConfig,
-  onTraceCreated?: (seriesConfig: SeriesConfig, seriesIndex: number) => any[]
+  onTraceCreated?: (seriesConfig: SeriesConfig, seriesIndex: number) => Data[]
 ) => {
   const [progress, setProgress] = useState(0);
   const [currentPhase, setCurrentPhase] = useState("Ready");
   const [isGenerating, setIsGenerating] = useState(false);
   const [totalPointsLoaded, setTotalPointsLoaded] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [plotData, setPlotData] = useState<any[]>([]);
+  const [plotData, setPlotData] = useState<Data[]>([]);
   const [dataStats, setDataStats] = useState<DataStats | null>(null);
   const loadingRef = useRef(false);
 
@@ -68,7 +73,7 @@ export const useProgressiveLoading = (
     const chunkSize = progressConfig.chunkSize || 50;
     const totalPoints = series.reduce((sum, s) => sum + s.data.length, 0);
     let loadedPoints = 0;
-    const traces: any[] = [];
+    const traces: Data[] = [];
 
     try {
       // Process each series
@@ -255,13 +260,13 @@ export const useInteractionConfig = (interactions: InteractionConfig = {}) => {
  * Hook for managing plot event handlers
  */
 export const usePlotEvents = (
-  onPlotClick?: (data: any) => void,
-  onPlotHover?: (data: any) => void,
-  onPlotSelect?: (data: any) => void,
-  onPlotZoom?: (data: any) => void
+  onPlotClick?: (data: PlotlyClickEvent) => void,
+  onPlotHover?: (data: PlotlyHoverEvent) => void,
+  onPlotSelect?: (data: PlotlySelectEvent) => void,
+  onPlotZoom?: (data: PlotlyZoomEvent) => void
 ) => {
   const handleClick = useCallback(
-    (data: any) => {
+    (data: PlotlyClickEvent) => {
       if (onPlotClick) {
         onPlotClick(data);
       }
@@ -270,7 +275,7 @@ export const usePlotEvents = (
   );
 
   const handleHover = useCallback(
-    (data: any) => {
+    (data: PlotlyHoverEvent) => {
       if (onPlotHover) {
         onPlotHover(data);
       }
@@ -279,7 +284,7 @@ export const usePlotEvents = (
   );
 
   const handleSelect = useCallback(
-    (data: any) => {
+    (data: PlotlySelectEvent) => {
       if (onPlotSelect) {
         onPlotSelect(data);
       }
@@ -288,7 +293,7 @@ export const usePlotEvents = (
   );
 
   const handleZoom = useCallback(
-    (data: any) => {
+    (data: PlotlyZoomEvent) => {
       if (onPlotZoom) {
         onPlotZoom(data);
       }
