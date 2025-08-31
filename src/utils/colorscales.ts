@@ -86,6 +86,19 @@ export const MODERN_COLORSCALES: Record<string, ColorScale> = {
     [0.83, "#4b0082"], // Indigo
     [1, "#9400d3"], // Violet
   ],
+
+  /**
+   * Red to Gray colorscale - for curve colorbar feature
+   * Red through orange to gray
+   * Provides good contrast for curve distinction
+   */
+  redgray: [
+    [0, "#dc2626"], // Red
+    [0.25, "#ea580c"], // Orange-red
+    [0.5, "#f97316"], // Orange
+    [0.75, "#94a3b8"], // Light gray
+    [1, "#64748b"], // Gray
+  ],
 };
 
 /**
@@ -154,12 +167,15 @@ export const createCustomColorScale = (colors: string[]): ColorScale => {
  * Generate colors for curves using a gradient distribution
  * @param curveCount - Number of curves to generate colors for
  * @param colorScale - Color scale to use for generation
+ * @param colorPalette - Optional custom color palette
+ * @param colorBarValues - Values used for colorbar mapping (for consistent coloring)
  * @returns Array of colors for each curve
  */
 export const generateCurveColors = (
   curveCount: number,
   colorScale?: string | ColorScale,
-  colorPalette?: string[]
+  colorPalette?: string[],
+  colorBarValues?: number[]
 ): string[] => {
   if (colorPalette && colorPalette.length > 0) {
     // Use provided palette, cycling through if needed
@@ -178,6 +194,20 @@ export const generateCurveColors = (
     typeof colorScale === "string"
       ? MODERN_COLORSCALES[colorScale] || MODERN_COLORSCALES.viridis
       : colorScale || MODERN_COLORSCALES.viridis;
+
+  // If colorBarValues are provided, use them to ensure consistent mapping with colorbar
+  if (colorBarValues && colorBarValues.length >= curveCount) {
+    const minValue = Math.min(...colorBarValues);
+    const maxValue = Math.max(...colorBarValues);
+    const valueRange = maxValue - minValue;
+
+    return Array.from({ length: curveCount }, (_, index) => {
+      const curveValue = colorBarValues[index] || index;
+      const position =
+        valueRange === 0 ? 0 : (curveValue - minValue) / valueRange;
+      return interpolateColorScale(scale, position);
+    });
+  }
 
   return Array.from({ length: curveCount }, (_, index) => {
     const position = curveCount === 1 ? 0 : index / (curveCount - 1);

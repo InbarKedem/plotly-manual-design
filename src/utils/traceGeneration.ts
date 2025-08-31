@@ -44,7 +44,8 @@ export const createAllTraces = (
     ? generateCurveColors(
         series.length,
         curveColoring.colorScale,
-        curveColoring.colorPalette
+        curveColoring.colorPalette,
+        curveColoring.colorBarValues
       )
     : [];
 
@@ -52,7 +53,8 @@ export const createAllTraces = (
     ? generateCurveLineStyles(series.length, curveLineStyles.stylePattern)
     : [];
 
-  return series.flatMap((seriesConfig, index) =>
+  // Generate main traces
+  const mainTraces = series.flatMap((seriesConfig, index) =>
     createTracesForSeries(
       seriesConfig,
       index,
@@ -62,6 +64,45 @@ export const createAllTraces = (
       curveLineStyles?.enabled ? lineStyles[index] : undefined
     )
   );
+
+  // Add color bar trace if curve coloring with color bar is enabled
+  if (
+    curveColoring?.enabled &&
+    curveColoring?.showColorBar &&
+    curveColors.length > 0
+  ) {
+    const minValue = curveColoring.colorBarValues?.[0] || 0;
+    const maxValue =
+      curveColoring.colorBarValues?.[curveColoring.colorBarValues.length - 1] ||
+      series.length - 1;
+
+    const colorBarTrace: Data = {
+      x: [null],
+      y: [null],
+      mode: "markers",
+      marker: {
+        colorscale: curveColoring.colorScale || "redgray",
+        cmin: minValue,
+        cmax: maxValue,
+        colorbar: {
+          title: curveColoring.colorBarTitle || "Curve Index",
+          titleside: "right",
+          thickness: 15,
+          len: 0.7,
+          x: 1.02,
+          xanchor: "left",
+        },
+        showscale: true,
+        opacity: 0, // Make the trace invisible
+      },
+      showlegend: false,
+      hoverinfo: "skip",
+    } as any;
+
+    return [...mainTraces, colorBarTrace];
+  }
+
+  return mainTraces;
 };
 
 /**

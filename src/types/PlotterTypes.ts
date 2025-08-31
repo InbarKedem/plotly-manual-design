@@ -195,6 +195,12 @@ export interface CurveColoringConfig {
   colorScale?: string | Array<[number, string]>;
   /** How to distribute colors: 'sequential' or 'gradient' */
   distribution?: "sequential" | "gradient";
+  /** Show color bar for curve coloring */
+  showColorBar?: boolean;
+  /** Color bar title */
+  colorBarTitle?: string;
+  /** Values to map to colors (for color bar) */
+  colorBarValues?: number[];
 }
 
 /**

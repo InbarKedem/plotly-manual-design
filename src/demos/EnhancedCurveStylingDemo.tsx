@@ -15,45 +15,90 @@ import type {
  */
 const EnhancedCurveStylingDemo: React.FC = () => {
   const [activeFeature, setActiveFeature] = useState<
-    "curves" | "lines" | "points"
+    "curves" | "lines" | "points" | "colorbar"
   >("curves");
 
   // Sample data for multiple curves
   const generateSampleData = () => {
     const curves: SeriesConfig[] = [];
 
-    // Generate 5 different curves with different mathematical functions
-    for (let i = 0; i < 5; i++) {
+    // For colorbar feature, generate 15 curves (3 per line style), otherwise 5
+    const curveCount = activeFeature === "colorbar" ? 15 : 5;
+
+    for (let i = 0; i < curveCount; i++) {
       const data = [];
       for (let x = 0; x <= 100; x += 2) {
         let y;
         let z = Math.random() * 50 + 25; // Random z values for color mapping
 
-        switch (i) {
-          case 0:
-            y = Math.sin(x * 0.1) * 20 + 50;
-            break;
-          case 1:
-            y = Math.cos(x * 0.08) * 15 + 40;
-            break;
-          case 2:
-            y = Math.log(x + 1) * 10 + 30;
-            break;
-          case 3:
-            y = Math.sqrt(x) * 5 + 20;
-            break;
-          case 4:
-            y = (x * 0.1) ** 1.5 + 10;
-            break;
-          default:
-            y = x * 0.3 + 25;
+        if (activeFeature === "colorbar") {
+          // For colorbar demo, create 3 curves for each line style (15 total)
+          const lineStyleGroup = Math.floor(i / 3); // 0-4 (5 line styles)
+          const curveInGroup = i % 3; // 0-2 (3 curves per style)
+
+          switch (lineStyleGroup) {
+            case 0: // Sine-based curves (solid lines)
+              y =
+                Math.sin(x * 0.1 + curveInGroup * 0.8) *
+                  (20 + curveInGroup * 8) +
+                50;
+              break;
+            case 1: // Cosine-based curves (dashed lines)
+              y =
+                Math.cos(x * 0.08 + curveInGroup * 0.6) *
+                  (15 + curveInGroup * 6) +
+                40;
+              break;
+            case 2: // Logarithmic curves (dotted lines)
+              y =
+                Math.log(x + 1 + curveInGroup * 2) * (10 + curveInGroup * 3) +
+                30;
+              break;
+            case 3: // Square root curves (dashdot lines)
+              y = Math.sqrt(x + curveInGroup * 8) * (5 + curveInGroup * 2) + 20;
+              break;
+            case 4: // Power curves (longdash lines)
+              y =
+                (x * 0.1) ** (1.3 + curveInGroup * 0.2) + 10 + curveInGroup * 8;
+              break;
+            default:
+              y = x * (0.3 + curveInGroup * 0.1) + 25;
+          }
+        } else {
+          // Original 5 curve logic for other features
+          switch (i) {
+            case 0:
+              y = Math.sin(x * 0.1) * 20 + 50;
+              break;
+            case 1:
+              y = Math.cos(x * 0.08) * 15 + 40;
+              break;
+            case 2:
+              y = Math.log(x + 1) * 10 + 30;
+              break;
+            case 3:
+              y = Math.sqrt(x) * 5 + 20;
+              break;
+            case 4:
+              y = (x * 0.1) ** 1.5 + 10;
+              break;
+            default:
+              y = x * 0.3 + 25;
+          }
         }
 
         data.push({ x, y, z });
       }
 
       curves.push({
-        name: `Curve ${i + 1}`,
+        name:
+          activeFeature === "colorbar"
+            ? `${
+                ["Solid", "Dash", "Dot", "DashDot", "LongDash"][
+                  Math.floor(i / 3)
+                ]
+              } ${(i % 3) + 1}`
+            : `Curve ${i + 1}`,
         data: data,
         mode: activeFeature === "points" ? "lines+markers" : "lines",
         marker:
@@ -74,16 +119,26 @@ const EnhancedCurveStylingDemo: React.FC = () => {
 
   // Configuration for curve-by-curve coloring
   const curveColoring: CurveColoringConfig = {
-    enabled: activeFeature === "curves",
-    colorPalette: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7"],
-    distribution: "sequential",
+    enabled: activeFeature === "curves" || activeFeature === "colorbar",
+    colorPalette:
+      activeFeature === "colorbar"
+        ? undefined // Use color scale for colorbar
+        : ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7"],
+    colorScale: activeFeature === "colorbar" ? "redgray" : undefined,
+    distribution: "gradient",
+    showColorBar: activeFeature === "colorbar",
+    colorBarTitle: "Curve Style Group",
+    colorBarValues:
+      activeFeature === "colorbar"
+        ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        : undefined,
   };
 
   // Configuration for line style variations
   const curveLineStyles: CurveLineStyleConfig = {
-    enabled: activeFeature === "lines",
+    enabled: activeFeature === "lines" || activeFeature === "colorbar",
     stylePattern: ["solid", "dash", "dot", "dashdot", "longdash"],
-    combineWithColors: true,
+    combineWithColors: activeFeature === "colorbar",
   };
 
   const getFeatureDescription = () => {
@@ -94,6 +149,8 @@ const EnhancedCurveStylingDemo: React.FC = () => {
         return "Each curve gets a different line style (solid, dashed, dotted, etc.) to distinguish them visually.";
       case "points":
         return "Individual points are colored based on their Z-value using a color scale, while maintaining the same curve structure.";
+      case "colorbar":
+        return "Combines curve coloring with line styles (15 curves: 3 for each line style). Each curve has a consistent color with a color bar showing the gradient mapping.";
     }
   };
 
@@ -182,6 +239,23 @@ const EnhancedCurveStylingDemo: React.FC = () => {
           }}
         >
           🎯 Point Color Mapping
+        </button>
+
+        <button
+          onClick={() => setActiveFeature("colorbar")}
+          style={{
+            padding: "12px 20px",
+            backgroundColor:
+              activeFeature === "colorbar" ? "#9B59B6" : "#ECF0F1",
+            color: activeFeature === "colorbar" ? "white" : "#2C3E50",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "500",
+            transition: "all 0.3s ease",
+          }}
+        >
+          🌈📊 Curve ColorBar
         </button>
       </div>
 
@@ -355,6 +429,39 @@ const EnhancedCurveStylingDemo: React.FC = () => {
             Color individual points based on data values using advanced color
             scales. Ideal for showing additional dimensions in your data
             visualization.
+          </p>
+        </div>
+
+        <div
+          style={{
+            backgroundColor: "#F3E6FF",
+            padding: "25px",
+            borderRadius: "10px",
+            border: "1px solid #D1A3FF",
+          }}
+        >
+          <h3
+            style={{
+              color: "#8E44AD",
+              marginTop: 0,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "12px",
+            }}
+          >
+            🌈📊 Curve ColorBar
+          </h3>
+          <p
+            style={{
+              color: "#666",
+              fontSize: "15px",
+              lineHeight: "1.6",
+              margin: 0,
+            }}
+          >
+            Combines curve coloring with line styles (15 curves total). Each
+            curve maintains consistent color throughout, with a side color bar
+            showing the gradient mapping across all line style groups.
           </p>
         </div>
       </div>
