@@ -55,14 +55,13 @@ const EnhancedCurveStylingDemo: React.FC = () => {
       curves.push({
         name: `Curve ${i + 1}`,
         data: data,
-        mode: activeFeature === "points" ? "lines+markers" : "lines", // Show markers only for points demo
-        // Add color mapping config for points demo
+        mode: activeFeature === "points" ? "lines+markers" : "lines",
         marker:
           activeFeature === "points"
             ? {
                 colorFeature: "z",
                 colorScale: "viridis",
-                showColorBar: i === 0, // Only show colorbar for first series
+                showColorBar: i === 0,
               }
             : undefined,
       });
@@ -100,11 +99,28 @@ const EnhancedCurveStylingDemo: React.FC = () => {
 
   return (
     <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <div style={{ marginBottom: "30px" }}>
-        <h2 style={{ color: "#2C3E50", marginBottom: "10px" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <h1
+          style={{
+            color: "#2C3E50",
+            marginBottom: "15px",
+            fontSize: "32px",
+            fontWeight: "700",
+            textAlign: "center",
+          }}
+        >
           🎨 Enhanced Curve Styling Features
-        </h2>
-        <p style={{ color: "#7F8C8D", fontSize: "16px", lineHeight: "1.6" }}>
+        </h1>
+        <p
+          style={{
+            color: "#7F8C8D",
+            fontSize: "18px",
+            lineHeight: "1.6",
+            textAlign: "center",
+            maxWidth: "800px",
+            margin: "0 auto",
+          }}
+        >
           Explore three powerful ways to style your data visualization curves.
           Switch between features to see how each one affects the appearance of
           multiple data series.
@@ -173,21 +189,35 @@ const EnhancedCurveStylingDemo: React.FC = () => {
       <div
         style={{
           backgroundColor: "#F8F9FA",
-          padding: "15px 20px",
-          borderRadius: "8px",
-          marginBottom: "25px",
-          borderLeft: "4px solid #3498DB",
+          padding: "20px 25px",
+          borderRadius: "10px",
+          marginBottom: "30px",
+          borderLeft: "5px solid #3498DB",
         }}
       >
-        <h4 style={{ margin: "0 0 8px 0", color: "#2C3E50" }}>
+        <h3
+          style={{
+            margin: "0 0 12px 0",
+            color: "#2C3E50",
+            fontSize: "20px",
+            fontWeight: "600",
+          }}
+        >
           Current Feature:{" "}
           {activeFeature === "curves"
             ? "Curve Base Colors"
             : activeFeature === "lines"
             ? "Line Style Patterns"
             : "Point Color Mapping"}
-        </h4>
-        <p style={{ margin: 0, color: "#5D6D7E", fontSize: "14px" }}>
+        </h3>
+        <p
+          style={{
+            margin: 0,
+            color: "#5D6D7E",
+            fontSize: "16px",
+            lineHeight: "1.5",
+          }}
+        >
           {getFeatureDescription()}
         </p>
       </div>
@@ -213,22 +243,10 @@ const EnhancedCurveStylingDemo: React.FC = () => {
             }`,
             xAxis: { title: "X Values" },
             yAxis: { title: "Y Values" },
-            width: 1000,
-            height: 600,
-            showLegend: true,
+            height: "650px",
           }}
           curveColoring={curveColoring}
           curveLineStyles={curveLineStyles}
-          theme={{
-            primary: "#3498DB",
-            background: "#FFFFFF",
-          }}
-          interactions={{
-            enableZoom: true,
-            enablePan: true,
-            enableHover: true,
-            enableSelect: true,
-          }}
         />
       </div>
 
@@ -244,15 +262,30 @@ const EnhancedCurveStylingDemo: React.FC = () => {
         <div
           style={{
             backgroundColor: "#FFF9E6",
-            padding: "20px",
-            borderRadius: "8px",
+            padding: "25px",
+            borderRadius: "10px",
             border: "1px solid #FFE066",
           }}
         >
-          <h4 style={{ color: "#B8860B", marginTop: 0 }}>
+          <h3
+            style={{
+              color: "#B8860B",
+              marginTop: 0,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "12px",
+            }}
+          >
             🌈 Curve Base Colors
-          </h4>
-          <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.5" }}>
+          </h3>
+          <p
+            style={{
+              color: "#666",
+              fontSize: "15px",
+              lineHeight: "1.6",
+              margin: 0,
+            }}
+          >
             Apply different colors to entire curves using gradient distribution
             or custom palettes. Perfect for distinguishing multiple data series
             at a glance.
@@ -262,15 +295,30 @@ const EnhancedCurveStylingDemo: React.FC = () => {
         <div
           style={{
             backgroundColor: "#FFE6E6",
-            padding: "20px",
-            borderRadius: "8px",
+            padding: "25px",
+            borderRadius: "10px",
             border: "1px solid #FF9999",
           }}
         >
-          <h4 style={{ color: "#C0392B", marginTop: 0 }}>
+          <h3
+            style={{
+              color: "#C0392B",
+              marginTop: 0,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "12px",
+            }}
+          >
             📏 Line Style Patterns
-          </h4>
-          <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.5" }}>
+          </h3>
+          <p
+            style={{
+              color: "#666",
+              fontSize: "15px",
+              lineHeight: "1.6",
+              margin: 0,
+            }}
+          >
             Use different line styles (solid, dashed, dotted, etc.) to
             differentiate curves. Especially useful for black-and-white printing
             or accessibility.
@@ -280,15 +328,30 @@ const EnhancedCurveStylingDemo: React.FC = () => {
         <div
           style={{
             backgroundColor: "#E6F9E6",
-            padding: "20px",
-            borderRadius: "8px",
+            padding: "25px",
+            borderRadius: "10px",
             border: "1px solid #99CC99",
           }}
         >
-          <h4 style={{ color: "#27AE60", marginTop: 0 }}>
+          <h3
+            style={{
+              color: "#27AE60",
+              marginTop: 0,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "12px",
+            }}
+          >
             🎯 Point Color Mapping
-          </h4>
-          <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.5" }}>
+          </h3>
+          <p
+            style={{
+              color: "#666",
+              fontSize: "15px",
+              lineHeight: "1.6",
+              margin: 0,
+            }}
+          >
             Color individual points based on data values using advanced color
             scales. Ideal for showing additional dimensions in your data
             visualization.

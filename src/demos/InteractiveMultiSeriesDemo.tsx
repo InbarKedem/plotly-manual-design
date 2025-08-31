@@ -217,18 +217,10 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
         "Temperature vs Speed Analysis - Three Different Curves with Altitude Coloring",
       xAxis: {
         title: `Temperature (${tempConfig.name})`,
-        showgrid: true,
-        gridcolor: "#e0e0e0",
       },
       yAxis: {
         title: `Speed (${speedConfig.name})`,
-        showgrid: true,
-        gridcolor: "#e0e0e0",
       },
-      showLegend: true, // Show legend for multiple curves
-      legendPosition: { x: 1.15, y: 1 },
-      margin: { l: 100, r: 220, t: 100, b: 100 }, // Extra space for color bar and legend, optimized for full width
-      width: "100%",
       height: "650px",
     };
   }, [temperatureUnit, speedUnit]);
@@ -376,6 +368,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
             margin: "0 0 12px 0",
             color: "#7b1fa2",
             textAlign: "center",
+            fontSize: "20px",
           }}
         >
           🔬 Temperature vs Speed Analysis - Three Curves
@@ -411,27 +404,10 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           series={processedSeries}
           config={plotConfig}
           interactions={{
-            dragmode: "zoom",
-            hovermode: "closest",
-            clickmode: "event",
             enableHoverOpacity: true,
             dimmedOpacity: 0.02,
             highlightOpacity: 5.0,
           }}
-          theme={{
-            darkMode: false,
-            primary: "#2196f3",
-            secondary: "#64748b",
-            accent: "#ff9800",
-            background: "#ffffff",
-            surface: "#fafafa",
-          }}
-          progressiveLoading={{
-            enabled: false,
-            chunkSize: 100,
-            showProgress: false,
-          }}
-          debug={false}
         />
       </div>
     </div>

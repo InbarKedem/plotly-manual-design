@@ -6,7 +6,6 @@
 
 import React, { useState, useMemo } from "react";
 import UnifiedPlotter from "../UnifiedPlotter";
-import type { SeriesConfig } from "../types/PlotterTypes";
 
 // Import organized utilities
 import {
@@ -18,8 +17,9 @@ import {
 
 import {
   scientificScatterPreset,
-  timeSeriesPreset,
-  correlationPlotPreset,
+  singleLinePreset,
+  businessMetricsPreset,
+  environmentalDataPreset,
 } from "../presets/scientific";
 
 import { THEMES, getTheme } from "../config/themes";
@@ -40,7 +40,7 @@ const OrganizedScientificDemo: React.FC = () => {
             data: generateScientificData(50),
             ...scientificScatterPreset.seriesDefaults,
           },
-        ] as SeriesConfig[],
+        ],
         preset: scientificScatterPreset,
       },
 
@@ -51,11 +51,10 @@ const OrganizedScientificDemo: React.FC = () => {
           {
             name: "Daily Temperature",
             data: generateTemperatureData(365),
-            mode: "lines" as const,
-            line: { color: "#dc2626", width: 2 },
+            ...singleLinePreset.seriesDefaults,
           },
-        ] as SeriesConfig[],
-        preset: timeSeriesPreset,
+        ],
+        preset: singleLinePreset,
       },
 
       climate: {
@@ -65,21 +64,16 @@ const OrganizedScientificDemo: React.FC = () => {
           {
             name: "Climate Data",
             data: generateClimateData(300),
-            ...correlationPlotPreset.seriesDefaults,
-            marker: {
-              ...correlationPlotPreset.seriesDefaults?.marker,
-              color: "#059669",
-              size: 6,
-            },
+            ...environmentalDataPreset.seriesDefaults,
           },
-        ] as SeriesConfig[],
+        ],
         preset: {
-          ...correlationPlotPreset,
+          ...environmentalDataPreset,
           config: {
-            ...correlationPlotPreset.config,
+            ...environmentalDataPreset.config,
             title: "Temperature vs Humidity Correlation",
-            xAxis: { title: "Temperature (°C)", showgrid: true },
-            yAxis: { title: "Humidity (%)", showgrid: true },
+            xAxis: { title: "Temperature (°C)" },
+            yAxis: { title: "Humidity (%)" },
           },
         },
       },
@@ -91,12 +85,10 @@ const OrganizedScientificDemo: React.FC = () => {
           {
             name: "Metric Value",
             data: generateTimeSeriesData(168, 100, 0.03),
-            mode: "lines+markers" as const,
-            line: { color: "#2563eb", width: 2 },
-            marker: { size: 4, color: "#2563eb" },
+            ...businessMetricsPreset.seriesDefaults,
           },
-        ] as SeriesConfig[],
-        preset: timeSeriesPreset,
+        ],
+        preset: businessMetricsPreset,
       },
     }),
     []
@@ -109,10 +101,12 @@ const OrganizedScientificDemo: React.FC = () => {
     <div style={{ fontFamily: "system-ui, sans-serif" }}>
       {/* Header */}
       <div style={{ marginBottom: "30px", padding: "20px" }}>
-        <h1 style={{ margin: "0 0 10px 0", color: "#1f2937" }}>
+        <h1
+          style={{ margin: "0 0 10px 0", color: "#1f2937", fontSize: "32px" }}
+        >
           🧪 Organized Scientific Demo
         </h1>
-        <p style={{ margin: 0, color: "#6b7280", fontSize: "16px" }}>
+        <p style={{ margin: 0, color: "#6b7280", fontSize: "18px" }}>
           Demonstrating the new organized architecture with data generators,
           presets, and themes
         </p>
@@ -200,7 +194,9 @@ const OrganizedScientificDemo: React.FC = () => {
           color: currentTheme.darkMode ? "#e2e8f0" : "#1f2937",
         }}
       >
-        <h2 style={{ margin: "0 0 8px 0" }}>{currentDemo.title}</h2>
+        <h2 style={{ margin: "0 0 8px 0", fontSize: "20px" }}>
+          {currentDemo.title}
+        </h2>
         <p
           style={{
             margin: 0,
@@ -222,19 +218,9 @@ const OrganizedScientificDemo: React.FC = () => {
       >
         <UnifiedPlotter
           series={currentDemo.series}
-          config={{
-            ...currentDemo.preset.config,
-            height: "500px",
-            backgroundColor: currentTheme.background,
-            plotBackgroundColor: currentTheme.surface,
-          }}
+          config={currentDemo.preset.config}
           interactions={currentDemo.preset.interactions}
           theme={currentTheme}
-          debug={true}
-          progressiveLoading={{
-            enabled: false, // Disable for demo simplicity
-            showProgress: true,
-          }}
         />
       </div>
     </div>

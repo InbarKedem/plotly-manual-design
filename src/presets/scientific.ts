@@ -26,8 +26,14 @@ export const scientificScatterPreset = {
       showgrid: true,
       zeroline: false,
     },
-    margin: { l: 80, r: 60, t: 80, b: 80 },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
     showLegend: true,
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
   } as PlotConfig,
 
   interactions: {
@@ -68,7 +74,13 @@ export const timeSeriesPreset = {
       title: "Value",
       showgrid: true,
     },
-    margin: { l: 60, r: 40, t: 60, b: 80 },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
   } as PlotConfig,
 
   interactions: {
@@ -102,6 +114,13 @@ export const spectralAnalysisPreset = {
       title: "Power (dB)",
       showgrid: true,
     },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
   } as PlotConfig,
 
   interactions: {
@@ -127,6 +146,12 @@ export const correlationPlotPreset = {
     xAxis: { title: "Variable X", showgrid: true },
     yAxis: { title: "Variable Y", showgrid: true },
     showLegend: false,
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
   } as PlotConfig,
 
   interactions: {
@@ -157,7 +182,13 @@ export const multiVariablePreset = {
     title: "Multi-Variable Analysis",
     xAxis: { title: "Primary Variable" },
     yAxis: { title: "Response Variable" },
-    margin: { l: 70, r: 200, t: 70, b: 70 }, // Extra space for colorbar
+    margin: { l: 80, r: 200, t: 80, b: 80 }, // Extra space for colorbar
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
   } as PlotConfig,
 
   interactions: {
@@ -176,6 +207,156 @@ export const multiVariablePreset = {
       colorScale: "plasma",
       showColorBar: true,
       colorBarTitle: "Third Variable",
+    },
+  } as Partial<SeriesConfig>,
+};
+
+/**
+ * Single line chart preset
+ * Perfect for temperature data, stock prices, sensor readings, or any continuous measurement
+ */
+export const singleLinePreset = {
+  config: {
+    title: "Continuous Data Analysis",
+    xAxis: {
+      title: "Time/Sequence",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    yAxis: {
+      title: "Measurement Value",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
+  } as PlotConfig,
+
+  interactions: {
+    enableZoom: true,
+    enablePan: true,
+    hovermode: "closest",
+    dragmode: "zoom",
+  } as InteractionConfig,
+
+  theme: SCIENTIFIC_THEME,
+
+  seriesDefaults: {
+    mode: "lines",
+    line: {
+      color: "#dc2626",
+      width: 2,
+      smoothing: 1.3,
+    },
+    marker: {
+      size: 6,
+      color: "#dc2626",
+      symbol: "circle",
+    },
+  } as Partial<SeriesConfig>,
+};
+
+/**
+ * Business metrics preset
+ * Ideal for KPIs, performance metrics, sales data, or any time-based business analytics
+ */
+export const businessMetricsPreset = {
+  config: {
+    title: "Business Metrics Dashboard",
+    xAxis: {
+      title: "Time Period",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    yAxis: {
+      title: "Metric Value",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
+  } as PlotConfig,
+
+  interactions: {
+    enableZoom: true,
+    enablePan: true,
+    hovermode: "closest",
+    dragmode: "zoom",
+  } as InteractionConfig,
+
+  theme: SCIENTIFIC_THEME,
+
+  seriesDefaults: {
+    mode: "lines+markers",
+    line: {
+      color: "#2563eb",
+      width: 2,
+    },
+    marker: {
+      size: 4,
+      color: "#2563eb",
+      symbol: "circle",
+    },
+  } as Partial<SeriesConfig>,
+};
+
+/**
+ * Environmental data preset
+ * Great for environmental monitoring, sensor networks, IoT data, or multi-parameter analysis
+ */
+export const environmentalDataPreset = {
+  config: {
+    title: "Environmental Data Analysis",
+    xAxis: {
+      title: "Primary Parameter",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    yAxis: {
+      title: "Secondary Parameter",
+      showgrid: true,
+      gridcolor: "rgba(128,128,128,0.2)",
+    },
+    margin: { l: 80, r: 150, t: 80, b: 80 },
+    legendPosition: { x: 1.02, y: 1 },
+    font: {
+      family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+      size: 14,
+      color: "#24292e",
+    },
+  } as PlotConfig,
+
+  interactions: {
+    enableZoom: true,
+    enablePan: true,
+    hovermode: "closest",
+    dragmode: "zoom",
+    enableSelect: true,
+  } as InteractionConfig,
+
+  theme: SCIENTIFIC_THEME,
+
+  seriesDefaults: {
+    mode: "markers",
+    marker: {
+      size: 6,
+      color: "#059669",
+      symbol: "circle",
+      opacity: 0.7,
+      line: {
+        width: 1,
+        color: "rgba(255,255,255,0.8)",
+      },
     },
   } as Partial<SeriesConfig>,
 };

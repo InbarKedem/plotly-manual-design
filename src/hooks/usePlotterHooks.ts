@@ -204,7 +204,7 @@ export const usePlotConfig = (config: PlotConfig = {}, theme?: ThemeConfig) => {
       legendPosition: config.legendPosition || { x: 1.02, y: 1 },
 
       // Layout spacing - optimized for full width
-      margin: config.margin || { l: 80, r: 100, t: 80, b: 80 },
+      margin: config.margin || { l: 80, r: 150, t: 80, b: 80 },
 
       // Responsive behavior
       responsive: config.responsive ?? true,
@@ -221,7 +221,7 @@ export const usePlotConfig = (config: PlotConfig = {}, theme?: ThemeConfig) => {
         family:
           config.font?.family ||
           "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
-        size: config.font?.size || 12,
+        size: config.font?.size || 14,
         color: config.font?.color || (theme?.darkMode ? "#e2e8f0" : "#24292e"),
         ...config.font,
       },

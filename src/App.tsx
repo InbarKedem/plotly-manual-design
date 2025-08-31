@@ -60,11 +60,11 @@ const App: React.FC = () => {
         }}
       >
         <h1
-          style={{ margin: "0 0 10px 0", fontSize: "28px", fontWeight: "bold" }}
+          style={{ margin: "0 0 10px 0", fontSize: "32px", fontWeight: "bold" }}
         >
           🚀 Enhanced UnifiedPlotter Demo
         </h1>
-        <p style={{ margin: 0, opacity: 0.9, fontSize: "16px" }}>
+        <p style={{ margin: 0, opacity: 0.9, fontSize: "18px" }}>
           Showcasing performance monitoring, validation, and enhanced features
         </p>
       </div>

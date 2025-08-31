@@ -81,7 +81,7 @@ export const PerformanceTestDemo: React.FC = () => {
             style={{
               color: "rgba(255,255,255,0.9)",
               marginBottom: "0",
-              fontSize: "16px",
+              fontSize: "18px",
               maxWidth: "600px",
               margin: "0 auto",
             }}
@@ -111,26 +111,13 @@ export const PerformanceTestDemo: React.FC = () => {
                 xAxis: { title: "X Values" },
                 yAxis: { title: "Y Values" },
               }}
-              interactions={{
-                enableZoom: true,
-                enableHover: true,
-                enableHoverOpacity: true,
-              }}
               progressiveLoading={{
                 enabled: true,
                 chunkSize: 500,
-                animationDuration: 50,
                 showProgress: true,
                 showPhase: true,
                 showDataStats: true,
               }}
-              validation={{
-                enabled: true,
-                level: "normal",
-                showWarnings: true,
-                throwOnError: false,
-              }}
-              debug={false} // Hide debug panel but keep functionality
             />
           </div>
         </div>

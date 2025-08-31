@@ -18,13 +18,11 @@ const UnifiedDemo: React.FC = () => {
     {
       name: "Temperature",
       data: temperatureData,
-      type: "scatter" as const,
       mode: "lines" as const,
     },
     {
       name: "Linear Trend",
       data: linearData,
-      type: "scatter" as const,
       mode: "markers" as const,
     },
   ];
