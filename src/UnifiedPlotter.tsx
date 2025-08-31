@@ -414,27 +414,27 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
           },
         };
       } else {
-        // Make other traces faded but still visible
+        // Make other traces faded but still visible (0.4-0.6 opacity range)
         return {
           ...trace,
-          opacity: 0.15,
+          opacity: 0.5, // Increased from 0.15 to maintain visibility
           line: {
             ...(traceRecord.line || {}),
-            width: Math.max((traceRecord.line?.width || 3) * 0.5, 1), // Thinner but visible
+            width: Math.max((traceRecord.line?.width || 3) * 0.8, 2), // Less reduced width for better visibility
             color: traceRecord.line?.color || "#9ca3af",
-            dash: "dot",
+            // Remove dash to keep original style but faded
           },
           marker: {
             ...(traceRecord.marker || {}),
             size: Array.isArray(traceRecord.marker?.size)
-              ? traceRecord.marker.size.map((s: number) => s * 0.7)
-              : (traceRecord.marker?.size || 8) * 0.7, // Smaller data points
-            color: traceRecord.marker?.color || "#d1d5db",
-            opacity: 0.3,
+              ? traceRecord.marker.size.map((s: number) => s * 0.85)
+              : (traceRecord.marker?.size || 8) * 0.85, // Less reduced size
+            color: traceRecord.marker?.color || traceRecord.line?.color,
+            opacity: 0.4, // Increased opacity for better visibility
             line: {
               ...(traceRecord.marker?.line || {}),
               width: 1,
-              color: "#f3f4f6", // Light outer stroke
+              color: "rgba(255, 255, 255, 0.6)", // Semi-transparent white stroke
             },
           },
         };
@@ -465,15 +465,15 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         xanchor: "center" as const,
       },
 
-      // Interaction modes - configured for single point hover
+      // Interaction modes - configured for optimal hover behavior
       dragmode: interactionConfig.dragmode,
-      hovermode: "closest" as const, // Force closest point only, override any other settings
-      hoverdistance: 20, // Increase hover sensitivity radius
-      spikedistance: 20, // Increase spike sensitivity radius
+      hovermode: "closest" as const, // Force closest point only
+      hoverdistance: 30, // Increased hover sensitivity radius for better UX
+      spikedistance: 30, // Increased spike sensitivity radius
       clickmode: interactionConfig.clickmode,
       selectdirection: interactionConfig.selectdirection,
 
-      // Enhanced hover styling with modern design
+      // Enhanced hover styling with legend-safe positioning
       hoverlabel: {
         bgcolor: "rgba(255, 255, 255, 0.95)", // Semi-transparent white background
         bordercolor: "rgba(148, 163, 184, 0.3)", // Subtle border color
@@ -484,6 +484,9 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         },
         namelength: -1, // Show full name
         align: "left" as const,
+        // Ensure tooltip stays within plot area to avoid legend overlap
+        borderradius: 8, // Rounded corners
+        borderwidth: 1,
       },
 
       // Crosshair configuration - thin vertical dashed guide line
@@ -535,14 +538,22 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         showspikes: false,
       },
 
-      // Legend configuration
+      // Legend configuration - positioned to avoid tooltip overlap
       showlegend: plotConfig.showLegend,
       legend: {
         ...plotConfig.legendPosition,
         font: plotConfig.font,
-        bgcolor: plotConfig.backgroundColor,
-        bordercolor: plotConfig.font.color,
+        bgcolor: "rgba(255, 255, 255, 0.95)", // Semi-transparent background
+        bordercolor: "#e5e7eb", // Subtle border
         borderwidth: 1,
+        // Ensure legend stays above tooltips and crosshairs
+        orientation: "v" as const,
+        xanchor: "left" as const,
+        yanchor: "top" as const,
+        // Add padding to prevent tooltip overlap
+        x: 1.05, // Move further right to avoid conflicts
+        y: 0.98,
+        tracegroupgap: 4, // Spacing between legend items
       },
 
       // Layout and spacing

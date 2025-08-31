@@ -51,7 +51,7 @@
   }
 }
 
-/* Enhanced hover tooltip styling */
+/* Enhanced hover tooltip styling with legend-safe positioning */
 .plotly .hoverlayer .hovertext {
   animation: tooltipFadeIn 0.15s ease-out !important;
   border-radius: 8px !important;
@@ -59,6 +59,22 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   border: 1px solid rgba(148, 163, 184, 0.2) !important;
   backdrop-filter: blur(4px) !important;
+  z-index: 1000 !important; /* Ensure tooltip stays below legend */
+  max-width: 300px !important; /* Prevent tooltip from being too wide */
+}
+
+/* Ensure legend has higher z-index than tooltips */
+.plotly .legend {
+  z-index: 1001 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
+  padding: 8px !important;
+}
+
+/* Style the crosshair to ensure it doesn't interfere with legend */
+.plotly .nsewdrag .crosshair {
+  z-index: 999 !important; /* Below legend and tooltip */
 }
 
 /* Data point hover animation */

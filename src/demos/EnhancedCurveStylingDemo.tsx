@@ -319,6 +319,12 @@ const EnhancedCurveStylingDemo: React.FC = () => {
             yAxis: { title: "Y Values" },
             height: "650px",
           }}
+          interactions={{
+            enableHoverOpacity: true,
+            hovermode: "closest",
+            enableZoom: true,
+            enablePan: true,
+          }}
           curveColoring={curveColoring}
           curveLineStyles={curveLineStyles}
         />
