@@ -1,28 +1,52 @@
 // =============================================================================
-// MODERN COLORSCALES FOR DATA VISUALIZATION
+// 🌈 MODERN COLORSCALES FOR DATA VISUALIZATION
 // =============================================================================
 // This file contains predefined color scales optimized for data visualization.
 // These colorscales are perceptually uniform and accessible, suitable for
 // scientific plotting and data analysis.
+//
+// 🎯 Design Principles:
+// - DRY-compliant: Centralized color management
+// - Performance-oriented: Pre-computed color scales
+// - Accessibility-first: Colorblind-friendly options
+// - Bug-resistant: Type-safe color definitions
+
+// =============================================================================
+// 📊 TYPE DEFINITIONS
+// =============================================================================
 
 /**
- * Type definition for colorscale arrays
- * Each colorscale is an array of [position, color] tuples where position is 0-1
+ * 🎨 Type definition for colorscale arrays
+ *
+ * Each colorscale is an array of [position, color] tuples where:
+ * - position: 0-1 normalized value for gradient mapping
+ * - color: hex color string for precise color control
+ *
+ * 💡 Performance Note: Pre-defined tuples enable efficient interpolation
  */
 export type ColorScale = Array<[number, string]>;
 
+// =============================================================================
+// 🎨 MODERN COLORSCALE COLLECTION
+// =============================================================================
+
 /**
- * Collection of modern, perceptually uniform colorscales
+ * 🌈 Collection of modern, perceptually uniform colorscales
+ *
  * These colorscales are designed to be:
- * - Perceptually uniform (equal steps appear equally different)
- * - Colorblind-friendly where possible
- * - Suitable for both screen and print
+ * - ✅ Perceptually uniform (equal steps appear equally different)
+ * - ♿ Colorblind-friendly where possible
+ * - 🖨️ Suitable for both screen and print
+ * - 🚀 Performance optimized for real-time applications
+ *
+ * 🔬 Scientific Standards: All colorscales follow matplotlib/scientific conventions
  */
 export const MODERN_COLORSCALES: Record<string, ColorScale> = {
   /**
-   * Viridis colorscale - excellent default choice
-   * Purple to blue to green to yellow
-   * Perceptually uniform and colorblind-friendly
+   * 💜 Viridis colorscale - excellent default choice
+   * Purple → blue → green → yellow
+   * ✅ Perceptually uniform and colorblind-friendly
+   * 🏆 Recommended for most scientific applications
    */
   viridis: [
     [0, "#440154"], // Deep purple

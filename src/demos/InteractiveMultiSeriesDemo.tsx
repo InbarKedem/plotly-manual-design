@@ -1,41 +1,117 @@
 // =============================================================================
-// TEMPERATURE vs SPEED INTERACTIVE DEMO
+// 🌡️ TEMPERATURE VS SPEED INTERACTIVE DEMO - PERFORMANCE OPTIMIZED
 // =============================================================================
 // Interactive demonstration showing the relationship between temperature and speed
 // with altitude-based color mapping and integrated unit conversion controls.
+// Following GitHub Copilot standards for clean, reusable, and performant code.
+//
+// 🎯 Features:
+// - Real-time unit conversion with performance optimization
+// - Multi-series data with altitude-based color mapping
+// - Interactive controls with memoized state management
+// - Type-safe unit conversion system
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import UnifiedPlotter from "../UnifiedPlotter";
 import type { SeriesConfig, DataPoint } from "../types/PlotterTypes";
 
-// Unit conversion factors for temperature (X-axis)
-const TEMPERATURE_UNITS = {
+// =============================================================================
+// 🔧 TYPES & INTERFACES - COMPREHENSIVE TYPE SAFETY
+// =============================================================================
+
+/**
+ * 🌡️ Temperature unit configuration with conversion factors
+ * Type-safe unit conversion system for temperature measurements
+ */
+interface TemperatureUnit {
+  /** Display name with symbol */
+  name: string;
+  /** Conversion factor from Celsius */
+  factor: number;
+  /** Conversion offset from Celsius */
+  offset: number;
+}
+
+/**
+ * 💨 Speed unit configuration with conversion factors
+ * Type-safe unit conversion system for speed measurements
+ */
+interface SpeedUnit {
+  /** Display name with symbol */
+  name: string;
+  /** Conversion factor from m/s */
+  factor: number;
+  /** Conversion offset (always 0 for speed) */
+  offset: number;
+}
+
+/**
+ * 🏔️ Altitude unit configuration with conversion factors
+ * Type-safe unit conversion system for altitude measurements
+ */
+interface AltitudeUnit {
+  /** Display name with symbol */
+  name: string;
+  /** Conversion factor from meters */
+  factor: number;
+  /** Conversion offset (always 0 for altitude) */
+  offset: number;
+}
+
+// =============================================================================
+// 📊 UNIT CONVERSION CONFIGURATIONS - REUSABLE CONSTANTS
+// =============================================================================
+
+/** 🌡️ Temperature unit conversion factors (base: Celsius) */
+const TEMPERATURE_UNITS: Record<string, TemperatureUnit> = {
   celsius: { name: "°C", factor: 1, offset: 0 },
   fahrenheit: { name: "°F", factor: 9 / 5, offset: 32 },
   kelvin: { name: "K", factor: 1, offset: 273.15 },
-};
+} as const;
 
-// Unit conversion factors for speed (Y-axis)
-const SPEED_UNITS = {
+/** 💨 Speed unit conversion factors (base: m/s) */
+const SPEED_UNITS: Record<string, SpeedUnit> = {
   mps: { name: "m/s", factor: 1, offset: 0 },
   kmh: { name: "km/h", factor: 3.6, offset: 0 },
   mph: { name: "mph", factor: 2.237, offset: 0 },
   kts: { name: "knots", factor: 1.944, offset: 0 },
-};
+} as const;
 
-// Unit conversion factors for altitude (Z-axis/coloring)
-const ALTITUDE_UNITS = {
+/** 🏔️ Altitude unit conversion factors (base: meters) */
+const ALTITUDE_UNITS: Record<string, AltitudeUnit> = {
   meters: { name: "m", factor: 1, offset: 0 },
   feet: { name: "ft", factor: 3.28084, offset: 0 },
   kilometers: { name: "km", factor: 0.001, offset: 0 },
   miles: { name: "mi", factor: 0.000621371, offset: 0 },
-};
+} as const;
 
-// Generate realistic temperature vs speed data with altitude for multiple curves
+// =============================================================================
+// 🧮 DATA GENERATION FUNCTIONS - OPTIMIZED ALGORITHMS
+// =============================================================================
+
+/**
+ * 📊 Generate realistic temperature vs speed data with altitude correlation
+ *
+ * Creates scientifically plausible datasets with different curve characteristics
+ * for testing multi-series visualizations and unit conversions.
+ *
+ * 🎯 Algorithm Features:
+ * - Realistic temperature-speed-altitude correlations
+ * - Configurable curve characteristics for variety
+ * - Performance-optimized data generation
+ * - Type-safe point creation
+ *
+ * @param pointCount - Number of data points to generate (default: 50)
+ * @param curveType - Type of curve characteristics to apply
+ * @returns Array of DataPoint objects with temperature, speed, and altitude
+ *
+ * 🚀 Performance: O(n) generation with efficient mathematical functions
+ * 🧪 Test-friendly: Deterministic patterns with controlled randomness
+ */
 const generateTemperatureSpeedData = (
   pointCount: number = 50,
   curveType: string = "low"
-) => {
+): DataPoint[] => {
   // Define different curve characteristics
   const curveParams = {
     low: {
@@ -225,6 +301,43 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
     };
   }, [temperatureUnit, speedUnit]);
 
+  // ==========================================================================
+  // 🎯 EVENT HANDLERS - PERFORMANCE OPTIMIZED WITH useCallback
+  // ==========================================================================
+
+  /**
+   * 🌡️ Handle temperature unit changes with performance optimization
+   * Prevents unnecessary re-renders by memoizing the handler function
+   */
+  const handleTemperatureUnitChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setTemperatureUnit(e.target.value as keyof typeof TEMPERATURE_UNITS);
+    },
+    []
+  );
+
+  /**
+   * 💨 Handle speed unit changes with performance optimization
+   * Prevents unnecessary re-renders by memoizing the handler function
+   */
+  const handleSpeedUnitChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setSpeedUnit(e.target.value as keyof typeof SPEED_UNITS);
+    },
+    []
+  );
+
+  /**
+   * 🏔️ Handle altitude unit changes with performance optimization
+   * Prevents unnecessary re-renders by memoizing the handler function
+   */
+  const handleAltitudeUnitChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setAltitudeUnit(e.target.value as keyof typeof ALTITUDE_UNITS);
+    },
+    []
+  );
+
   return (
     <div>
       {/* Integrated Control Panel */}
@@ -256,11 +369,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           </label>
           <select
             value={temperatureUnit}
-            onChange={(e) =>
-              setTemperatureUnit(
-                e.target.value as keyof typeof TEMPERATURE_UNITS
-              )
-            }
+            onChange={handleTemperatureUnitChange}
             style={{
               padding: "10px 15px",
               borderRadius: "8px",
@@ -294,9 +403,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           </label>
           <select
             value={speedUnit}
-            onChange={(e) =>
-              setSpeedUnit(e.target.value as keyof typeof SPEED_UNITS)
-            }
+            onChange={handleSpeedUnitChange}
             style={{
               padding: "10px 15px",
               borderRadius: "8px",
@@ -331,9 +438,7 @@ const InteractiveMultiSeriesDemo: React.FC = () => {
           </label>
           <select
             value={altitudeUnit}
-            onChange={(e) =>
-              setAltitudeUnit(e.target.value as keyof typeof ALTITUDE_UNITS)
-            }
+            onChange={handleAltitudeUnitChange}
             style={{
               padding: "10px 15px",
               borderRadius: "8px",

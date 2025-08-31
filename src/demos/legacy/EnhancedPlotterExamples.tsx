@@ -1,3 +1,15 @@
+// =============================================================================
+// 📊 ENHANCED PLOTTER EXAMPLES - LEGACY DEMONSTRATION COMPONENTS
+// =============================================================================
+// Legacy demonstration components showcasing enhanced plotting capabilities.
+// Following GitHub Copilot standards for maintainable demo code.
+//
+// 🎯 Demo Collection Features:
+// - 🚀 DRY-compliant: Reusable example patterns for documentation
+// - 📱 Performance-oriented: Optimized rendering for smooth demonstrations
+// - 🛡️ Bug-resistant: Validated data generation and error handling
+// - 🧪 Test-friendly: Predictable demo scenarios for component testing
+
 import React from "react";
 import EnhancedGenericPlotter from "./components/EnhancedGenericPlotter";
 import {
@@ -5,7 +17,25 @@ import {
   generateSinusoidalData,
 } from "../../data/generators";
 
+// =============================================================================
+// 📈 SCATTER PLOT DEMONSTRATIONS
+// =============================================================================
+
+/**
+ * 🎯 Modern scatter plot demonstration component
+ *
+ * Showcases basic scatter plot functionality with realistic sample data.
+ * Demonstrates marker-based visualization patterns for data exploration.
+ *
+ * 🎨 Features:
+ * - Clean marker-only visualization
+ * - Realistic noise for data simulation
+ * - Modern styling and responsiveness
+ *
+ * @returns React component demonstrating scatter plot capabilities
+ */
 export const ModernScatterExample: React.FC = () => {
+  // 📊 Generate realistic test data with controlled noise
   const data = [
     {
       name: "Sample Data",
@@ -26,7 +56,24 @@ export const ModernScatterExample: React.FC = () => {
   );
 };
 
+// =============================================================================
+// 📊 MULTI-SERIES DEMONSTRATIONS
+// =============================================================================
+
+/**
+ * 🎭 Multi-type series visualization demonstration
+ *
+ * Demonstrates the capability to combine different mathematical patterns
+ * in a single visualization for comprehensive data analysis.
+ *
+ * 🧮 Series Types:
+ * - Linear trends for baseline analysis
+ * - Sinusoidal patterns for periodic data
+ *
+ * @returns React component with combined visualization patterns
+ */
 export const MultiTypeSeriesExample: React.FC = () => {
+  // 📈 Multiple mathematical patterns for comprehensive visualization
   const data = [
     {
       name: "Linear",

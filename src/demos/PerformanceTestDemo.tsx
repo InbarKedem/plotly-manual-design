@@ -1,47 +1,101 @@
 // =============================================================================
-// PERFORMANCE TEST DEMO
+// ⚡ PERFORMANCE TEST DEMO - OPTIMIZED FOR LARGE DATASETS
 // =============================================================================
-// Demo component to test and showcase the enhanced performance monitoring
-// features of the UnifiedPlotter
+// Comprehensive performance testing component showcasing the UnifiedPlotter's
+// ability to handle various dataset sizes with monitoring and optimization.
+// Following GitHub Copilot standards for high-performance React components.
+//
+// 🎯 Testing Goals:
+// - Performance monitoring across different dataset sizes
+// - Memory usage tracking and optimization
+// - Debug panel functionality validation
+// - Progressive loading demonstration
 
-import React from "react";
+import React, { useMemo } from "react";
 import UnifiedPlotter from "../UnifiedPlotter";
 import { generateScientificData } from "../data/generators";
+import type { SeriesConfig } from "../types/PlotterTypes";
+
+// =============================================================================
+// 📊 DATASET SIZE CONFIGURATIONS - PERFORMANCE TESTING
+// =============================================================================
 
 /**
- * Performance test demo with various dataset sizes
- * Tests the performance monitoring and debug panel functionality
+ * Dataset size configuration for comprehensive performance testing
+ * Carefully chosen sizes to demonstrate performance characteristics
+ */
+const DATASET_CONFIGS = {
+  small: { size: 100, color: "#3b82f6", label: "Small Dataset" },
+  medium: { size: 1000, color: "#10b981", label: "Medium Dataset" },
+  large: { size: 5000, color: "#f59e0b", label: "Large Dataset" },
+} as const;
+
+/**
+ * ⚡ Performance Test Demo Component
+ *
+ * Showcases UnifiedPlotter performance with datasets of varying sizes.
+ * Includes comprehensive performance monitoring and debug capabilities.
+ *
+ * 🚀 Features:
+ * - Multiple dataset size testing (100, 1K, 5K points)
+ * - Performance monitoring with detailed metrics
+ * - Memory usage tracking and optimization
+ * - Progressive loading demonstration
+ * - Debug panel with real-time statistics
+ *
+ * 🎯 Performance Optimizations:
+ * - useMemo for expensive data generation
+ * - Optimized series configuration
+ * - Minimal re-render strategy
+ *
+ * @returns React component for performance testing demonstration
  */
 export const PerformanceTestDemo: React.FC = () => {
-  // Generate different sized datasets for performance testing
-  const smallDataset = generateScientificData(100);
-  const mediumDataset = generateScientificData(1000);
-  const largeDataset = generateScientificData(5000);
+  // ==========================================================================
+  // 📊 DATA GENERATION - MEMOIZED FOR PERFORMANCE
+  // ==========================================================================
 
-  const performanceTestSeries = [
-    {
-      name: "Small Dataset (100 pts)",
-      data: smallDataset,
-      type: "scatter" as const,
-      mode: "lines+markers" as const,
-      line: { color: "#3b82f6", width: 3 },
-      marker: { size: 6, color: "#3b82f6" },
-    },
-    {
-      name: "Medium Dataset (1K pts)",
-      data: mediumDataset,
-      type: "scatter" as const,
-      mode: "lines" as const,
-      line: { color: "#10b981", width: 2 },
-    },
-    {
-      name: "Large Dataset (5K pts)",
-      data: largeDataset,
-      type: "scatter" as const,
-      mode: "lines" as const,
-      line: { color: "#f59e0b", width: 1 },
-    },
-  ];
+  /**
+   * 🚀 Generate performance test datasets with memoization
+   * Prevents expensive regeneration on each render
+   */
+  const performanceTestSeries = useMemo((): SeriesConfig[] => {
+    // Generate datasets with different sizes for performance testing
+    const smallDataset = generateScientificData(DATASET_CONFIGS.small.size);
+    const mediumDataset = generateScientificData(DATASET_CONFIGS.medium.size);
+    const largeDataset = generateScientificData(DATASET_CONFIGS.large.size);
+
+    return [
+      {
+        name: `${
+          DATASET_CONFIGS.small.label
+        } (${DATASET_CONFIGS.small.size.toLocaleString()} pts)`,
+        data: smallDataset,
+        type: "scatter" as const,
+        mode: "lines+markers" as const,
+        line: { color: DATASET_CONFIGS.small.color, width: 3 },
+        marker: { size: 6, color: DATASET_CONFIGS.small.color },
+      },
+      {
+        name: `${
+          DATASET_CONFIGS.medium.label
+        } (${DATASET_CONFIGS.medium.size.toLocaleString()} pts)`,
+        data: mediumDataset,
+        type: "scatter" as const,
+        mode: "lines" as const,
+        line: { color: DATASET_CONFIGS.medium.color, width: 2 },
+      },
+      {
+        name: `${
+          DATASET_CONFIGS.large.label
+        } (${DATASET_CONFIGS.large.size.toLocaleString()} pts)`,
+        data: largeDataset,
+        type: "scatter" as const,
+        mode: "lines" as const,
+        line: { color: DATASET_CONFIGS.large.color, width: 1 },
+      },
+    ];
+  }, []); // Empty dependency array since we want stable data
 
   return (
     <div

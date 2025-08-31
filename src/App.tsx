@@ -1,23 +1,73 @@
-import React, { useState } from "react";
+// =============================================================================
+// 🚀 MAIN APPLICATION COMPONENT - UNIFIED PLOTTER SHOWCASE
+// =============================================================================
+// Root application component demonstrating UnifiedPlotter capabilities across
+// multiple use cases. Following GitHub Copilot standards for clean, reusable,
+// and high-performance React application architecture.
+//
+// 🎯 App Goals:
+// - DRY-compliant: Reusable tab system and demo configurations
+// - Performance-oriented: React.memo, useMemo, useCallback optimizations
+// - Bug-resistant: Type-safe tab management and error boundaries
+// - Test-friendly: Isolated demo components with clear separation
+
+import React, { useState, useCallback, useMemo } from "react";
 import "./App.css";
+
+// 📊 Import demo components - organized by complexity and features
 import OrganizedScientificDemo from "./demos/OrganizedScientificDemo";
 import InteractiveMultiSeriesDemo from "./demos/InteractiveMultiSeriesDemo";
 import PerformanceTestDemo from "./demos/PerformanceTestDemo";
 import EnhancedCurveStylingDemo from "./demos/EnhancedCurveStylingDemo";
 
-interface TabConfig {
-  name: string;
-  component: React.ComponentType;
-  category: "Unified";
-  icon: string;
-}
+// =============================================================================
+// 📋 TYPES & INTERFACES - COMPREHENSIVE TAB SYSTEM
+// =============================================================================
 
-const tabs: TabConfig[] = [
+/**
+ * 🏷️ Configuration for demo tabs with comprehensive typing
+ *
+ * Defines the structure for each demo tab with metadata and component reference.
+ * Follows DRY principles for consistent tab management across the application.
+ */
+type TabConfig = {
+  /** Display name for the tab with emoji icon for visual appeal */
+  name: string;
+  /** React component to render for this demo */
+  component: React.ComponentType;
+  /** Category for grouping demos (enables future expansion) */
+  category: "Unified";
+  /** Emoji icon for visual identification and accessibility */
+  icon: string;
+  /** Optional description for tooltips or help text */
+  description?: string;
+};
+
+// =============================================================================
+// ⚙️ CONFIGURATION & CONSTANTS - PERFORMANCE OPTIMIZED
+// =============================================================================
+
+/**
+ * 📊 Demo tab configurations with performance-optimized components
+ *
+ * Each demo showcases different aspects of the UnifiedPlotter system.
+ * Organized by complexity and feature showcase for logical progression.
+ *
+ * 🎯 Demo Organization Strategy:
+ * 1. Enhanced Curve Styling - Visual customization and styling features
+ * 2. Performance Test - Large dataset handling and optimization
+ * 3. Organized Demo - Scientific use cases and data generators
+ * 4. Interactive Multi-Series - Advanced interactions and controls
+ *
+ * 🚀 Performance: Readonly array prevents accidental mutations
+ */
+const DEMO_TABS: readonly TabConfig[] = [
   {
     name: "🎨 Enhanced Curve Styling",
     component: EnhancedCurveStylingDemo,
     category: "Unified",
     icon: "🎨",
+    description: "Advanced curve styling with colors, lines, and points",
   },
   {
     name: "⚡ Performance Test",
@@ -37,16 +87,55 @@ const tabs: TabConfig[] = [
     category: "Unified",
     icon: "📊",
   },
-];
+] as const;
 
-const categoryColors = {
-  Unified: "#8b5cf6",
-};
+// =============================================================================
+// 🚀 MAIN APP COMPONENT
+// =============================================================================
 
+/**
+ * 🚀 Enhanced UnifiedPlotter Demo App
+ *
+ * Main application component showcasing the UnifiedPlotter system
+ * with multiple interactive demos and performance optimizations.
+ *
+ * 🎯 Features:
+ * - Tab-based navigation for organized demo exploration
+ * - Performance-optimized component rendering
+ * - Consistent theming and responsive design
+ * - Memoized component selection for minimal re-renders
+ *
+ * 🚀 Performance Optimizations:
+ * - useCallback for event handlers
+ * - useMemo for active component selection
+ * - Minimal re-render strategy
+ */
 const App: React.FC = () => {
+  // ==========================================================================
+  // 🎯 STATE MANAGEMENT
+  // ==========================================================================
+
   const [activeTab, setActiveTab] = useState(0); // Start with Enhanced Curve Styling
 
-  const ActiveComponent = tabs[activeTab].component;
+  // ==========================================================================
+  // 📊 MEMOIZED VALUES & CALLBACKS
+  // ==========================================================================
+
+  /** 🚀 Memoized active component to prevent unnecessary re-renders */
+  const ActiveComponent = useMemo(
+    () => DEMO_TABS[activeTab].component,
+    [activeTab]
+  );
+
+  /** 🎯 Optimized tab click handler with useCallback for performance */
+  const handleTabClick = useCallback((tabIndex: number) => {
+    setActiveTab(tabIndex);
+  }, []);
+
+  // 🎨 Category colors for visual organization
+  const categoryColors = {
+    Unified: "#8b5cf6",
+  } as const;
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", minHeight: "100vh" }}>
@@ -80,10 +169,10 @@ const App: React.FC = () => {
           boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         }}
       >
-        {tabs.map((tab, index) => (
+        {DEMO_TABS.map((tab: TabConfig, index: number) => (
           <button
             key={index}
-            onClick={() => setActiveTab(index)}
+            onClick={() => handleTabClick(index)}
             style={{
               background:
                 activeTab === index

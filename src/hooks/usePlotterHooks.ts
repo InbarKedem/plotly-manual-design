@@ -1,8 +1,15 @@
 // =============================================================================
-// CUSTOM HOOKS FOR UNIFIED PLOTTER
+// 🪝 CUSTOM HOOKS FOR UNIFIED PLOTTER - PERFORMANCE OPTIMIZED
 // =============================================================================
 // This file contains React hooks that encapsulate complex logic for
 // progressive data loading, plot configuration, and interaction handling.
+// All hooks follow GitHub Copilot standards for maintainability and performance.
+//
+// 🎯 Hook Design Principles:
+// - DRY-compliant: Reusable logic extraction
+// - Performance-oriented: Memoized computations
+// - Bug-resistant: Comprehensive error handling
+// - Test-friendly: Isolated, mockable functions
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type {
@@ -20,15 +27,42 @@ import type {
 import type { Data } from "plotly.js";
 import { calculateDataStats } from "../utils/dataUtils";
 
+// =============================================================================
+// 📊 PROGRESSIVE LOADING HOOK
+// =============================================================================
+
 /**
- * Hook for managing progressive data loading
- * Handles chunked loading of large datasets with progress tracking
+ * 🚀 Hook for managing progressive data loading with performance optimization
+ *
+ * Handles chunked loading of large datasets with comprehensive progress tracking.
+ * Prevents UI blocking during heavy data processing operations.
+ *
+ * 🎯 Key Features:
+ * - Non-blocking data processing with requestAnimationFrame
+ * - Memory-efficient chunked loading
+ * - Comprehensive progress tracking
+ * - Race condition prevention
+ * - Automatic cleanup on unmount
+ *
+ * @param series - Array of series configurations to process
+ * @param progressConfig - Optional progressive loading configuration
+ * @param onTraceCreated - Callback for trace creation (for custom processing)
+ * @returns Progressive loading state and control functions
+ *
+ * 🚀 Performance Benefits:
+ * - useCallback for stable function references
+ * - useRef to prevent unnecessary re-renders
+ * - Efficient state updates with batching
  */
 export const useProgressiveLoading = (
   series: SeriesConfig[],
   progressConfig?: ProgressConfig,
   onTraceCreated?: (seriesConfig: SeriesConfig, seriesIndex: number) => Data[]
 ) => {
+  // ==========================================================================
+  // 🎯 STATE MANAGEMENT - OPTIMIZED FOR MINIMAL RE-RENDERS
+  // ==========================================================================
+
   const [progress, setProgress] = useState(0);
   const [currentPhase, setCurrentPhase] = useState("Ready");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -36,13 +70,18 @@ export const useProgressiveLoading = (
   const [isComplete, setIsComplete] = useState(false);
   const [plotData, setPlotData] = useState<Data[]>([]);
   const [dataStats, setDataStats] = useState<DataStats | null>(null);
+
+  // 🚀 Performance optimization: useRef prevents re-render triggers
   const loadingRef = useRef(false);
 
   /**
-   * Load data progressively in chunks
+   * 📈 Load data progressively in chunks with performance optimization
+   *
+   * Uses requestAnimationFrame for non-blocking execution and proper
+   * browser paint scheduling. Includes comprehensive error handling.
    */
   const loadDataProgressively = useCallback(async () => {
-    // Prevent multiple simultaneous loading attempts
+    // 🛡️ Prevent multiple simultaneous loading attempts (race condition protection)
     if (loadingRef.current) {
       return;
     }

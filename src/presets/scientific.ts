@@ -1,7 +1,14 @@
 // =============================================================================
-// CHART PRESETS - SCIENTIFIC
+// 🧪 CHART PRESETS - SCIENTIFIC & BUSINESS CONFIGURATIONS
 // =============================================================================
-// Predefined configurations for common scientific chart types
+// Predefined configurations for common chart types following GitHub Copilot
+// standards for clean, reusable, and well-documented code.
+//
+// 🎯 Design Goals:
+// - DRY-compliant: Reusable preset configurations
+// - Performance-oriented: Pre-configured for optimal rendering
+// - Bug-resistant: Comprehensive default values and validation
+// - Test-friendly: Predictable, consistent styling across demos
 
 import type {
   SeriesConfig,
@@ -10,8 +17,26 @@ import type {
 } from "../types/PlotterTypes";
 import { SCIENTIFIC_THEME } from "../config/themes";
 
+// =============================================================================
+// 🔬 SCIENTIFIC CHART PRESETS
+// =============================================================================
+
 /**
- * Scientific scatter plot preset with error bars
+ * 📊 Scientific scatter plot preset with professional error bar styling
+ *
+ * Optimized for research data presentation, measurement analysis, and
+ * publication-ready scientific visualizations.
+ *
+ * 🎯 Key Features:
+ * - Error bar support for measurement uncertainties
+ * - Professional grid styling for accurate reading
+ * - Publication-ready font and spacing
+ * - Optimal zoom and pan interactions for data exploration
+ *
+ * 🧪 Best Use Cases:
+ * - Experimental data with uncertainties
+ * - Research measurements and analysis
+ * - Scientific publication figures
  */
 export const scientificScatterPreset = {
   config: {

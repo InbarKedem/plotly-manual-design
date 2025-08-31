@@ -1,7 +1,14 @@
 // =============================================================================
-// VALIDATION UTILITIES
+// 🛡️ VALIDATION UTILITIES - BUG-RESISTANT DATA VALIDATION
 // =============================================================================
-// Runtime validation and error handling for plotter components
+// Runtime validation and error handling for plotter components following
+// GitHub Copilot standards for high-performance, maintainable code.
+//
+// 🎯 Validation Goals:
+// - Bug-resistant: Comprehensive input checking
+// - Performance-oriented: Early exit strategies
+// - Documentation-oriented: Clear error messages
+// - Test-friendly: Isolated validation functions
 
 import type {
   SeriesConfig,
@@ -9,22 +16,59 @@ import type {
   InteractionConfig,
 } from "../types/PlotterTypes";
 
+// =============================================================================
+// 📋 VALIDATION TYPES - COMPREHENSIVE ERROR TRACKING
+// =============================================================================
+
+/**
+ * 🚨 Validation error with detailed context
+ *
+ * Provides structured error information for debugging and user feedback.
+ * Includes error classification and actionable error codes.
+ */
 export interface ValidationError {
+  /** Error severity level */
   type: "error" | "warning" | "info";
+  /** Field or property that failed validation */
   field: string;
+  /** Human-readable error description */
   message: string;
+  /** Machine-readable error code for handling */
   code: string;
 }
 
+/**
+ * 📊 Comprehensive validation result
+ *
+ * Contains all validation outcomes with proper categorization.
+ * Enables different handling strategies based on error severity.
+ */
 export interface ValidationResult {
+  /** Whether validation passed (no errors) */
   isValid: boolean;
+  /** Critical errors that prevent functionality */
   errors: ValidationError[];
+  /** Non-critical issues that may affect performance */
   warnings: ValidationError[];
+  /** Informational messages for optimization */
   infos: ValidationError[];
 }
 
+// =============================================================================
+// 🔍 CORE VALIDATION FUNCTIONS
+// =============================================================================
+
 /**
- * Validate series configuration
+ * 📈 Validate series configuration array
+ *
+ * Performs comprehensive validation of series data with performance
+ * optimizations and detailed error reporting for debugging.
+ *
+ * @param series - Array of series configurations to validate
+ * @returns Detailed validation result with categorized issues
+ *
+ * 🚀 Performance: Early exit on critical errors, lazy evaluation
+ * 🧪 Test-friendly: Pure function with predictable outputs
  */
 export const validateSeriesConfig = (
   series: SeriesConfig[]
