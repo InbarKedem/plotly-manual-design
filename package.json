@@ -7,9 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.16",
     "convert-units": "^2.3.4",
     "plotly.js": "^3.1.0",
     "react": "^17.0.2",
@@ -18,16 +22,21 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@playwright/test": "^1.55.0",
+    "@tailwindcss/postcss": "^4.1.12",
     "@types/convert-units": "^2.3.12",
     "@types/node": "^24.3.0",
     "@types/react": "^17.0.76",
     "@types/react-dom": "^17.0.25",
     "@types/react-plotly.js": "^2.6.3",
     "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.12",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"

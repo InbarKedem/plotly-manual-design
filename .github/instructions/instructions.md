@@ -19,3 +19,5 @@ applyTo: "**"
 - Optimize performance: Use `useMemo`, `useCallback`, and `React.memo` judiciously.
 - Minimize unnecessary re-renders.
 - Prefer React’s native state and hooks; avoid unnecessary external state libs when possible.
+
+don't use type any or type unknown

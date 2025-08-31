@@ -13,6 +13,7 @@ import type {
   PlotlyZoomEvent,
   PlotlyClickEvent,
   PlotlySelectEvent,
+  InteractionConfig,
 } from "./types/PlotterTypes";
 
 // Custom hooks
@@ -26,6 +27,7 @@ import {
 import ProgressIndicator from "./components/ProgressIndicator";
 import DebugPanel from "./components/DebugPanel";
 import CompletionIndicator from "./components/CompletionIndicator";
+import PlotterControls from "./components/PlotterControlsNew";
 
 // Utilities
 import { createAllTraces } from "./utils/traceGeneration";
@@ -260,6 +262,22 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       onPlotZoom?.(data);
     }
   );
+
+  /** ⚙️ Stable hover controls event handlers */
+  const handleInteractionsChange = useCallback(
+    (newInteractions: InteractionConfig) => {
+      // For demonstration, we'll just log the changes
+      // In a real implementation, this would update parent state
+      console.log("Interactions changed:", newInteractions);
+    },
+    []
+  );
+
+  const handleDebugChange = useCallback((newDebug: boolean) => {
+    // For demonstration, we'll just log the changes
+    // In a real implementation, this would update parent state
+    console.log("Debug changed:", newDebug);
+  }, []);
 
   /**
    * All plot data traces with enhanced styling
@@ -528,6 +546,24 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       />
 
       <CompletionIndicator isComplete={isComplete} message="Complete" />
+
+      {/* Stable Hover Controls - Positioned at top-left */}
+      <div
+        style={{
+          position: "absolute",
+          top: "15px",
+          left: "15px",
+          zIndex: 1003,
+        }}
+      >
+        <PlotterControls
+          interactions={interactionConfig}
+          onInteractionsChange={handleInteractionsChange}
+          debug={debug}
+          onDebugChange={handleDebugChange}
+          performanceMetrics={metrics}
+        />
+      </div>
 
       <DebugPanel
         debug={debug}
