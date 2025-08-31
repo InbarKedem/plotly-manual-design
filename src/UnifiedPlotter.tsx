@@ -388,39 +388,54 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       const traceRecord = trace as Record<string, any>;
 
       if (isHovered) {
-        // Make hovered trace prominent
+        // Make hovered trace prominent with enhanced styling
         return {
           ...trace,
           opacity: 1.0,
           line: {
             ...(traceRecord.line || {}),
-            width: 8,
-            color: "#FF0000",
+            width: (traceRecord.line?.width || 3) * 1.5, // Thicker line
+            color: traceRecord.line?.color || "#3b82f6",
             dash: "solid",
           },
           marker: {
             ...(traceRecord.marker || {}),
-            size: 12,
-            color: "#FF0000",
+            size: Array.isArray(traceRecord.marker?.size)
+              ? traceRecord.marker.size.map((s: number) => s * 1.3)
+              : (traceRecord.marker?.size || 8) * 1.3, // Grow data points slightly
+            color:
+              traceRecord.marker?.color || traceRecord.line?.color || "#3b82f6",
             opacity: 1.0,
+            line: {
+              ...(traceRecord.marker?.line || {}),
+              width: 3, // Enhanced white outer stroke
+              color: "#ffffff",
+            },
           },
         };
       } else {
-        // Make other traces faded
+        // Make other traces faded but still visible
         return {
           ...trace,
-          opacity: 0.05,
+          opacity: 0.15,
           line: {
             ...(traceRecord.line || {}),
-            width: 0.5,
-            color: "#CCCCCC",
+            width: Math.max((traceRecord.line?.width || 3) * 0.5, 1), // Thinner but visible
+            color: traceRecord.line?.color || "#9ca3af",
             dash: "dot",
           },
           marker: {
             ...(traceRecord.marker || {}),
-            size: 2,
-            color: "#CCCCCC",
-            opacity: 0.1,
+            size: Array.isArray(traceRecord.marker?.size)
+              ? traceRecord.marker.size.map((s: number) => s * 0.7)
+              : (traceRecord.marker?.size || 8) * 0.7, // Smaller data points
+            color: traceRecord.marker?.color || "#d1d5db",
+            opacity: 0.3,
+            line: {
+              ...(traceRecord.marker?.line || {}),
+              width: 1,
+              color: "#f3f4f6", // Light outer stroke
+            },
           },
         };
       }
@@ -458,26 +473,66 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       clickmode: interactionConfig.clickmode,
       selectdirection: interactionConfig.selectdirection,
 
-      // Crosshair configuration - adds dashed lines on both axes
+      // Enhanced hover styling with modern design
+      hoverlabel: {
+        bgcolor: "rgba(255, 255, 255, 0.95)", // Semi-transparent white background
+        bordercolor: "rgba(148, 163, 184, 0.3)", // Subtle border color
+        font: {
+          family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+          size: 12,
+          color: "#374151", // text-gray-700
+        },
+        namelength: -1, // Show full name
+        align: "left" as const,
+      },
+
+      // Crosshair configuration - thin vertical dashed guide line
       xaxis: {
         ...plotConfig.xAxis,
-        title: { text: plotConfig.xAxis.title, font: plotConfig.font },
-        showspikes: true, // Enable spike lines (crosshairs)
-        spikemode: "across" as const, // Draw spike across the plot
-        spikesnap: "cursor" as const, // Snap to cursor position
-        spikecolor: "#666666", // Dark gray color
+        title: {
+          text: plotConfig.xAxis.title,
+          font: { ...plotConfig.font, size: 12, color: "#6b7280" }, // text-sm text-gray-500
+        },
+        // Modern clean background and gridlines
+        showgrid: true,
+        gridcolor: "#e5e7eb", // stroke-gray-200 - subtle gridlines
+        gridwidth: 1,
+        zeroline: true,
+        zerolinecolor: "#d1d5db", // gray-300
+        zerolinewidth: 1,
+        // Axes styling - minimal ticks, legible text
+        tickfont: { size: 10, color: "#6b7280" }, // text-sm text-gray-600
+        tickcolor: "#e5e7eb",
+        linecolor: "#e5e7eb",
+        linewidth: 1,
+        // Enhanced crosshair - thin vertical dashed guide line
+        showspikes: true,
+        spikemode: "across" as const,
+        spikesnap: "cursor" as const,
+        spikecolor: "#9ca3af", // gray-400 - thin, subtle
         spikethickness: 1,
-        spikedash: "dash" as const, // Dashed line style
+        spikedash: "dash" as const,
       },
       yaxis: {
         ...plotConfig.yAxis,
-        title: { text: plotConfig.yAxis.title, font: plotConfig.font },
-        showspikes: true, // Enable spike lines (crosshairs)
-        spikemode: "across" as const, // Draw spike across the plot
-        spikesnap: "cursor" as const, // Snap to cursor position
-        spikecolor: "#666666", // Dark gray color
-        spikethickness: 1,
-        spikedash: "dash" as const, // Dashed line style
+        title: {
+          text: plotConfig.yAxis.title,
+          font: { ...plotConfig.font, size: 12, color: "#6b7280" }, // text-sm text-gray-500
+        },
+        // Modern clean background and gridlines
+        showgrid: true,
+        gridcolor: "#e5e7eb", // stroke-gray-200 - subtle gridlines
+        gridwidth: 1,
+        zeroline: true,
+        zerolinecolor: "#d1d5db", // gray-300
+        zerolinewidth: 1,
+        // Axes styling - minimal ticks, legible text
+        tickfont: { size: 10, color: "#6b7280" }, // text-sm text-gray-600
+        tickcolor: "#e5e7eb",
+        linecolor: "#e5e7eb",
+        linewidth: 1,
+        // Disable y-axis spikes to keep only vertical crosshair
+        showspikes: false,
       },
 
       // Legend configuration
@@ -492,8 +547,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
       // Layout and spacing
       margin: plotConfig.margin,
-      paper_bgcolor: plotConfig.backgroundColor,
-      plot_bgcolor: plotConfig.plotBackgroundColor,
+      paper_bgcolor: "#f9fafb", // Neutral, clean background (gray-50)
+      plot_bgcolor: "#ffffff", // Clean white plot background
       font: plotConfig.font,
 
       // Additional elements
@@ -519,6 +574,11 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       // Interaction settings
       scrollZoom: interactionConfig.enableZoom,
       doubleClick: "reset+autosize" as const,
+
+      // Enhanced hover configuration for smooth transitions
+      hoverData: true,
+      showTips: true,
+      staticPlot: false,
 
       // Export options
       toImageButtonOptions: {

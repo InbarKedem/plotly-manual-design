@@ -39,6 +39,38 @@
   }
 }
 
+/* Smooth fade-in animation for tooltips */
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced hover tooltip styling */
+.plotly .hoverlayer .hovertext {
+  animation: tooltipFadeIn 0.15s ease-out !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Data point hover animation */
+@keyframes dataPointHover {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
 /* Scale in animation for checkmark icon */
 @keyframes scaleIn {
   0% {

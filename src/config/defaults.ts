@@ -67,8 +67,8 @@ export const DEFAULT_PLOT_CONFIG: Required<PlotConfig> = {
   margin: { l: 80, r: 150, t: 80, b: 80 },
   responsive: true,
   useResizeHandler: true,
-  backgroundColor: "#ffffff",
-  plotBackgroundColor: "#fafbfc", // Subtle background for data focus
+  backgroundColor: "#f9fafb", // Clean neutral background (gray-50)
+  plotBackgroundColor: "#ffffff", // Pure white plot area
   font: {
     family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", // Modern font stack
     size: 14, // Optimized for readability
@@ -79,23 +79,23 @@ export const DEFAULT_PLOT_CONFIG: Required<PlotConfig> = {
 };
 
 /**
- * Default series configuration
+ * Default series configuration with enhanced modern styling
  * Provides sensible defaults for all series settings
  */
 export const DEFAULT_SERIES_CONFIG: Partial<SeriesConfig> = {
   type: "scatter",
   mode: "lines+markers", // Default to lines with markers for curve connection
   line: {
-    width: 2,
+    width: 3, // Enhanced thickness for better visibility
     shape: "spline", // Smooth curves by default
-    smoothing: 0.8,
+    smoothing: 1.0, // Enhanced smoothing for modern appearance
   },
   marker: {
-    size: 6,
-    opacity: 0.7,
+    size: 8, // Larger for better visibility and hover interaction
+    opacity: 0.9, // Higher opacity for better contrast
     line: {
-      width: 1,
-      color: "rgba(255,255,255,0.8)",
+      width: 2, // Enhanced white outer stroke
+      color: "rgba(255, 255, 255, 0.8)",
     },
   },
   visible: true,

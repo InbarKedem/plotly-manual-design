@@ -58,8 +58,8 @@ export interface PlotterControlsProps {
 export const PlotterControls: React.FC<PlotterControlsProps> = ({
   interactions,
   onInteractionsChange,
-  theme,
-  onThemeChange,
+  // theme, // Currently unused but available for future features
+  // onThemeChange, // Currently unused but available for future features
   debug,
   onDebugChange,
   performanceMetrics,
@@ -86,14 +86,15 @@ export const PlotterControls: React.FC<PlotterControlsProps> = ({
     [interactions, onInteractionsChange]
   );
 
-  const handleThemeToggle = useCallback(() => {
-    if (theme && onThemeChange) {
-      onThemeChange({
-        ...theme,
-        darkMode: !theme.darkMode,
-      });
-    }
-  }, [theme, onThemeChange]);
+  // Theme toggle functionality - currently unused but available for future features
+  // const handleThemeToggle = useCallback(() => {
+  //   if (theme && onThemeChange) {
+  //     onThemeChange({
+  //       ...theme,
+  //       darkMode: !theme.darkMode,
+  //     });
+  //   }
+  // }, [theme, onThemeChange]);
 
   // ==========================================================================
   // 🎨 RENDER COMPONENT

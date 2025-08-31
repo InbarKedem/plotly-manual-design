@@ -270,7 +270,7 @@ const determineSegmentColor = (
 };
 
 /**
- * Create line configuration object
+ * Create line configuration object with enhanced styling
  */
 const createLineConfig = (
   line: LineOptions,
@@ -280,11 +280,11 @@ const createLineConfig = (
 ) => {
   const lineObj = line;
   return {
-    width: lineObj.width || 2,
+    width: lineObj.width || 3, // Slightly thicker for better visibility
     color: curveColor || lineObj.color || theme?.primary || "#3b82f6",
     dash: curveLineStyle || lineObj.dash || "solid",
-    shape: lineObj.shape || "spline", // Use spline for smooth curves by default
-    smoothing: lineObj.smoothing !== undefined ? lineObj.smoothing : 0.8, // Default smoothing
+    shape: lineObj.shape || "spline", // Use spline for smooth curves
+    smoothing: lineObj.smoothing !== undefined ? lineObj.smoothing : 1.0, // Enhanced smoothing
   };
 };
 
@@ -317,10 +317,14 @@ const createMarkerConfig = (
   }
 
   const markerConfig: MarkerConfig = {
-    size: markerObj.size || 6,
+    size: markerObj.size || 8, // Slightly larger for better visibility
     symbol: markerObj.symbol || "circle",
-    opacity: markerObj.opacity || 0.8,
-    line: markerObj.line,
+    opacity: markerObj.opacity || 0.9, // Higher opacity for better contrast
+    // Enhanced line styling for data point circles with outer white stroke
+    line: markerObj.line || {
+      width: 2,
+      color: "rgba(255, 255, 255, 0.8)", // Outer white stroke
+    },
   };
 
   // ==========================================================================
