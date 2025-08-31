@@ -157,13 +157,33 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** 🎯 Hover state for interactive opacity effects */
   const [hoveredTrace, setHoveredTrace] = useState<number | null>(null);
 
+  /** 🎛️ Internal state for interaction configuration */
+  const [internalInteractions, setInternalInteractions] =
+    useState<InteractionConfig>(interactions);
+
+  /** 🐛 Internal state for debug mode */
+  const [internalDebug, setInternalDebug] = useState<boolean>(debug);
+
+  // =============================================================================
+  // 🔄 PROP SYNCHRONIZATION
+  // =============================================================================
+
+  /** Sync internal state with prop changes */
+  useEffect(() => {
+    setInternalInteractions(interactions);
+  }, [interactions]);
+
+  useEffect(() => {
+    setInternalDebug(debug);
+  }, [debug]);
+
   // =============================================================================
   // 📊 PERFORMANCE MONITORING SYSTEM
   // =============================================================================
 
   /** ⚡ Real-time performance metrics and measurement utilities */
   const { metrics, startMeasurement, endMeasurement } =
-    usePerformanceMonitoring(series, debug);
+    usePerformanceMonitoring(series, internalDebug);
 
   /** 🔄 Debounced interaction handlers for smooth user experience */
   const { debouncedHover, debouncedZoom } = useDebouncedInteractions(
@@ -209,8 +229,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** Enhanced plot configuration with theme integration */
   const plotConfig = usePlotConfig(config, theme);
 
-  /** User interaction configuration */
-  const interactionConfig = useInteractionConfig(interactions);
+  /** User interaction configuration - uses internal state for dynamic updates */
+  const interactionConfig = useInteractionConfig(internalInteractions);
 
   /** Custom hover handler for opacity feature */
   const handleCustomHover = useCallback(
@@ -266,16 +286,16 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   /** ⚙️ Stable hover controls event handlers */
   const handleInteractionsChange = useCallback(
     (newInteractions: InteractionConfig) => {
-      // For demonstration, we'll just log the changes
-      // In a real implementation, this would update parent state
+      // Update internal state to make toggles functional
+      setInternalInteractions(newInteractions);
       console.log("Interactions changed:", newInteractions);
     },
     []
   );
 
   const handleDebugChange = useCallback((newDebug: boolean) => {
-    // For demonstration, we'll just log the changes
-    // In a real implementation, this would update parent state
+    // Update internal state to make debug toggle functional
+    setInternalDebug(newDebug);
     console.log("Debug changed:", newDebug);
   }, []);
 
@@ -515,6 +535,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
   return (
     <div
       className={className}
+      data-testid="unified-plotter"
       style={{
         // Container positioning and layout
         position: "relative",
@@ -557,16 +578,16 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         }}
       >
         <PlotterControls
-          interactions={interactionConfig}
+          interactions={internalInteractions}
           onInteractionsChange={handleInteractionsChange}
-          debug={debug}
+          debug={internalDebug}
           onDebugChange={handleDebugChange}
           performanceMetrics={metrics}
         />
       </div>
 
       <DebugPanel
-        debug={debug}
+        debug={internalDebug}
         dataStats={dataStats}
         performanceMetrics={metrics}
         additionalInfo={{
@@ -576,7 +597,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
           "Progressive Loading": progressiveLoading?.enabled
             ? "Enabled"
             : "Disabled",
-          "Performance Monitoring": debug ? "Enabled" : "Disabled",
+          "Performance Monitoring": internalDebug ? "Enabled" : "Disabled",
         }}
       />
 
