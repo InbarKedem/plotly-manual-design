@@ -77,6 +77,22 @@
   z-index: 999 !important; /* Below legend and tooltip */
 }
 
+/* Enhanced crosshair styling for both horizontal and vertical guides */
+.plotly .xlines-above line,
+.plotly .ylines-above line {
+  stroke-dasharray: 4 4 !important; /* Dashed pattern */
+  stroke-width: 1 !important; /* Thin line */
+  stroke: #9ca3af !important; /* gray-400 - subtle but visible */
+  opacity: 0.8 !important; /* Slightly transparent */
+  z-index: 999 !important; /* Below legend and tooltip */
+}
+
+/* Ensure crosshair lines are properly styled */
+.plotly .xlines-above,
+.plotly .ylines-above {
+  pointer-events: none !important; /* Don't interfere with interactions */
+}
+
 /* Data point hover animation */
 @keyframes dataPointHover {
   0% {

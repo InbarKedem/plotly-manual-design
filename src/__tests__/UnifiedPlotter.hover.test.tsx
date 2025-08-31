@@ -122,7 +122,7 @@ describe("UnifiedPlotter Hover Interactions", () => {
   });
 
   describe("Crosshair Line Rendering", () => {
-    test("renders vertical dashed crosshair line on x-axis", () => {
+    test("renders both vertical and horizontal dashed crosshair lines", () => {
       render(
         <UnifiedPlotter
           series={testSeries}
@@ -135,16 +135,24 @@ describe("UnifiedPlotter Hover Interactions", () => {
         plotElement.getAttribute("data-layout") || "{}"
       );
 
-      // Verify x-axis crosshair configuration
+      // Verify x-axis crosshair configuration (vertical line)
       expect(layoutData.xaxis.showspikes).toBe(true);
       expect(layoutData.xaxis.spikemode).toBe("across");
       expect(layoutData.xaxis.spikesnap).toBe("cursor");
       expect(layoutData.xaxis.spikecolor).toBe("#9ca3af"); // Thin, subtle color
       expect(layoutData.xaxis.spikethickness).toBe(1);
       expect(layoutData.xaxis.spikedash).toBe("dash");
+
+      // Verify y-axis crosshair configuration (horizontal line)
+      expect(layoutData.yaxis.showspikes).toBe(true);
+      expect(layoutData.yaxis.spikemode).toBe("across");
+      expect(layoutData.yaxis.spikesnap).toBe("cursor");
+      expect(layoutData.yaxis.spikecolor).toBe("#9ca3af"); // Thin, subtle color
+      expect(layoutData.yaxis.spikethickness).toBe(1);
+      expect(layoutData.yaxis.spikedash).toBe("dash");
     });
 
-    test("disables y-axis spikes to keep only vertical crosshair", () => {
+    test("aligns both crosshairs with cursor position", () => {
       render(
         <UnifiedPlotter
           series={testSeries}
@@ -157,27 +165,11 @@ describe("UnifiedPlotter Hover Interactions", () => {
         plotElement.getAttribute("data-layout") || "{}"
       );
 
-      // Verify y-axis spikes are disabled for cleaner vertical-only crosshair
-      expect(layoutData.yaxis.showspikes).toBe(false);
-    });
-
-    test("aligns crosshair with cursor position", () => {
-      render(
-        <UnifiedPlotter
-          series={testSeries}
-          interactions={{ enableHoverOpacity: true }}
-        />
-      );
-
-      const plotElement = screen.getByTestId("mock-plot");
-      const layoutData = JSON.parse(
-        plotElement.getAttribute("data-layout") || "{}"
-      );
-
-      // Verify cursor alignment
+      // Verify cursor alignment for both axes
       expect(layoutData.xaxis.spikesnap).toBe("cursor");
-      expect(layoutData.hoverdistance).toBe(20);
-      expect(layoutData.spikedistance).toBe(20);
+      expect(layoutData.yaxis.spikesnap).toBe("cursor");
+      expect(layoutData.hoverdistance).toBe(30); // Updated sensitivity
+      expect(layoutData.spikedistance).toBe(30); // Updated sensitivity
     });
   });
 

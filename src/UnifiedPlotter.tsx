@@ -484,9 +484,11 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         },
         namelength: -1, // Show full name
         align: "left" as const,
-        // Ensure tooltip stays within plot area to avoid legend overlap
+        // Enhanced legend protection - dynamic positioning to avoid overlap
         borderradius: 8, // Rounded corners
         borderwidth: 1,
+        // Constrain tooltip width to prevent legend overlap
+        maxwidth: 250, // Reduced from 300px for better legend protection
       },
 
       // Crosshair configuration - thin vertical dashed guide line
@@ -534,8 +536,13 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         tickcolor: "#e5e7eb",
         linecolor: "#e5e7eb",
         linewidth: 1,
-        // Disable y-axis spikes to keep only vertical crosshair
-        showspikes: false,
+        // Enhanced crosshair - thin horizontal dashed guide line
+        showspikes: true,
+        spikemode: "across" as const,
+        spikesnap: "cursor" as const,
+        spikecolor: "#9ca3af", // gray-400 - thin, subtle
+        spikethickness: 1,
+        spikedash: "dash" as const,
       },
 
       // Legend configuration - positioned to avoid tooltip overlap
@@ -550,8 +557,8 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
         orientation: "v" as const,
         xanchor: "left" as const,
         yanchor: "top" as const,
-        // Add padding to prevent tooltip overlap
-        x: 1.05, // Move further right to avoid conflicts
+        // Enhanced positioning to prevent tooltip overlap
+        x: 1.08, // Moved further right for better tooltip protection
         y: 0.98,
         tracegroupgap: 4, // Spacing between legend items
       },

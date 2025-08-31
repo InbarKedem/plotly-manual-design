@@ -62,9 +62,9 @@ export const DEFAULT_PLOT_CONFIG: Required<PlotConfig> = {
   height: "500px",
   minHeight: "400px",
   showLegend: true,
-  legendPosition: { x: 1.02, y: 1 },
+  legendPosition: { x: 1.08, y: 1 }, // Moved further right for better tooltip protection
   // 🎯 Optimized margins for professional appearance and legend spacing
-  margin: { l: 80, r: 180, t: 80, b: 80 }, // Increased right margin for legend safety
+  margin: { l: 80, r: 200, t: 80, b: 80 }, // Increased right margin for enhanced legend safety
   responsive: true,
   useResizeHandler: true,
   backgroundColor: "#f9fafb", // Clean neutral background (gray-50)
