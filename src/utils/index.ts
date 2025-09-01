@@ -1,12 +1,15 @@
 // =============================================================================
-// UTILS BARREL EXPORT
+// 📦 UTILS MODULE - MAIN EXPORTS
 // =============================================================================
-// Centralized export for all utility functions
+// Central export point for all utility functions used across the application
 
 // Data utilities
 export * from "./dataUtils";
-export * from "./traceGeneration";
 export * from "./colorscales";
+export * from "./validation";
+
+// Legacy trace generation (for backward compatibility)
+export { createAllTraces as legacyCreateAllTraces } from "./traceGeneration";
 
 // Plotter utilities (consolidated from legacy files) - exclude debounce to avoid conflict
 export {
@@ -18,6 +21,9 @@ export {
 
 // Performance utilities
 export * from "./performance";
+
+// Modular utilities (new architecture) - specific exports to avoid conflicts
+export { createAllTraces, validatePlotterInputs } from "./plotting";
 
 // Validation utilities
 export * from "./validation";

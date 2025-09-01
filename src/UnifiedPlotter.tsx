@@ -9,19 +9,19 @@ import type { Data, Layout } from "plotly.js";
 // Type imports
 import type {
   UnifiedPlotterProps,
+  InteractionConfig,
   PlotlyHoverEvent,
   PlotlyZoomEvent,
   PlotlyClickEvent,
   PlotlySelectEvent,
-  InteractionConfig,
-} from "./types/PlotterTypes";
+} from "./types/plotting/plotting-types";
 
 // Custom hooks
 import {
   usePlotConfig,
   useInteractionConfig,
   usePlotEvents,
-} from "./hooks/usePlotterHooks";
+} from "./hooks/plotting/plotting-hooks";
 
 // UI Components
 import ProgressIndicator from "./components/ProgressIndicator";
@@ -30,14 +30,17 @@ import CompletionIndicator from "./components/CompletionIndicator";
 import PlotterControls from "./components/PlotterControlsNew";
 
 // Utilities
-import { createAllTraces } from "./utils/traceGeneration";
-import { validatePlotterInputs } from "./utils/validation";
+import {
+  createAllTraces,
+  calculateDataStats,
+} from "./utils/plotting/plotting-utils";
+import { validatePlotterInputs } from "./utils/plotting/plotting-utils";
 
 // Performance hooks
 import {
-  usePerformanceMonitoring,
   useDebouncedInteractions,
-} from "./hooks/usePerformanceHooks";
+  usePerformanceMonitoring,
+} from "./hooks/performance/performance-hooks";
 
 // Styles
 import "./styles/animations.css";
@@ -342,31 +345,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   // Calculate comprehensive data stats
   const dataStats = useMemo(() => {
-    const allDataPoints = series.flatMap((s) => s.data || []);
-    const xValues = allDataPoints.map((d) => d.x);
-    const yValues = allDataPoints.map((d) => d.y);
-    const zValues = allDataPoints
-      .map((d) => d.z)
-      .filter((z) => z !== undefined) as number[];
-
-    return {
-      totalPoints: allDataPoints.length,
-      processedPoints: allDataPoints.length,
-      seriesCount: series.length,
-      xRange:
-        allDataPoints.length > 0
-          ? ([Math.min(...xValues), Math.max(...xValues)] as [number, number])
-          : ([0, 1] as [number, number]),
-      yRange:
-        allDataPoints.length > 0
-          ? ([Math.min(...yValues), Math.max(...yValues)] as [number, number])
-          : ([0, 1] as [number, number]),
-      zRange:
-        zValues.length > 0
-          ? ([Math.min(...zValues), Math.max(...zValues)] as [number, number])
-          : null,
-      memoryUsageMB: `${(allDataPoints.length * 0.1).toFixed(2)}`,
-    };
+    return calculateDataStats(series);
   }, [series]);
 
   /**
@@ -495,7 +474,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       xaxis: {
         ...plotConfig.xAxis,
         title: {
-          text: plotConfig.xAxis.title,
+          text: plotConfig.xAxis?.title || "X Values",
           font: { ...plotConfig.font, size: 12, color: "#6b7280" }, // text-sm text-gray-500
         },
         // Modern clean background and gridlines
@@ -521,7 +500,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
       yaxis: {
         ...plotConfig.yAxis,
         title: {
-          text: plotConfig.yAxis.title,
+          text: plotConfig.yAxis?.title || "Y Values",
           font: { ...plotConfig.font, size: 12, color: "#6b7280" }, // text-sm text-gray-500
         },
         // Modern clean background and gridlines
