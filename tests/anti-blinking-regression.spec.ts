@@ -688,7 +688,7 @@ test.describe("Performance Regression Tests", () => {
     // Monitor memory usage during extended hover session
     const initialHeapUsed = await page.evaluate(() => {
       if ("memory" in performance) {
-        return (performance as any).memory.usedJSHeapSize;
+        return (performance as any).memory?.usedJSHeapSize || 0;
       }
       return 0;
     });
@@ -704,13 +704,13 @@ test.describe("Performance Regression Tests", () => {
     // Force garbage collection if available
     await page.evaluate(() => {
       if ("gc" in window) {
-        (window as any).gc();
+        (window as any).gc?.();
       }
     });
 
     const finalHeapUsed = await page.evaluate(() => {
       if ("memory" in performance) {
-        return (performance as any).memory.usedJSHeapSize;
+        return (performance as any).memory?.usedJSHeapSize || 0;
       }
       return 0;
     });

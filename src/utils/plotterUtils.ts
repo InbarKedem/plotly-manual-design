@@ -238,7 +238,7 @@ export const calculateOptimalChunkSize = (totalPoints: number): number => {
  * debouncedSearch('apple pie'); // Only this call executes
  * ```
  */
-export const debounce = <T extends (...args: unknown[]) => void>(
+export const debounce = <T extends (...args: any[]) => void>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {

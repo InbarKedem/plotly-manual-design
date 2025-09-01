@@ -237,7 +237,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
 
   /** Custom hover handler for opacity feature */
   const handleCustomHover = useCallback(
-    (data: unknown) => {
+    (data: any) => {
       try {
         const hoverData = data as { points?: Array<{ curveNumber: number }> };
 
@@ -364,7 +364,7 @@ const UnifiedPlotter: React.FC<UnifiedPlotterProps> = ({
     // Create modified data for hover effect
     const modifiedData = (plotData as Data[]).map((trace, index: number) => {
       const isHovered = index === hoveredTrace;
-      const traceRecord = trace as Record<string, any>;
+      const traceRecord = trace as any; // Plotly trace types vary by trace type
 
       if (isHovered) {
         // Make hovered trace prominent with enhanced styling

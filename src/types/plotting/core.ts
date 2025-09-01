@@ -24,7 +24,7 @@ export interface DataPoint {
   /** Optional timestamp for time-series data */
   timestamp?: number;
   /** Optional metadata for advanced features */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean | Date>;
 }
 
 /**
@@ -41,7 +41,7 @@ export interface SeriesData {
   /** Optional series-specific styling */
   style?: SeriesStyle;
   /** Optional metadata for the series */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean | Date>;
 }
 
 /**

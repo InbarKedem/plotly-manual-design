@@ -13,6 +13,7 @@ import type {
   MarkerOptions,
   LineOptions,
   CurveColoringConfig,
+  PlotlyTrace,
   CurveLineStyleConfig,
 } from "../types/PlotterTypes";
 import type { Data } from "plotly.js";
@@ -97,7 +98,7 @@ export const createAllTraces = (
       },
       showlegend: false,
       hoverinfo: "skip",
-    } as any;
+    } as PlotlyTrace;
 
     return [...mainTraces, colorBarTrace];
   }
@@ -307,11 +308,14 @@ const createMarkerConfig = (
     size?: number | number[];
     symbol?: string | string[];
     opacity?: number;
-    line?: any;
-    color?: any; // Allow flexible color types for Plotly compatibility
-    colorscale?: string | any[][];
+    line?: {
+      color?: string | string[];
+      width?: number;
+    };
+    color?: string | string[] | number[] | any[]; // Allow flexible color types for Plotly compatibility
+    colorscale?: string | Array<[number, string]>;
     showscale?: boolean;
-    colorbar?: any;
+    colorbar?: Record<string, any>; // Plotly colorbar config is complex
     cmin?: number;
     cmax?: number;
   }

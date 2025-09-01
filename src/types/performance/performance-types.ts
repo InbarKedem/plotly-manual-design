@@ -76,7 +76,7 @@ export interface ValidationRule {
   /** Rule name for identification */
   name: string;
   /** Validation function that returns true if valid */
-  validate: (data: any) => boolean;
+  validate: (data: Record<string, unknown>) => boolean;
   /** Error message when validation fails */
   errorMessage: string;
   /** Warning message for non-critical issues */

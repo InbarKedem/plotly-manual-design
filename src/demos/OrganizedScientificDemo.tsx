@@ -50,10 +50,10 @@ type DemoConfig = {
   series: Array<{
     name: string;
     data: ReturnType<typeof generateScientificData>;
-    [key: string]: any;
+    [key: string]: string | number | boolean | any;
   }>;
   /** Preset configuration to apply */
-  preset: any;
+  preset: Record<string, any>;
 };
 
 /**

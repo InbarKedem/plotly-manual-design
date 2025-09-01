@@ -277,7 +277,7 @@ export const calculateStatistics = (values: number[]) => {
  * 🚀 Performance: Prevents rapid successive calls, improves UX
  * 🧪 Test-friendly: Predictable timing behavior
  */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
+export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
@@ -308,7 +308,7 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
  * @param limit - Time limit in milliseconds between calls
  * @returns Throttled function
  */
-export const throttle = <T extends (...args: unknown[]) => unknown>(
+export const throttle = <T extends (...args: any[]) => any>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
@@ -330,9 +330,8 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
  */
 export const deepClone = <T>(obj: T): T => {
   if (obj === null || typeof obj !== "object") return obj;
-  if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
-  if (obj instanceof Array)
-    return obj.map((item) => deepClone(item)) as unknown as T;
+  if (obj instanceof Date) return new Date(obj.getTime()) as T;
+  if (obj instanceof Array) return obj.map((item) => deepClone(item)) as T;
   if (typeof obj === "object") {
     const cloned = {} as T;
     Object.keys(obj).forEach((key) => {
@@ -369,7 +368,7 @@ export const linspace = (
  * @param value - Value to check
  * @returns True if value is a valid finite number
  */
-export const isValidNumber = (value: unknown): value is number => {
+export const isValidNumber = (value: any): value is number => {
   return typeof value === "number" && isFinite(value) && !isNaN(value);
 };
 

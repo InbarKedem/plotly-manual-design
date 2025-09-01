@@ -13,7 +13,7 @@ import {
 // Basic data generation functions
 export const generateData = (
   name: string,
-  options: any = {}
+  options: Record<string, any> = {}
 ): SeriesConfig => ({
   name,
   data: generateLinearData(options.count || 100),
@@ -33,7 +33,7 @@ export const generateClimateData = (
 
 export const generateFuelData = (
   name: string,
-  options: any = {}
+  options: Record<string, any> = {}
 ): SeriesConfig => ({
   name,
   data: generateLinearData(options.count || 50, 0.8, 10, 0.5),
@@ -43,7 +43,7 @@ export const generateFuelData = (
 
 export const generateScientificData = (
   name: string,
-  options: any = {}
+  options: Record<string, any> = {}
 ): SeriesConfig => ({
   name,
   data: generateSinusoidalData(options.count || 200),
@@ -140,7 +140,10 @@ export const PRESET_PROGRESSIVE = {
 };
 
 // Utility functions
-export const combineConfigs = (base: any, override: any) => ({
+export const combineConfigs = (
+  base: Record<string, any>,
+  override: Record<string, any>
+) => ({
   ...base,
   ...override,
 });

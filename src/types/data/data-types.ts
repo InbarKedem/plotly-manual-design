@@ -36,7 +36,7 @@ export interface DataPoint {
   /** Z-coordinate for 3D plots (optional) */
   z?: number;
   /** Additional custom data fields */
-  customdata?: any;
+  customdata?: Record<string, string | number | boolean>;
   /** Text labels for data points */
   text?: string | string[];
   /** Hover text override */
@@ -58,5 +58,5 @@ export interface DataPoint {
     };
   };
   /** Metadata for analysis */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean | Date>;
 }

@@ -5,11 +5,15 @@
 
 import { useMemo } from "react";
 import { PLOT_LAYOUT } from "./plotter-constants";
+import type { PlotConfig, InteractionConfig } from "../../types";
 
 /**
  * Custom hook for generating Plotly layout configuration
  */
-export const usePlotLayout = (plotConfig: any, interactionConfig: any) => {
+export const usePlotLayout = (
+  plotConfig: PlotConfig,
+  interactionConfig: InteractionConfig
+) => {
   return useMemo(
     () => ({
       // Title configuration
@@ -69,7 +73,10 @@ export const usePlotLayout = (plotConfig: any, interactionConfig: any) => {
 /**
  * Custom hook for generating Plotly config options
  */
-export const usePlotlyConfig = (plotConfig: any, interactionConfig: any) => {
+export const usePlotlyConfig = (
+  plotConfig: PlotConfig,
+  interactionConfig: InteractionConfig
+) => {
   return useMemo(
     () => ({
       // Responsive behavior

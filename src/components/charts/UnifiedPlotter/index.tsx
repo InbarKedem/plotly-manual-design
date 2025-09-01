@@ -17,29 +17,29 @@ import type {
   PlotlyZoomEvent,
   PlotlyClickEvent,
   PlotlySelectEvent,
-} from "../../types/plotting/core";
+} from "../../../types/plotting/core";
 
 // 🎣 Modular hooks
 import {
   useDebouncedInteractions,
   usePerformanceMonitoring,
-} from "../../hooks/performance";
+} from "../../../hooks/performance";
 import {
   usePlotConfig,
   useInteractionConfig,
   useThemeConfig,
   usePlotEvents,
-} from "../../hooks/plotting";
+} from "../../../hooks/plotting";
 
 // 🛠️ Utilities
 import {
   createAllTraces,
   applyHoverOpacity,
   generateDataStats,
-} from "../../utils/plotting";
+} from "../../../utils/plotting";
 
 // ⚙️ Configuration
-import { DEFAULT_PLOT_CONFIG, LEGEND_POSITION } from "../../config/plotting";
+import { DEFAULT_PLOT_CONFIG, LEGEND_POSITION } from "../../../config/plotting";
 
 // 🎨 Styles
 import "../../../styles/animations.css";

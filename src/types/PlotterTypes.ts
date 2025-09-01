@@ -44,10 +44,10 @@ export interface PlotlyHoverEvent {
   points: PlotDatum[];
   /** Original mouse event for advanced handling */
   event: MouseEvent;
-  /** X-values at hover position */
-  xvals: Array<number | string>;
-  /** Y-values at hover position */
-  yvals: Array<number | string>;
+  /** X-values at hover position (can include null values) */
+  xvals: Array<number | string | null>;
+  /** Y-values at hover position (can include null values) */
+  yvals: Array<number | string | null>;
 }
 
 /**

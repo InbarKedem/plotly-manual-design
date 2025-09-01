@@ -17,7 +17,15 @@ jest.mock("react-plotly.js", () => {
     data,
     config,
     ...props
-  }: any) {
+  }: {
+    onHover?: any;
+    onUnhover?: any;
+    onClick?: any;
+    layout?: any;
+    data?: any;
+    config?: any;
+    [key: string]: any;
+  }) {
     return (
       <div
         data-testid="mock-plot"
@@ -188,7 +196,7 @@ describe("UnifiedPlotter Hover Interactions", () => {
       );
 
       // Verify marker configuration for data points
-      plotData.forEach((trace: any) => {
+      plotData.forEach((trace: Record<string, any>) => {
         if (trace.mode?.includes("markers")) {
           expect(trace.marker.size).toBe(8); // Slightly larger for visibility
           expect(trace.marker.opacity).toBe(0.9); // High opacity for contrast
@@ -239,7 +247,7 @@ describe("UnifiedPlotter Hover Interactions", () => {
       );
 
       // Check for white outer stroke on markers
-      plotData.forEach((trace: any) => {
+      plotData.forEach((trace: Record<string, any>) => {
         if (trace.mode?.includes("markers") && trace.marker) {
           expect(trace.marker.line.color).toBe("rgba(255, 255, 255, 0.8)");
           expect(trace.marker.line.width).toBe(2);
@@ -309,7 +317,7 @@ describe("UnifiedPlotter Hover Interactions", () => {
       );
 
       // Verify line styling for smooth curves
-      plotData.forEach((trace: any) => {
+      plotData.forEach((trace: Record<string, any>) => {
         if (trace.mode?.includes("lines") && trace.line) {
           expect(trace.line.shape).toBe("spline");
           expect(trace.line.smoothing).toBe(1.0);
@@ -327,7 +335,7 @@ describe("UnifiedPlotter Hover Interactions", () => {
       );
 
       // Verify distinct colors are applied
-      plotData.forEach((trace: any) => {
+      plotData.forEach((trace: Record<string, any>) => {
         if (trace.mode?.includes("lines") && trace.line) {
           expect(trace.line.color).toBeTruthy();
           expect(trace.line.dash).toBe("solid");

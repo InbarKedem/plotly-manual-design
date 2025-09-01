@@ -11,6 +11,13 @@ import ProgressIndicator from "../ProgressIndicator";
 import DebugPanel from "../DebugPanel";
 import CompletionIndicator from "../CompletionIndicator";
 import PlotterControls from "../PlotterControlsNew";
+import type {
+  InteractionConfig,
+  ThemeConfig,
+  PerformanceMetrics,
+  ProgressConfig,
+  DataStats,
+} from "../../types";
 
 interface PlotterUIProps {
   // Progress indicators
@@ -18,20 +25,20 @@ interface PlotterUIProps {
   currentPhase: string;
   totalPointsLoaded: number;
   isGenerating: boolean;
-  progressiveLoading?: any;
-  dataStats: any;
+  progressiveLoading?: ProgressConfig;
+  dataStats: DataStats;
   isComplete: boolean;
 
   // Controls
-  internalInteractions: any;
-  onInteractionsChange: (newInteractions: any) => void;
+  internalInteractions: InteractionConfig;
+  onInteractionsChange: (newInteractions: InteractionConfig) => void;
   internalDebug: boolean;
   onDebugChange: (newDebug: boolean) => void;
-  metrics: any;
+  metrics: PerformanceMetrics;
 
   // Debug info
-  theme?: any;
-  additionalDebugInfo?: Record<string, any>;
+  theme?: ThemeConfig;
+  additionalDebugInfo?: Record<string, string | number | boolean>;
 }
 
 /**

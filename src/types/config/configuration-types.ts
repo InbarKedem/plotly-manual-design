@@ -10,6 +10,7 @@ import type {
   ErrorBarOptions,
 } from "../styling/styling-types";
 import type { DataPoint } from "../data/data-types";
+import type { PerformanceMetrics } from "../performance/performance-types";
 
 /**
  * Individual data series configuration
@@ -195,10 +196,10 @@ export interface ProgressConfig {
     progress: number,
     phase: string,
     pointsLoaded: number,
-    stats?: any
+    stats?: PerformanceMetrics
   ) => void;
   /** Completion callback function */
-  onComplete?: (totalPoints: number, stats?: any) => void;
+  onComplete?: (totalPoints: number, stats?: PerformanceMetrics) => void;
 }
 
 /**

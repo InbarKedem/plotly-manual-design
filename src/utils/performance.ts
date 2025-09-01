@@ -85,7 +85,7 @@ export interface PerformanceMetrics {
  *
  * 🧪 Test-friendly: Deterministic timing behavior for unit tests
  */
-export const useDebouncedCallback = <T extends (...args: unknown[]) => unknown>(
+export const useDebouncedCallback = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number,
   deps: React.DependencyList
@@ -154,18 +154,18 @@ export const useMemoizedDataProcessing = <TInput, TOutput>(
  *
  * 🧪 Test-friendly: Predictable timing behavior for unit tests
  */
-function debounce<T extends (...args: unknown[]) => void>(
+function debounce<T extends (...args: any[]) => void>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
   // 🛡️ Input validation for bug resistance
   if (wait < 0) wait = 0;
 
-  let timeout: number | undefined;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait) as unknown as number;
+    timeout = setTimeout(() => func(...args), wait);
   };
 }
 

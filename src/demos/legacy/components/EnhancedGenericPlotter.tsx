@@ -69,8 +69,20 @@ const EnhancedGenericPlotter: React.FC<EnhancedGenericPlotterProps> = ({
     width: config?.width,
     height: config?.height || 400,
     margins: config?.margins,
-    hoverMode: interactions?.hovermode as any,
-    dragMode: interactions?.dragmode as any,
+    hoverMode: interactions?.hovermode as
+      | "closest"
+      | "x"
+      | "y"
+      | "x unified"
+      | "y unified"
+      | false,
+    dragMode: interactions?.dragmode as
+      | "zoom"
+      | "pan"
+      | "select"
+      | "lasso"
+      | "orbit"
+      | "turntable",
     progressiveLoading: progressiveLoading?.enabled
       ? {
           enabled: true,

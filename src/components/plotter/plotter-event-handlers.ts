@@ -10,15 +10,16 @@ import type {
   PlotlyClickEvent,
   PlotlySelectEvent,
 } from "../../types/plotting/plotting-types";
+import type { InteractionConfig, PlotlyTrace } from "../../types";
 
 /**
  * Custom hook for managing hover effects with opacity changes
  */
 export const useHoverEffects = (
-  plotData: any[],
+  plotData: PlotlyTrace[],
   hoveredTrace: number | null,
-  interactionConfig: any,
-  performanceHooks: any
+  interactionConfig: InteractionConfig,
+  performanceHooks: { startMeasurement: () => void; endMeasurement: () => void }
 ) => {
   const { startMeasurement, endMeasurement } = performanceHooks;
 
@@ -30,7 +31,7 @@ export const useHoverEffects = (
     startMeasurement();
 
     const modifiedData = plotData.map((trace, index) => {
-      const traceRecord = trace as any;
+      const traceRecord = trace as any; // Plotly trace types are complex and vary by trace type
 
       if (index === hoveredTrace) {
         // Enhance hovered trace
@@ -84,7 +85,7 @@ export const useHoverEffects = (
       }
     });
 
-    endMeasurement("renderTime");
+    endMeasurement();
     return modifiedData;
   }, [
     plotData,
@@ -99,9 +100,9 @@ export const useHoverEffects = (
  * Custom hook for managing plot event handlers
  */
 export const usePlotEventHandlers = (
-  interactionConfig: any,
-  debouncedHover: any,
-  debouncedZoom: any,
+  interactionConfig: InteractionConfig,
+  debouncedHover: (data: any) => void,
+  debouncedZoom: (data: any) => void,
   setHoveredTrace: (trace: number | null) => void,
   onPlotClick?: (data: PlotlyClickEvent) => void,
   onPlotHover?: (data: PlotlyHoverEvent) => void,
@@ -110,12 +111,12 @@ export const usePlotEventHandlers = (
 ) => {
   /** Custom hover handler for opacity feature */
   const handleCustomHover = useCallback(
-    (data: unknown) => {
+    (data: any) => {
       try {
         const hoverData = data as { points?: Array<{ curveNumber: number }> };
 
         // Use debounced hover for performance
-        debouncedHover(data as PlotlyHoverEvent);
+        debouncedHover(data);
 
         // Handle hover opacity if enabled
         if (interactionConfig.enableHoverOpacity && hoverData?.points?.[0]) {
